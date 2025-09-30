@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    background-image: url('/images/bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    width: 100%;
+    height: 100vh;
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh !important;
+  }
+  
+
+  /* Noise Layer */
+  body::before {
+    content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+    background-image: url("https://st4.depositphotos.com/1026531/30839/i/450/depositphotos_308395272-stock-photo-tv-screen-no-signal-static.jpg");
+    background-repeat: repeat;
+    background-size: 700px 700px;
+    opacity: 0.05;
+    animation: subtleStatic 2s steps(8) infinite;
+    z-index: 9999;
+    mix-blend-mode: multiply;
+    cursor: url('/cursor.png') 16 16, auto;
+  }
+  
+  @keyframes subtleStatic {
+    0% { transform: translate(2%, 2%); }
+    10% { transform: translate(-2%, -2%); }
+    20% { transform: translate(2%, 2%); }
+    30% { transform: translate(-2%, -2%); }
+    40% { transform: translate(2%, 2%); }
+    50% { transform: translate(-2%, -2%); }
+    60% { transform: translate(2%, 2%); }
+    70% { transform: translate(-2%, -2%); }
+    80% { transform: translate(2%, 2%); }
+    100% { transform: translate(-2%, -2%); }
+  }
