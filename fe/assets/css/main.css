@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-    background-image: url('/images/bg.png');
+    /* background-image: url('/images/bg.png'); */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -25,7 +25,7 @@ body {
   height: 200%;
   transform: translate(-50%, -50%);
   pointer-events: none;
-    background-image: url("https://st4.depositphotos.com/1026531/30839/i/450/depositphotos_308395272-stock-photo-tv-screen-no-signal-static.jpg");
+    /* background-image: url("https://st4.depositphotos.com/1026531/30839/i/450/depositphotos_308395272-stock-photo-tv-screen-no-signal-static.jpg"); */
     background-repeat: repeat;
     background-size: 700px 700px;
     opacity: 0.05;

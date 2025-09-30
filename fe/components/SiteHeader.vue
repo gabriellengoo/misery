@@ -61,7 +61,7 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  padding: 1rem 2rem;
+  padding: 1vw 2vw;
   display: flex;
   justify-content: space-between;
   z-index: 20;
@@ -70,7 +70,7 @@ export default {
 
 .nav-left {
   display: flex;
-  gap: 0.75rem;
+  gap: 0.75vw;
 }
 
 .nav-left button,
@@ -78,8 +78,8 @@ export default {
   background: white;
   border: none;
   border-radius: 9999px;
-  padding: 0.4rem 1rem;
-  font-size: 0.9rem;
+  padding: 0.4vw 1vw;
+  font-size: 1.3vw;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -96,13 +96,34 @@ export default {
   left: -100%; /* hidden offscreen initially */
   width: 35%;
   height: 100vh;
-  background: url('/images/bg.png') center/cover no-repeat;
   display: flex;
   flex-direction: column;
-  padding: 2rem;
-  z-index: 50; /* above everything */
+  padding: 2vw;
+  z-index: 50;
   transition: left 0.3s ease;
+  /* border-right: 2px solid rgb(0, 0, 0); */
+
+background-color: #ffffff;
 }
+
+.left-sidebar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/images/bg2.png') center/cover no-repeat;
+  opacity: 0.2;             /* controls transparency */
+  /* filter: saturate(0.3); */
+  z-index: 0;               /* sits behind content */
+}
+
+.left-sidebar > * {
+  position: relative; /* bring actual content above background */
+  z-index: 1;
+}
+
 
 .left-sidebar--active {
   left: 0;
@@ -121,7 +142,7 @@ export default {
   justify-content: center;
   cursor: pointer;
   align-self: flex-end;
-  margin-bottom: 2rem;
+  margin-bottom: 2vw;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2); /* optional: subtle shadow */
   transition: transform 0.2s ease;
 }
@@ -135,23 +156,24 @@ export default {
 .sidebar-menu {
   display: flex;
   flex-direction: column;
-  margin-top: 2rem;
+  margin-top: 2vw;
 }
 
 .sidebar-menu a {
   text-decoration: none;
   color: black;
-  font-size: 1.2rem;
+  font-size: 2vw;
+  text-align: center;
   font-weight: 500;
   text-transform: lowercase;
-  padding: 0.5rem 0;
+  padding: 0.9vw 0;
   border-bottom: 1px solid #ccc; /* light gray border between links */
   transition: all 0.3s ease;
 }
 
 .sidebar-menu a:hover {
   border-left: 4px solid black;
-  padding-left: 0.5rem;
+  padding-left: 0.5vw;
   color: #111;
 }
 
