@@ -3,7 +3,12 @@
     "name": "index",
     "path": "/",
     "component": "/Users/admin/Desktop/misery/fe/pages/index.vue",
-    "chunkName": "pages/index",
-    "_name": "_48574696"
+    "chunkName": "pages/index"
+  },
+  {
+    "name": "events-slug",
+    "path": "/events/:slug?",
+    "component": "/Users/admin/Desktop/misery/fe/pages/events/_slug.vue",
+    "chunkName": "pages/events/_slug"
   }
 ]

@@ -1,1 +1,8 @@
-{}
+{
+  "PageIntro": {
+    "description": "Auto imported from components/PageIntro.vue"
+  },
+  "SiteHeader": {
+    "description": "Auto imported from components/SiteHeader.vue"
+  }
+}
