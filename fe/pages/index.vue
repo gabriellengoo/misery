@@ -93,9 +93,10 @@ export default {
     return {
       images: [
         "/images/c1.jpg",
-        "/images/c2.jpg",
-        "/images/c3.jpg",
-        "/images/c4.jpg",
+        "/images/c2.JPG",
+        "/images/c3.JPG",
+        "/images/c4.JPG",
+        "/images/c5.JPG",
         // Add more images here
       ],
       currentIndex: 0,
