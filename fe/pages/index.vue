@@ -3,10 +3,13 @@
     <SiteHeader />
 
     <!-- Illustration overlays -->
-    <div class="flex justify-center w-full h-full items-center">
-      <img src="/images/c1.jpg" class="carolcel" alt="" />
+    <div
+      class="carousel-container flex justify-center w-full h-full items-center"
+    >
+      <img :src="images[currentIndex]" class="carolcel" alt="carousel" />
     </div>
-    <div class="fixed top-0 left-0 w-full h-full pointer-events-none z-[1]">
+
+    <div class="absolute top-0 left-0 w-full h-full pointer-events-none z-[1]">
       <img
         src="https://i.ibb.co/VvxBzzg/Misery-Meets2square.png"
         class="overlay char-left"
@@ -30,7 +33,7 @@
     </div>
 
     <!-- Events section -->
-    <section class="events">
+    <section class="all-events">
       <!-- Filter bar -->
       <div class="filters">
         <span class="show">show</span>
@@ -59,13 +62,23 @@
           :class="{ past: isPast(event.date) }"
           @click="goToEvent(event)"
         >
-          <img :src="event.image" alt="" class="event-img" />
+          <img
+            :src="event.image"
+            :class="{ upcoming: isUpcoming(event.date) }"
+            alt=""
+            class="event-img"
+          />
           <div class="event-info">
             <span class="date">{{ event.date }}</span>
             <h3 class="titlee">{{ event.title }}</h3>
             <span class="location">{{ event.location }}</span>
           </div>
         </div>
+      </div>
+
+      <!-- See more link -->
+      <div class="see-more">
+        <router-link to="/events">see more →</router-link>
       </div>
     </section>
   </div>
@@ -78,57 +91,158 @@ export default {
   components: { SiteHeader },
   data() {
     return {
+      images: [
+        "/images/c1.jpg",
+        "/images/c2.jpg",
+        "/images/c3.jpg",
+        "/images/c4.jpg",
+        // Add more images here
+      ],
+      currentIndex: 0,
+      intervalId: null,
       showAll: true,
       events: [
-        { date: "fri, 19 sep 2024", title: "friday late", location: "v&a", image: "/images/event1.jpeg" },
-        { date: "fri, 26 nov 2024", title: "hope this finds you well", location: "v&a", image: "/images/event1.jpeg" },
-        { date: "fri, 10 oct 2025", title: "night bloom", location: "tate modern", image: "/images/event1.jpeg" },
-        { date: "fri, 20 nov 2025", title: "sound & shadow", location: "somerset house", image: "/images/event1.jpeg" },
+        {
+          date: "fri, 19 sep 2024",
+          title: "friday late",
+          location: "v&a",
+          image: "/images/event1.jpeg",
+        },
+        {
+          date: "fri, 26 nov 2024",
+          title: "hope this finds you well",
+          location: "v&a",
+          image: "/images/event1.jpeg",
+        },
+        {
+          date: "fri, 10 oct 2025",
+          title: "night bloom",
+          location: "tate modern",
+          image: "/images/event1.jpeg",
+        },
+        {
+          date: "fri, 20 nov 2025",
+          title: "sound & shadow",
+          location: "somerset house",
+          image: "/images/event1.jpeg",
+        },
+        {
+          date: "fri, 20 nov 2025",
+          title: "sound & shadow",
+          location: "somerset house",
+          image: "/images/event1.jpeg",
+        },
       ],
     };
   },
+  mounted() {
+    // Start automatic carousel
+    this.intervalId = setInterval(this.nextImage, 3000); // 3s per slide
+  },
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
   computed: {
     filteredEvents() {
-      if (this.showAll) return this.events;
-      return this.events.filter((e) => !this.isPast(e.date));
+      // Step 1: filter (if needed)
+      let list = this.showAll
+        ? this.events
+        : this.events.filter((e) => !this.isPast(e.date));
+
+      // Step 2: sort from latest → oldest
+      return list.sort((a, b) => new Date(b.date) - new Date(a.date));
     },
   },
   methods: {
+    nextImage() {
+      this.currentIndex = (this.currentIndex + 1) % this.images.length;
+    },
     goToEvent(event) {
       const slug = event.title.toLowerCase().replace(/\s+/g, "-");
       this.$router.push(`/events/${slug}`);
     },
     isPast(dateStr) {
       // Parse something like "fri, 19 sep 2024"
-      const parsed = new Date(dateStr.replace(/(mon|tue|wed|thu|fri|sat|sun), /i, ""));
+      const parsed = new Date(
+        dateStr.replace(/(mon|tue|wed|thu|fri|sat|sun), /i, "")
+      );
       return parsed < new Date();
+    },
+    isUpcoming(dateStr) {
+      const today = new Date();
+      const eventDate = new Date(
+        dateStr.replace(/(mon|tue|wed|thu|fri|sat|sun), /i, "")
+      );
+      return eventDate > today; // future events only
     },
   },
 };
 </script>
 
 <style scoped>
-/* Events section */
-.events {
-  background: #fff;
-  padding: 4vw 2vw;
-  z-index: 6;
+.carousel-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   position: relative;
 }
+
+.carolcel {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 1s ease-in-out;
+}
+
+/* Events section */
+.image-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.event-img {
+  width: 100%;
+  height: 20vw;
+  object-fit: cover;
+  transition: all 0.4s ease;
+}
+
+/* Pink filter for upcoming events */
+/* .event-img.upcoming {
+  filter: brightness(0.9) sepia(0.3) saturate(1.8) hue-rotate(310deg);
+  transition: filter 0.3s ease;
+} */
+
+/* Remove tint on hover */
+.event-card:hover .event-img.upcoming {
+  filter: none;
+}
+
+/* Filter Bar */
 .filters {
   display: flex;
   align-items: center;
   gap: 1vw;
-  margin-bottom: 2vw;
+  margin-bottom: 3vw;
+  justify-content: left;
 }
+
 .show {
-  font-size: 1.4vw;
+  font-size: 1vw;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
+
 .btn {
-  border: none;
-  padding: 0.4vw 1vw;
+  border: 1px solid #50096e;
+  padding: 0.6vw 1.4vw;
   font-size: 0.9vw;
+  border-radius: 30px;
   cursor: pointer;
+  background: transparent;
+  color: #50096e;
+  transition: all 0.3s ease;
 }
 .btn.inactive {
   background: #e0e0e0;
@@ -137,104 +251,197 @@ export default {
 .btn.active {
   background: #50096e;
   color: #fff;
+  box-shadow: 0 4px 8px rgba(80, 9, 110, 0.25);
 }
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(80, 9, 110, 0.15);
+}
+
+.all-events {
+  /* margin-top: 15vw; */
+  background: #fff;
+  min-height: max-content;
+  padding: 5vw 8vw;
+  position: relative;
+  z-index: 10;
+}
+
+/* Grid */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.5vw;
+  grid-template-columns: repeat(auto-fill, minmax(calc(100% / 6), 1fr));
+  gap: 1vw;
+  justify-items: center;
 }
+
+/* Card styling */
 .event-card {
+  background: #fafafa;
+  border-radius: 1vw;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: all 0.35s ease;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
-  cursor: pointer;
-  transition: opacity 0.3s, filter 0.3s;
+  width: 100%;
+  max-width: 100%;
 }
-.event-card.past {
-  opacity: 0.5;
-  filter: grayscale(100%);
-}
+
 .event-card:hover {
-  opacity: 1;
-  filter: grayscale(0%);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.15);
 }
+
+/* Image */
 .event-img {
-  height: 100%;
-  margin-bottom: 0.5vw;
+  width: 100%;
+  height: 20vw;
+  object-fit: cover;
+  transition: transform 0.4s ease;
 }
+
+.event-card:hover .event-img {
+  transform: scale(1.05);
+}
+
+/* Text block */
 .event-info {
-  font-size: 1.3vw;
+  padding: 1.2vw;
+  text-align: left;
 }
+
 .event-info .date {
-  color: #333;
+  color: #777;
+  font-size: 0.9vw;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
+
 .event-info .titlee {
-  font-size: 1.4vw;
-  margin: 0.25vw 0;
+  font-size: 1.3vw;
+  margin: 0.6vw 0;
+  color: #222;
   text-transform: lowercase;
+  transition: color 0.3s ease;
 }
+
 .event-info .location {
-  color: #999;
+  color: #888;
+  font-size: 1vw;
 }
-/* Events section */
-.events {
-  background: #fff;
-  padding: 4vw 2vw;
-  z-index: 6;
-  position: relative;
-  /* margin-top: 100vh; */
+
+.event-card:hover .event-info .titlee {
+  color: #50096e;
 }
-.filters {
+
+/* --- Filter Toolbar --- */
+.filter-toolbar {
+  padding: 2vw;
   display: flex;
   align-items: center;
-  gap: 1vw;
-  margin-bottom: 2vw;
+  justify-content: flex-end;
+  gap: 1.2vw;
+  /* margin-bottom: 3vw; */
+  flex-wrap: wrap;
 }
-.show {
-  /* font-weight: bold; */
-  font-size: 1.4vw;
-}
-.btn {
-  border: none;
-  /* border-radius: 20px; */
-  padding: 0.4vw 1vw;
-  font-size: 0.9vw;
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+  background: #f8f6fa;
+  border: 1px solid #50096e;
+  border-radius: 30px;
+  padding: 0.6vw 1.4vw;
+  color: #50096e;
+  font-size: 0.95vw;
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(80, 9, 110, 0.08);
 }
-.btn.inactive {
-  background: #e0e0e0;
-  color: #555;
-}
-.btn.active {
+
+.filter-btn:hover {
   background: #50096e;
   color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(80, 9, 110, 0.25);
 }
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.5vw;
+
+.filter-icon {
+  width: 1.2vw;
+  height: 1.2vw;
+  stroke: currentColor;
 }
-.event-card {
-  display: flex;
-  flex-direction: column;
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .filter-toolbar {
+    gap: 3vw;
+  }
+
+  .filter-btn {
+    font-size: 2.5vw;
+    padding: 1.5vw 4vw;
+    border-radius: 40px;
+  }
+
+  .filter-icon {
+    width: 3vw;
+    height: 3vw;
+  }
 }
-.event-img {
-  height: 100%;
-  /* border-radius: 8px; */
-  margin-bottom: 0.5vw;
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .btn {
+    font-size: 1.1vw;
+    padding: 0.8vw 2vw;
+  }
+
+  .event-info .titlee {
+    font-size: 1.5vw;
+  }
+
+  .event-info .date {
+    font-size: 1.1vw;
+  }
 }
-.event-info {
-  font-size: 1.3vw;
-}
-.event-info .date {
-  /* font-weight: bold; */
-  color: #333;
-}
-.event-info .titlee {
-  font-size: 1.4vw;
-  margin: 0.25vw 0;
-}
-.event-info .location {
-  color: #999;
+
+@media (max-width: 768px) {
+  .logo {
+    width: 20vw;
+  }
+
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 4vw;
+  }
+
+  .event-card {
+    border-radius: 2vw;
+  }
+
+  .event-info {
+    padding: 3vw;
+  }
+
+  .event-info .titlee {
+    font-size: 3.5vw;
+  }
+
+  .event-info .date,
+  .event-info .location {
+    font-size: 2.5vw;
+  }
+
+  .btn {
+    font-size: 2.5vw;
+    padding: 1vw 3vw;
+  }
 }
 
 .misery-page {
@@ -255,8 +462,8 @@ export default {
   object-fit: cover;
 
   /* darken & desaturate */
-  /* filter: brightness(100%) saturate(220%); */
-  opacity: 0.4;
+  filter: brightness(100%) saturate(220%);
+  opacity: 0.3;
   z-index: 5;
 
   /* optional: overlay effect */
@@ -281,7 +488,7 @@ export default {
 .overlay {
   position: absolute;
   z-index: 2;
-  filter: saturate(0.5) brightness(1);
+  filter: saturate(0.9) brightness(1);
   pointer-events: none;
 }
 .overlay-green {
@@ -292,14 +499,14 @@ export default {
   object-fit: cover;
 }
 .char-left {
-  bottom: 10%;
+  bottom: 25%;
   left: 2%;
   width: 13vw;
   z-index: 6;
   mix-blend-mode: luminosity;
 }
 .char-right {
-  bottom: 35%;
+  bottom: 45%;
   right: 2%;
   z-index: 6;
   width: 13vw;

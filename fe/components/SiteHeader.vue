@@ -6,7 +6,7 @@
         <button>Aa</button>
         <button>events</button>
       </nav>
-      <button class="help">Help</button>
+      <button class="help">help</button>
     </header>
 
     <!-- Fullscreen left sidebar -->
@@ -57,7 +57,7 @@ export default {
 <style scoped>
 /* Header */
 .header {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;

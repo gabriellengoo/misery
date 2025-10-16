@@ -25,7 +25,7 @@ body {
   height: 200%;
   transform: translate(-50%, -50%);
   pointer-events: none;
-    /* background-image: url("https://st4.depositphotos.com/1026531/30839/i/450/depositphotos_308395272-stock-photo-tv-screen-no-signal-static.jpg"); */
+    background-image: url("https://st4.depositphotos.com/1026531/30839/i/450/depositphotos_308395272-stock-photo-tv-screen-no-signal-static.jpg");
     background-repeat: repeat;
     background-size: 700px 700px;
     opacity: 0.05;
@@ -46,4 +46,56 @@ body {
     70% { transform: translate(-2%, -2%); }
     80% { transform: translate(2%, 2%); }
     100% { transform: translate(-2%, -2%); }
+  }
+
+  .see-more {
+    text-align: right;
+    margin-top: 2vw;
+  }
+  
+  .see-more a {
+    text-decoration: none;
+    color: #50096e;
+    font-size: 1.5vw;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  
+  .see-more a:hover {
+    color: #000;
+  }
+  
+
+  /* text */
+  .filters {
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+    margin-bottom: 2vw;
+  }
+  .show {
+    font-size: 1.4vw;
+  }
+  .btn {
+    border: none;
+    padding: 0.4vw 1vw;
+    font-size: 0.9vw;
+    cursor: pointer;
+  }
+  .btn.inactive {
+    background: #e0e0e0;
+    color: #555;
+  }
+  .btn.active {
+    background: #50096e;
+    color: #fff;
+  }
+
+  .event-card.past {
+    opacity: 0.5;
+    filter: grayscale(100%);
+  }
+  .event-card:hover {
+    opacity: 1;
+    filter: grayscale(0%);
   }

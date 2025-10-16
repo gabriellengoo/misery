@@ -1,14 +1,23 @@
 [
   {
+    "name": "events",
+    "path": "/events",
+    "component": "/Users/admin/Desktop/misery/fe/pages/events/index.vue",
+    "chunkName": "pages/events/index",
+    "_name": "_483a0f48"
+  },
+  {
     "name": "index",
     "path": "/",
     "component": "/Users/admin/Desktop/misery/fe/pages/index.vue",
-    "chunkName": "pages/index"
+    "chunkName": "pages/index",
+    "_name": "_48574696"
   },
   {
     "name": "events-slug",
-    "path": "/events/:slug?",
+    "path": "/events/:slug",
     "component": "/Users/admin/Desktop/misery/fe/pages/events/_slug.vue",
-    "chunkName": "pages/events/_slug"
+    "chunkName": "pages/events/_slug",
+    "_name": "_46836e00"
   }
 ]
