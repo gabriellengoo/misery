@@ -1,7 +1,7 @@
 <template>
   <div class="events-page">
-    <SiteHeader />
-    <!-- Center title -->
+    <!-- <SiteHeader /> -->
+
     <!-- Centered Logo -->
     <div class="logo-container">
       <img src="/images/misery.gif" alt="logo" class="logo" />
@@ -10,55 +10,12 @@
     <div class="all">
       <!-- Filter Toolbar -->
       <div class="filter-toolbar">
-        <button class="filter-btn" @click="togglePanel('filters')">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="filter-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-          >
-            <path d="M4 4h16v2l-6 7v5l-4 2v-7L4 6z" />
-          </svg>
-          Filters
-        </button>
-
-        <button class="filter-btn" @click="togglePanel('date')">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="filter-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-          >
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-            <line x1="16" y1="2" x2="16" y2="6" />
-            <line x1="8" y1="2" x2="8" y2="6" />
-            <line x1="3" y1="10" x2="21" y2="10" />
-          </svg>
-          Date Range
-        </button>
-
-        <button class="filter-btn" @click="togglePanel('type')">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="filter-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M8 12l2 2 4-4" />
-          </svg>
-          Event Type
-        </button>
+        <!-- <button class="filter-btn" @click="togglePanel('filters')">Filters</button> -->
+        <button class="filter-btn" @click="togglePanel('date')">Date Range</button>
+        <button class="filter-btn" @click="togglePanel('type')">Event Type</button>
       </div>
 
       <!-- Filter Panels -->
-      <div v-if="activePanel === 'filters'" class="panel">
-        <p>General filters can go here (location, availability, etc.)</p>
-      </div>
-
       <div v-if="activePanel === 'date'" class="panel date-panel">
         <label>From: <input type="date" v-model="dateRange.start" /></label>
         <label>To: <input type="date" v-model="dateRange.end" /></label>
@@ -78,10 +35,9 @@
           </button>
         </div>
       </div>
-      <!-- Events section -->
 
+      <!-- Events section -->
       <section class="all-events">
-        <!-- Filter bar -->
         <div class="filters">
           <span class="show">show</span>
           <button
@@ -102,18 +58,22 @@
 
         <div class="grid">
           <div
-            v-for="(event, i) in filteredEvents"
-            :key="i"
+            v-for="event in filteredEvents"
+            :key="event._id"
             class="event-card"
             :class="{ past: isPast(event.date) }"
             @click="goToEvent(event)"
           >
-            <img :src="event.image"    :class="{ upcoming: isUpcoming(event.date) }"  alt="" class="event-img" />
+            <img :src="event.image" :class="{ upcoming: isUpcoming(event.date) }" alt="" class="event-img" />
             <div class="event-info">
-              <span class="date">{{ event.date }}</span>
-              <h3 class="titlee">{{ event.title }}</h3>
-              <span class="location">{{ event.location }}</span>
-            </div>
+  <span class="date">{{ formatDate(event.date) }}</span>
+  <h3 class="titlee">{{ event.title }}</h3>
+  <span class="location">{{ event.location }}</span>
+  <span class="type-tag" v-for="tag in event.eventType" :key="tag">
+  {{ tag }}
+</span>
+</div>
+
           </div>
         </div>
       </section>
@@ -131,78 +91,47 @@ export default {
       showAll: true,
       activePanel: null,
       dateRange: { start: "", end: "" },
-      eventTypes: ["Exhibition", "Performance", "Talk", "Workshop"],
+      eventTypes: [],
       selectedTypes: [],
-      events: [
-        {
-          date: "2024-09-19",
-          title: "friday late",
-          location: "v&a",
-          image: "/images/event1.jpeg",
-          type: "Exhibition",
-        },
-        {
-          date: "2024-11-26",
-          title: "hope this finds you well",
-          location: "v&a",
-          image: "/images/event1.jpeg",
-          type: "Performance",
-        },
-        {
-          date: "2025-10-10",
-          title: "night bloom",
-          location: "tate modern",
-          image: "/images/event1.jpeg",
-          type: "Talk",
-        },
-        {
-          date: "2025-11-20",
-          title: "sound & shadow",
-          location: "somerset house",
-          image: "/images/event1.jpeg",
-          type: "Workshop",
-        },
-        {
-          date: "2025-11-20",
-          title: "sound & shadow",
-          location: "somerset house",
-          image: "/images/event1.jpeg",
-          type: "Workshop",
-        },
-        {
-          date: "2025-10-10",
-          title: "night bloom",
-          location: "tate modern",
-          image: "/images/event1.jpeg",
-          type: "Talk",
-        },
-      ],
+      events: [],
     };
+  },
+  async fetch() {
+    const query = `*[_type == "event"]{
+      _id,
+      title,
+      "slug": slug.current,
+      date,
+      location,
+      eventType,
+      "image": image.asset->url
+    }`;
+    this.events = await this.$sanity.fetch(query);
+
+    // Include any new event types from Sanity dynamically
+    const sanityTypes = [...new Set(this.events.map(e => e.eventType))];
+    this.eventTypes = Array.from(new Set([...this.eventTypes, ...sanityTypes]));
   },
   computed: {
     filteredEvents() {
-    let list = this.showAll
-      ? this.events
-      : this.events.filter((e) => !this.isPast(e.date));
+      let list = this.showAll
+        ? this.events
+        : this.events.filter(e => !this.isPast(e.date));
 
-    // Filter by date range
-    if (this.dateRange.start && this.dateRange.end) {
-      const start = new Date(this.dateRange.start);
-      const end = new Date(this.dateRange.end);
-      list = list.filter((e) => {
-        const d = new Date(e.date);
-        return d >= start && d <= end;
-      });
-    }
+      // Filter by date range
+      if (this.dateRange.start && this.dateRange.end) {
+        const start = new Date(this.dateRange.start);
+        const end = new Date(this.dateRange.end);
+        list = list.filter(e => new Date(e.date) >= start && new Date(e.date) <= end);
+      }
 
-    // Filter by event type
-    if (this.selectedTypes.length > 0) {
-      list = list.filter((e) => this.selectedTypes.includes(e.type));
-    }
+      // Filter by event type
+      if (this.selectedTypes.length > 0) {
+        list = list.filter(e => this.selectedTypes.includes(e.eventType));
+      }
 
-    // ✅ Always sort by latest → oldest
-    return list.sort((a, b) => new Date(b.date) - new Date(a.date));
-  },
+      return list.sort((a, b) => new Date(b.date) - new Date(a.date));
+    },
   },
   methods: {
     togglePanel(name) {
@@ -212,26 +141,27 @@ export default {
       this.activePanel = null;
     },
     toggleType(tag) {
-      const i = this.selectedTypes.indexOf(tag);
-      if (i > -1) this.selectedTypes.splice(i, 1);
+      const index = this.selectedTypes.indexOf(tag);
+      if (index > -1) this.selectedTypes.splice(index, 1);
       else this.selectedTypes.push(tag);
     },
     goToEvent(event) {
-      const slug = event.title.toLowerCase().replace(/\s+/g, "-");
-      this.$router.push(`/events/${slug}`);
+      this.$router.push(`/events/${event.slug}`);
     },
-    isPast(dateStr) {
-      return new Date(dateStr) < new Date();
+    isPast(date) {
+      return new Date(date) < new Date();
     },
-    isUpcoming(dateStr) {
-  const today = new Date();
-  const eventDate = new Date(dateStr.replace(/(mon|tue|wed|thu|fri|sat|sun), /i, ""));
-  return eventDate > today; // future events only
-},
-
+    isUpcoming(date) {
+      return new Date(date) > new Date();
+    },
+    formatDate(date) {
+      const d = new Date(date);
+      return d.toDateString();
+    },
   },
 };
 </script>
+
 
 <style scoped>
 .image-wrapper {

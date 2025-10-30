@@ -6,5 +6,8 @@ You can directly use them in pages and other components without the need to impo
 
 **Tip:** If a component is conditionally rendered with `v-if` and is big, it is better to use `Lazy` or `lazy-` prefix to lazy load.
 
+- `<SanityContent>` | `<sanity-content>` (node_modules/@nuxtjs/sanity/dist/components/sanity-content.js)
+- `<SanityFile>` | `<sanity-file>` (node_modules/@nuxtjs/sanity/dist/components/sanity-file.js)
+- `<SanityImage>` | `<sanity-image>` (node_modules/@nuxtjs/sanity/dist/components/sanity-image.js)
 - `<PageIntro>` | `<page-intro>` (components/PageIntro.vue)
 - `<SiteHeader>` | `<site-header>` (components/SiteHeader.vue)

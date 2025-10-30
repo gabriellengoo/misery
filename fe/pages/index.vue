@@ -1,6 +1,6 @@
 <template>
   <div class="misery-page">
-    <SiteHeader />
+    <!-- <SiteHeader /> -->
 
     <!-- Illustration overlays -->
     <div
@@ -91,94 +91,59 @@ export default {
   components: { SiteHeader },
   data() {
     return {
-      images: [
-        "/images/c1.jpg",
-        "/images/c2.JPG",
-        "/images/c3.JPG",
-        "/images/c4.JPG",
-        "/images/c5.JPG",
-        // Add more images here
-      ],
+      images: [],
+      events: [],
       currentIndex: 0,
       intervalId: null,
       showAll: true,
-      events: [
-        {
-          date: "fri, 19 sep 2024",
-          title: "friday late",
-          location: "v&a",
-          image: "/images/event1.jpeg",
-        },
-        {
-          date: "fri, 26 nov 2024",
-          title: "hope this finds you well",
-          location: "v&a",
-          image: "/images/event1.jpeg",
-        },
-        {
-          date: "fri, 10 oct 2025",
-          title: "night bloom",
-          location: "tate modern",
-          image: "/images/event1.jpeg",
-        },
-        {
-          date: "fri, 20 nov 2025",
-          title: "sound & shadow",
-          location: "somerset house",
-          image: "/images/event1.jpeg",
-        },
-        {
-          date: "fri, 20 nov 2025",
-          title: "sound & shadow",
-          location: "somerset house",
-          image: "/images/event1.jpeg",
-        },
-      ],
     };
   },
+  async fetch() {
+    // Fetch homepage document
+    const homepage = await this.$sanity.fetch(`*[_type == "homepage"][0]{
+      carousel[]{ "url": asset->url },
+      featuredEvents[]->{
+        title,
+        "slug": slug.current,
+        date,
+        location,
+        "image": image.asset->url
+      }
+    }`);
+
+    this.images = homepage.carousel.map((img) => img.url);
+    this.events = homepage.featuredEvents;
+  },
   mounted() {
-    // Start automatic carousel
-    this.intervalId = setInterval(this.nextImage, 3000); // 3s per slide
+    this.intervalId = setInterval(this.nextImage, 3000);
   },
   beforeDestroy() {
     clearInterval(this.intervalId);
   },
   computed: {
     filteredEvents() {
-      // Step 1: filter (if needed)
-      let list = this.showAll
-        ? this.events
-        : this.events.filter((e) => !this.isPast(e.date));
-
-      // Step 2: sort from latest → oldest
-      return list.sort((a, b) => new Date(b.date) - new Date(a.date));
-    },
+    if (!this.events) return [];
+    let list = this.showAll ? this.events : this.events.filter(e => !this.isPast(e.date));
+    return list.sort((a, b) => new Date(b.date) - new Date(a.date));
+  }
   },
   methods: {
     nextImage() {
       this.currentIndex = (this.currentIndex + 1) % this.images.length;
     },
     goToEvent(event) {
-      const slug = event.title.toLowerCase().replace(/\s+/g, "-");
-      this.$router.push(`/events/${slug}`);
+      this.$router.push(`/events/${event.slug}`);
     },
-    isPast(dateStr) {
-      // Parse something like "fri, 19 sep 2024"
-      const parsed = new Date(
-        dateStr.replace(/(mon|tue|wed|thu|fri|sat|sun), /i, "")
-      );
-      return parsed < new Date();
+    isPast(date) {
+      return new Date(date) < new Date();
     },
-    isUpcoming(dateStr) {
-      const today = new Date();
-      const eventDate = new Date(
-        dateStr.replace(/(mon|tue|wed|thu|fri|sat|sun), /i, "")
-      );
-      return eventDate > today; // future events only
+    isUpcoming(date) {
+      return new Date(date) > new Date();
     },
   },
 };
 </script>
+
 
 <style scoped>
 .carousel-container {

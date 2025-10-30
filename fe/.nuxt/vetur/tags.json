@@ -1,4 +1,13 @@
 {
+  "SanityContent": {
+    "description": "Auto imported from node_modules/@nuxtjs/sanity/dist/components/sanity-content.js"
+  },
+  "SanityFile": {
+    "description": "Auto imported from node_modules/@nuxtjs/sanity/dist/components/sanity-file.js"
+  },
+  "SanityImage": {
+    "description": "Auto imported from node_modules/@nuxtjs/sanity/dist/components/sanity-image.js"
+  },
   "PageIntro": {
     "description": "Auto imported from components/PageIntro.vue"
   },

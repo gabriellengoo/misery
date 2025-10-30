@@ -4,8 +4,11 @@ import { normalizeURL, decode } from 'ufo'
 import { interopDefault } from './utils'
 import scrollBehavior from './router.scrollBehavior.js'
 
+const _73e61194 = () => interopDefault(import('../pages/about/index.vue' /* webpackChunkName: "pages/about/index" */))
 const _483a0f48 = () => interopDefault(import('../pages/events/index.vue' /* webpackChunkName: "pages/events/index" */))
+const _423ea187 = () => interopDefault(import('../pages/press.vue' /* webpackChunkName: "pages/press" */))
 const _48574696 = () => interopDefault(import('../pages/index.vue' /* webpackChunkName: "pages/index" */))
+const _722f704c = () => interopDefault(import('../pages/about/_slug.vue' /* webpackChunkName: "pages/about/_slug" */))
 const _46836e00 = () => interopDefault(import('../pages/events/_slug.vue' /* webpackChunkName: "pages/events/_slug" */))
 
 const emptyFn = () => {}
@@ -20,13 +23,25 @@ export const routerOptions = {
   scrollBehavior,
 
   routes: [{
+    path: "/about",
+    component: _73e61194,
+    name: "about"
+  }, {
     path: "/events",
     component: _483a0f48,
     name: "events"
   }, {
+    path: "/press",
+    component: _423ea187,
+    name: "press"
+  }, {
     path: "/",
     component: _48574696,
     name: "index"
+  }, {
+    path: "/about/:slug",
+    component: _722f704c,
+    name: "about-slug"
   }, {
     path: "/events/:slug",
     component: _46836e00,

@@ -99,3 +99,53 @@ body {
     opacity: 1;
     filter: grayscale(0%);
   }
+
+  .dark-mode {
+    background-color: #000;
+    color: #fff;
+  }
+  
+  .dark-mode .header button {
+    background: #111;
+    color: #fff;
+    border-color: #fff;
+  }
+  
+  .accessibility {
+    position: relative;
+  }
+  
+  .accessibility-menu {
+    position: absolute;
+    top: 2.2vw;
+    left: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    z-index: 30;
+  }
+  
+  .accessibility-menu button {
+    background: none;
+    border: none;
+    padding: 0.6vw 1vw;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s ease;
+  }
+  
+  .type-tag {
+    display: block;        /* ensures it goes to the next line */
+    font-size: 0.8rem;     /* small text */
+    text-transform: lowercase; /* lowercase */
+    color: #5a6b41;        /* optional: green-ish like your theme */
+    margin-top: 0.5rem;    /* spacing from previous element */
+    letter-spacing: 0.5px; /* optional styling */
+  }
+  
+  .accessibility-menu button:hover {
+    background: #f0f0f0;
+  }
+  

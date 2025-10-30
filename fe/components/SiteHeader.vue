@@ -2,39 +2,48 @@
   <div>
     <header class="header">
       <nav class="nav-left">
-        <button @click="toggleSidebar">menu</button>
-        <button>Aa</button>
-        <button>events</button>
+        <!-- Menu -->
+        <button @click="toggleSidebar">{{ headerData?.menuLabel }}</button>
+
+        <!-- Accessibility -->
+        <div class="accessibility">
+          <button @click="toggleAccessibility">{{ headerData?.accessibilityLabel }}</button>
+
+          <div v-if="showAccess" class="accessibility-menu">
+            <button @click="toggleDarkMode">
+              {{ darkMode ? 'Light Mode' : 'Dark Mode' }}
+            </button>
+            <button @click="increaseFont">A+</button>
+            <button @click="decreaseFont">A−</button>
+          </div>
+        </div>
+
+        <!-- Events -->
+        <!-- <button>{{ headerData?.eventsLabel }}</button> -->
       </nav>
-      <button class="help">help</button>
+
+      <!-- Help -->
+      <button class="help" @click="$router.push(headerData?.helpLink)">
+        {{ headerData?.helpLabel }}
+      </button>
     </header>
 
-    <!-- Fullscreen left sidebar -->
+    <!-- Sidebar -->
     <aside :class="['left-sidebar', { 'left-sidebar--active': sidebarOpen }]">
-      <!-- Close button -->
-   <!-- Close button -->
-<button class="close-btn" @click="toggleSidebar">
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-    <line x1="18" y1="6" x2="6" y2="18"/>
-    <line x1="6" y1="6" x2="18" y2="18"/>
-  </svg>
-</button>
-
+      <button class="close-btn" @click="toggleSidebar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="white" stroke-width="1">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
 
       <nav class="sidebar-menu">
-        <a href="/">home</a>
-        <a href="/events">events</a>
-        <a href="/aa">about us</a>
-        <a href="/contact">contact</a>
+        <a v-for="link in headerData?.menuLinks" :key="link._key" :href="link.url">{{ link.label }}</a>
       </nav>
     </aside>
 
     <!-- Overlay -->
-    <div 
-      v-if="sidebarOpen" 
-      class="overlay" 
-      @click="sidebarOpen = false"
-    ></div>
+    <div v-if="sidebarOpen" class="overlay" @click="sidebarOpen = false"></div>
   </div>
 </template>
 
@@ -44,13 +53,49 @@ export default {
   data() {
     return {
       sidebarOpen: false,
-    };
+      showAccess: false,
+      headerData: null,
+      darkMode: false,
+      fontSize: 1,
+    }
+  },
+  async fetch() {
+    this.headerData = await this.$sanity.fetch(`*[_type == "siteHeader"][0]`)
+  },
+  mounted() {
+    // Load accessibility settings from localStorage
+    const savedDark = localStorage.getItem('darkMode') === 'true'
+    const savedFont = parseFloat(localStorage.getItem('fontSize')) || 1
+
+    this.darkMode = savedDark
+    this.fontSize = savedFont
+
+    if (this.darkMode) document.body.classList.add('dark-mode')
+    document.body.style.fontSize = `${this.fontSize}em`
   },
   methods: {
     toggleSidebar() {
-      this.sidebarOpen = !this.sidebarOpen;
-    }
-  }
+      this.sidebarOpen = !this.sidebarOpen
+    },
+    toggleAccessibility() {
+      this.showAccess = !this.showAccess
+    },
+    toggleDarkMode() {
+      this.darkMode = !this.darkMode
+      document.body.classList.toggle('dark-mode', this.darkMode)
+      localStorage.setItem('darkMode', this.darkMode)
+    },
+    increaseFont() {
+      this.fontSize = Math.min(this.fontSize + 0.1, 1.5)
+      document.body.style.fontSize = `${this.fontSize}em`
+      localStorage.setItem('fontSize', this.fontSize)
+    },
+    decreaseFont() {
+      this.fontSize = Math.max(this.fontSize - 0.1, 0.8)
+      document.body.style.fontSize = `${this.fontSize}em`
+      localStorage.setItem('fontSize', this.fontSize)
+    },
+  },
 }
 </script>
 
@@ -71,6 +116,7 @@ export default {
 .nav-left {
   display: flex;
   gap: 0.75vw;
+  align-items: center;
 }
 
 .nav-left button,
@@ -89,11 +135,54 @@ export default {
   transform: scale(1.05);
 }
 
-/* Left sidebar */
+/* Accessibility dropdown */
+.accessibility {
+  position: relative;
+}
+
+.accessibility-menu {
+  position: absolute;
+  top: 2.2vw;
+  left: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.accessibility-menu button {
+  background: none;
+  border: none;
+  padding: 0.6vw 1vw;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s ease;
+}
+
+.accessibility-menu button:hover {
+  background: #f2f2f2;
+}
+
+/* Dark mode */
+body.dark-mode {
+  background-color: #111;
+  color: #fff;
+}
+
+body.dark-mode .header button {
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+/* Sidebar */
 .left-sidebar {
   position: fixed;
   top: 0;
-  left: -100%; /* hidden offscreen initially */
+  left: -100%;
   width: 35%;
   height: 100vh;
   display: flex;
@@ -101,41 +190,18 @@ export default {
   padding: 2vw;
   z-index: 50;
   transition: left 0.3s ease;
-  /* border-right: 2px solid rgb(0, 0, 0); */
-
-background-color: #ffffff;
+  background-color: #ffffff;
 }
-
-.left-sidebar::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: url('/images/bg2.png') center/cover no-repeat;
-  opacity: 0.2;             /* controls transparency */
-  /* filter: saturate(0.3); */
-  z-index: 0;               /* sits behind content */
-}
-
-.left-sidebar > * {
-  position: relative; /* bring actual content above background */
-  z-index: 1;
-}
-
 
 .left-sidebar--active {
   left: 0;
 }
 
-/* Close button */
-/* Close button with circle bg */
 .close-btn {
-  background: rgb(16, 157, 121);        /* circle color */
+  background: rgb(16, 157, 121);
   border: none;
-  border-radius: 50%;       /* makes it a circle */
-  width: 40px;              /* circle size */
+  border-radius: 50%;
+  width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
@@ -143,16 +209,14 @@ background-color: #ffffff;
   cursor: pointer;
   align-self: flex-end;
   margin-bottom: 2vw;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2); /* optional: subtle shadow */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   transition: transform 0.2s ease;
 }
 
 .close-btn:hover {
-  transform: scale(1.1); /* slight hover effect */
+  transform: scale(1.1);
 }
 
-
-/* Sidebar menu */
 .sidebar-menu {
   display: flex;
   flex-direction: column;
@@ -167,7 +231,7 @@ background-color: #ffffff;
   font-weight: 500;
   text-transform: lowercase;
   padding: 0.9vw 0;
-  border-bottom: 1px solid #ccc; /* light gray border between links */
+  border-bottom: 1px solid #ccc;
   transition: all 0.3s ease;
 }
 
@@ -177,7 +241,6 @@ background-color: #ffffff;
   color: #111;
 }
 
-/* Overlay */
 .overlay {
   position: fixed;
   top: 0;

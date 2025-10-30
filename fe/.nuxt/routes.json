@@ -1,5 +1,12 @@
 [
   {
+    "name": "about",
+    "path": "/about",
+    "component": "/Users/admin/Desktop/misery/fe/pages/about/index.vue",
+    "chunkName": "pages/about/index",
+    "_name": "_73e61194"
+  },
+  {
     "name": "events",
     "path": "/events",
     "component": "/Users/admin/Desktop/misery/fe/pages/events/index.vue",
@@ -7,11 +14,25 @@
     "_name": "_483a0f48"
   },
   {
+    "name": "press",
+    "path": "/press",
+    "component": "/Users/admin/Desktop/misery/fe/pages/press.vue",
+    "chunkName": "pages/press",
+    "_name": "_423ea187"
+  },
+  {
     "name": "index",
     "path": "/",
     "component": "/Users/admin/Desktop/misery/fe/pages/index.vue",
     "chunkName": "pages/index",
     "_name": "_48574696"
+  },
+  {
+    "name": "about-slug",
+    "path": "/about/:slug",
+    "component": "/Users/admin/Desktop/misery/fe/pages/about/_slug.vue",
+    "chunkName": "pages/about/_slug",
+    "_name": "_722f704c"
   },
   {
     "name": "events-slug",
