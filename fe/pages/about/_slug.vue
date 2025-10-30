@@ -1,8 +1,14 @@
 <template>
   <div class="section-page" v-if="section">
     <div class="overlay-bg"></div>
-    <div class="close-btn">   <img  @click="$router.push('/about')" class="close-btn" src="/images/close.svg" alt="logo" />
-    </div>
+    <img
+  class="close-btn"
+  src="/images/close.svg"
+  alt="close"
+  @click="$router.push('/about')"
+/>
+
+
     <!-- URLs / Video Embeds -->
     <div v-if="section.urls?.length" class="urls">
       <div v-for="(url, i) in section.urls" :key="i" class="url-item">
@@ -70,6 +76,7 @@
       >
         <div class="carousel-track" :style="trackStyle">
           <div v-for="(person, i) in section.people" :key="i" class="person">
+           <div class="person-card">
             <img
               v-if="person.image?.asset?.url"
               :src="person.image.asset.url"
@@ -79,12 +86,13 @@
               <h3>{{ person.name }}</h3>
               <p>{{ person.role }}</p>
             </div>
+           </div>
           </div>
         </div>
-        <div class="carousel-controls">
-          <button @click="prev">‹</button>
-          <button @click="next">›</button>
-        </div>
+         <!-- Left and Right invisible zones -->
+  <div class="carousel-left-hover" @click="prev"></div>
+  <div class="carousel-right-hover" @click="next"></div>
+
       </div>
     </div>
   </div>
@@ -176,9 +184,39 @@ export default {
 </script>
 
 <style scoped>
-.content{
-padding: 2vw 4vw;
-overflow: scroll;
+.carousel {
+  position: relative;
+  cursor: default;
+}
+
+/* Left half: show left arrow cursor */
+.carousel-left-hover {
+  cursor: url('/images/lefta.png') 8 8, auto; /* x y = hotspot */
+}
+
+/* Right half: show right arrow cursor */
+.carousel-right-hover {
+  cursor: url('/images/righta.png') 8 8, auto;
+}
+
+.carousel-left-hover,
+.carousel-right-hover {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: auto; /* allow clicks */
+}
+
+/* Left zone on the left half */
+.carousel-left-hover {
+  left: 0;
+}
+
+/* Right zone on the right half */
+.carousel-right-hover {
+  right: 0;
 }
 
 
@@ -213,6 +251,7 @@ overflow: scroll;
   right: 6.5rem;
   font-size: 3rem;
   font-weight: 100;
+  z-index: 1110;
   cursor: pointer;
 }
 .close-btn:hover {
@@ -228,9 +267,18 @@ overflow: scroll;
   text-transform: uppercase;
 }
 
-.close-btn img {
+.close-btn  {
   width: 30px;
   height: 30px;
+}
+
+.person-card {
+  display: flex;
+  width: max-content;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
 }
 
 .accordion-list {
@@ -321,10 +369,17 @@ overflow: scroll;
 .person {
   flex: 0 0 100%;
   text-align: center;
+  display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 .person img {
   width: 250px;
   height: 250px;
+  width: 200px;
+  height: 200px;
+  margin-top: 2vw;
   border-radius: 50%;
   object-fit: cover;
   transition: transform 0.3s ease, filter 0.3s;
@@ -334,7 +389,8 @@ overflow: scroll;
   filter: brightness(1.2);
 }
 .person-info {
-  margin-top: 1rem;
+  margin-top: 3rem;
+  width: 60vw;
 }
 .person-info h3 {
   font-size: 1.2rem;
@@ -433,9 +489,10 @@ overflow: scroll;
 }
 
 .people-carousel .person-info h3 {
-  font-size: 0.95rem;
-  font-weight: 200;
-  text-transform: lowercase;
+    font-size: 1.95rem;
+    margin-bottom: 2vw;
+    font-weight: 200;
+    text-transform: lowercase;
 }
 .people-carousel .person-info p {
   font-size: 0.8rem;
