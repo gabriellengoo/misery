@@ -34,18 +34,31 @@
     </div>
 
     <!-- Past Event Carousel (only if event is past) -->
-    <div v-if="event && isPast(event.date)"  class="past-carousel">
-      <h2>Past Event Highlights</h2>
-      <div class="carousel-container">
-        <img
-          :src="carouselImages[currentIndex]"
-          alt="carousel image"
-          class="carousel-image"
-        />
-        <button @click="prevImage" class="carousel-btn prev">‹</button>
-        <button @click="nextImage" class="carousel-btn next">›</button>
-      </div>
+    <!-- Past Event Carousel (only if event is past) -->
+    <div v-if="event && isPast(event.date)" class="past-carousel">
+  <h2>past event highlights</h2>
+
+  <div class="carousel-wrapper">
+    <div class="carousel-frame">
+      <img
+        :src="carouselImages[currentIndex]"
+        alt="highlight"
+        class="carousel-single-img"
+      />
     </div>
+
+    <!-- Full-width arrows -->
+    <div class="carousel-arrow left" @click="prevImage">
+      <img src="/images/lefta.png" alt="Prev" />
+    </div>
+    <div class="carousel-arrow right" @click="nextImage">
+      <img src="/images/righta.png" alt="Next" />
+    </div>
+  </div>
+</div>
+
+
+
   </div>
 </template>
 

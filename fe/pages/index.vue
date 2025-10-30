@@ -428,7 +428,7 @@ export default {
   object-fit: cover;
 
   /* darken & desaturate */
-  filter: brightness(100%) saturate(220%);
+  /* filter: brightness(100%) saturate(220%); */
   opacity: 0.3;
   z-index: 5;
 
@@ -489,7 +489,7 @@ export default {
   color: #ff5ac8; /* pink glitter feel */
   text-shadow: 4px 4px 0 #000;
   z-index: 6;
-  width: 20%;
+  width: 30%;
 }
 .subtitle {
   position: absolute;
