@@ -9,5 +9,6 @@ You can directly use them in pages and other components without the need to impo
 - `<SanityContent>` | `<sanity-content>` (node_modules/@nuxtjs/sanity/dist/components/sanity-content.js)
 - `<SanityFile>` | `<sanity-file>` (node_modules/@nuxtjs/sanity/dist/components/sanity-file.js)
 - `<SanityImage>` | `<sanity-image>` (node_modules/@nuxtjs/sanity/dist/components/sanity-image.js)
+- `<Footer>` | `<footer>` (components/Footer.vue)
 - `<PageIntro>` | `<page-intro>` (components/PageIntro.vue)
 - `<SiteHeader>` | `<site-header>` (components/SiteHeader.vue)

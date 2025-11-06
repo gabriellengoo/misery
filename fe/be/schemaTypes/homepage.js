@@ -3,6 +3,8 @@ export default {
     title: 'Homepage',
     type: 'document',
     fields: [
+      
+      { name: 'title', title: 'Page Title', type: 'string', initialValue: 'Home' },
       {
         name: 'carousel',
         title: 'Carousel Images',

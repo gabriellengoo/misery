@@ -3,6 +3,8 @@ export default {
     title: 'About Page',
     type: 'document',
     fields: [
+      
+      { name: 'title', title: 'Page Title', type: 'string', initialValue: 'About' },
       {
         name: 'sections',
         title: 'Sections',

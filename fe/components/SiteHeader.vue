@@ -1,14 +1,13 @@
 <template>
   <div>
     <header class="header">
+      <!-- Left nav -->
       <nav class="nav-left">
-        <!-- Menu -->
         <button @click="toggleSidebar">{{ headerData?.menuLabel }}</button>
 
         <!-- Accessibility -->
         <div class="accessibility">
           <button @click="toggleAccessibility">{{ headerData?.accessibilityLabel }}</button>
-
           <div v-if="showAccess" class="accessibility-menu">
             <button @click="toggleDarkMode">
               {{ darkMode ? 'Light Mode' : 'Dark Mode' }}
@@ -17,12 +16,14 @@
             <button @click="decreaseFont">A−</button>
           </div>
         </div>
-
-        <!-- Events -->
-        <!-- <button>{{ headerData?.eventsLabel }}</button> -->
       </nav>
 
-      <!-- Help -->
+      <!-- Center logo -->
+      <div class="header-logo">
+        <img src="/images/misery.gif" alt="logo" />
+      </div>
+
+      <!-- Right help button -->
       <button class="help" @click="$router.push(headerData?.helpLink)">
         {{ headerData?.helpLabel }}
       </button>
@@ -100,6 +101,17 @@ export default {
 </script>
 
 <style scoped>
+/* Center logo */
+.header-logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.header-logo img {
+  height: 3vw; /* adjust as needed */
+  max-height: 50px;
+}
 /* Header */
 .header {
   position: fixed;
@@ -199,11 +211,13 @@ body.dark-mode .header button {
 
 .close-btn {
   background: rgb(16, 157, 121);
+  background-color: #111;
   border: none;
-  border-radius: 50%;
+  /* border-radius: 50%; */
   width: 40px;
   height: 40px;
   display: flex;
+  /* color: #000 !important; */
   align-items: center;
   justify-content: center;
   cursor: pointer;

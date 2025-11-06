@@ -2,10 +2,10 @@
   <div class="events-page">
     <!-- <SiteHeader /> -->
 
-    <!-- Centered Logo -->
+    <!-- Centered Logo
     <div class="logo-container">
       <img src="/images/misery.gif" alt="logo" class="logo" />
-    </div>
+    </div> -->
 
     <div class="all">
       <!-- Filter Toolbar -->

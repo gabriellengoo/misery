@@ -82,30 +82,58 @@
         <button class="carousel-btn next" @click="next">›</button>
       </div>
 
-      <!-- Team / Collaborators -->
-      <div
-        v-if="['team', 'collaborators'].includes(section.sectionType)"
-        class="people-carousel"
+  <!-- Team / Collaborators -->
+<div v-if="['team', 'collaborators'].includes(section.sectionType)" class="people-grid">
+  <div
+    class="person-card"
+    v-for="(person, i) in section.people"
+    :key="i"
+  >
+    <div class="person-image">
+      <img
+        v-if="person.image?.asset?.url"
+        :src="person.image.asset.url"
+        :alt="person.name"
+      />
+    </div>
+
+    <div class="person-info">
+      <h3>{{ person.name }}</h3>
+
+      <!-- Role acts as bio preview -->
+      <p class="person-role-preview">{{ truncatedBio(person.role) }}</p>
+
+      <button
+        v-if="person.role"
+        class="see-more-btn"
+        @click="openOverlay(person)"
       >
-        <div class="carousel-track" :style="trackStyle">
-          <div v-for="(person, i) in section.people" :key="i" class="person">
-            <div class="person-card">
-              <img
-                v-if="person.image?.asset?.url"
-                :src="person.image.asset.url"
-                :alt="person.name"
-              />
-              <div class="person-info">
-                <h3>{{ person.name }}</h3>
-                <p>{{ person.role }}</p>
-              </div>
-            </div>
-          </div>
+        See More
+      </button>
+    </div>
+  </div>
+
+  <!-- Overlay -->
+  <transition name="overlay-fade-slide">
+    <div v-if="activePerson" class="overlay" @click.self="closeOverlay">
+      <div class="overlay-content">
+        <div class="overlay-image">
+          <img :src="activePerson.image.asset.url" :alt="activePerson.name" />
         </div>
-        <!-- Left and Right invisible zones -->
-        <div class="carousel-left-hover" @click="prev"></div>
-        <div class="carousel-right-hover" @click="next"></div>
+        <div class="overlay-text">
+          <h2>{{ activePerson.name }}</h2>
+          <p>{{ activePerson.role }}</p>
+          <button class="close-btn" @click="closeOverlay">×</button>
+        </div>
       </div>
+    </div>
+  </transition>
+</div>
+
+
+
+
+
     </div>
   </div>
 </template>
@@ -126,6 +154,7 @@ export default {
   data() {
     return {
       section: null,
+      activePerson: null,
       openAccordion: null,
       currentIndex: 0,
     };
@@ -159,6 +188,18 @@ export default {
     },
   },
   methods: {
+    truncatedBio(text) {
+      if (!text) return '';
+      return text.length > 100 ? text.slice(0, 100) + '…' : text;
+    },
+    openOverlay(person) {
+      this.activePerson = person;
+      document.body.style.overflow = 'hidden';
+    },
+    closeOverlay() {
+      this.activePerson = null;
+      document.body.style.overflow = '';
+    },
     async loadSection(slug) {
       const query = `*[_type == "aboutSection" && overlaySlug.current == $slug][0]{
       title,
@@ -206,8 +247,8 @@ export default {
   padding: 6rem 6vw 8rem;
   /* font-family: "Inter", "Helvetica Neue", sans-serif; */
   backdrop-filter: blur(50px) !important;
-    /* background: #ffffff; */
-    background-color: hsl(0deg 0% 100% / 13%) !important;
+  /* background: #ffffff; */
+  background-color: hsl(0deg 0% 100% / 13%) !important;
 }
 
 /* Background overlay (if needed for transitions) */
@@ -321,92 +362,6 @@ export default {
   max-height: 0;
 }
 
-/* Carousel */
-.carousel {
-  position: relative;
-  margin: 4rem auto;
-  text-align: center;
-}
-
-.carousel-image {
-  max-width: 70%;
-  border-radius: 12px;
-  transition: transform 0.6s ease;
-  object-fit: contain;
-}
-
-.carousel-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.3s ease;
-}
-
-.carousel-btn img {
-  width: 24px;
-  height: auto;
-}
-
-.carousel-btn:hover {
-  opacity: 1;
-}
-
-.carousel-btn.prev {
-  left: 3%;
-}
-.carousel-btn.next {
-  right: 3%;
-}
-
-/* People carousel */
-.people-carousel {
-  margin-top: 4rem;
-  overflow: hidden;
-  position: relative;
-  text-align: center;
-}
-
-.carousel-track {
-  display: flex;
-  transition: transform 0.6s ease;
-}
-
-.person {
-  flex: 0 0 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.person img {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  object-fit: cover;
-  transition: transform 0.3s ease, filter 0.3s;
-}
-.person:hover img {
-  transform: scale(1.05);
-  filter: brightness(1.1);
-}
-
-.person-info {
-  margin-top: 1.5rem;
-}
-.person-info h3 {
-  font-size: 1.2rem;
-  font-weight: 400;
-  margin-bottom: 0.3rem;
-  text-transform: lowercase;
-}
-.person-info p {
-  font-size: 0.9rem;
-  color: #666;
-}
 
 /* Links + embeds */
 .urls {
@@ -461,33 +416,183 @@ export default {
   text-decoration: underline;
 }
 
+/* Left half: show left arrow cursor */
+/* .carousel-left-hover {
+  cursor: url("/images/lefta.png") 8 8, auto; 
+} */
+ /* Right half: show right arrow cursor */
+/* .carousel-right-hover {
+  cursor: url("/images/righta.png") 8 8, auto;
+} */
 
-/* Left half: show left arrow cursor */ .carousel-left-hover { cursor: url('/images/lefta.png') 8 8, auto; /* x y = hotspot */ } /* Right half: show right arrow cursor */ .carousel-right-hover { cursor: url('/images/righta.png') 8 8, auto; } .carousel-left-hover, .carousel-right-hover { position: absolute; top: 0; width: 50%; height: 100%; z-index: 10; pointer-events: auto; /* allow clicks */ } /* Left zone on the left half */ .carousel-left-hover { left: 0; } /* Right zone on the right half */ .carousel-right-hover { right: 0; }
 
-.carousel { position: relative; text-align: center; margin-top: 3rem; } .carousel-image { max-width: 100%; border-radius: 12px; transition: all 0.6s ease; } .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); font-size: 3rem; /* color: #fff; */ background: none; border: none; cursor: pointer; opacity: 0.7; transition: all 0.3s ease; } .carousel-btn:hover { opacity: 1; text-shadow: 0 0 10px #ffb6c1; } .carousel-btn.prev { left: 0; } .carousel-btn.next { right: 0; } .fade-enter-active, .fade-leave-active { transition: opacity 0.5s ease; } .fade-enter, .fade-leave-to { opacity: 0; }
-.people-carousel { overflow: hidden; position: relative; margin-top: 3rem; } .carousel-track { display: flex; transition: transform 0.5s ease; } .person { flex: 0 0 100%; text-align: center; display: flex; justify-content: center; flex-direction: column; align-items: center; } .person img { width: 250px; height: 250px; width: 200px; height: 200px; margin-top: 2vw; border-radius: 50%; object-fit: cover; transition: transform 0.3s ease, filter 0.3s; } .person:hover img { transform: scale(1.05) rotate(2deg); filter: brightness(1.2); } .person-info { margin-top: 3rem; width: 60vw; } .person-info h3 { font-size: 1.2rem; } .person-info p { color: #aaa; font-size: 0.9rem; } .carousel-controls { margin-top: 1rem; display: flex; justify-content: center; gap: 1rem; } .carousel-controls button { background: none; color: #fff; font-size: 2rem; border: none; cursor: pointer; transition: all 0.3s ease; } .carousel-controls button:hover { color: #ffb6c1; transform: scale(1.2); }
-
-.carousel-image {
-  max-width: 90%;
-  border-radius: 8px;
-  margin: auto;
+/* .carousel-btn.prev {
+  left: 0;
 }
-.people-carousel .person-info h3 {
-  font-size: 1.95rem;
-  margin-bottom: 2vw;
-  font-weight: 200;
-  text-transform: lowercase;
-}
-.people-carousel .person-info p {
-  font-size: 0.8rem;
-  font-weight: 100; /* color: #aaa; */
-  text-transform: lowercase;
+.carousel-btn.next {
+  right: 0;
+} */
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(22vw, 1fr));
+  gap: 2vw;
+  justify-content: center;
+  padding: 4vw;
 }
 
-.person-card{
-    pointer-events: auto;
+.person-card {
+  background: #f8f8f8;
+  border-radius: 1vw;
+  box-shadow: 0 0.6vw 1vw rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  text-align: center;
+  padding: 2vw;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.person-card:hover {
+  transform: translateY(-0.5vw);
+  box-shadow: 0 1vw 2vw rgba(0, 0, 0, 0.12);
+}
+
+.person-image img {
+  width: 100%;
+  height: 22vw;
+  object-fit: cover;
+  border-radius: 1vw;
+}
+
+.person-info {
+  margin-top: 1.5vw;
+}
+
+.person-info h3 {
+  font-size: 1.4vw;
+  font-weight: 600;
+  color: #111;
+}
+
+.person-role-preview {
+  font-size: 1vw;
+  color: #666;
+  margin-top: 0.8vw;
+  min-height: 3vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.see-more-btn {
+  background: none;
+  border: none;
+  color: #5a6b41;
+  font-size: 1vw;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 0.8vw;
+  transition: color 0.2s ease;
+}
+.see-more-btn:hover {
+  color: #3c482d;
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100%;
+    background: rgba(20, 20, 20, 0.8);
+    backdrop-filter: blur(10px);
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
+    z-index: 999;
+    overflow: scroll;
 }
+
+.overlay-content {
+  display: flex;
+    background: white;
+    border-radius: 1vw;
+    max-width: 70vw;
+    height: 100vh;
+    height: 80vh;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 1vw 2vw rgba(0, 0, 0, 0.2);
+    transform: translateY(5vh);
+    justify-content: center;
+}
+
+.overlay-image {
+  flex: 1;
+}
+.overlay-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay-text {
+  flex: 1;
+  padding: 3vw;
+  position: relative;
+  overflow: scroll;
+}
+.overlay-text h2 {
+  font-size: 2vw;
+  margin-bottom: 1vw;
+  color: #111;
+}
+.overlay-text p {
+  font-size: 1.1vw;
+  line-height: 1.6;
+  color: #333;
+}
+
+.close-btn {
+  position: absolute;
+  top: 1vw;
+  right: 1vw;
+  background: none;
+  border: none;
+  font-size: 2vw;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Animations */
+.overlay-fade-slide-enter-active,
+.overlay-fade-slide-leave-active {
+  transition: opacity 0.4s ease, transform 0.5s ease;
+}
+.overlay-fade-slide-enter,
+.overlay-fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(5vh);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .overlay-content {
+    flex-direction: column;
+    max-width: 90vw;
+  }
+  .overlay-text {
+    padding: 6vw;
+  }
+  .overlay-text h2 {
+    font-size: 5vw;
+  }
+  .overlay-text p {
+    font-size: 3.5vw;
+  }
+}
+
+
 </style>

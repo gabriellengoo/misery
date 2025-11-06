@@ -7,6 +7,20 @@
     "_name": "_73e61194"
   },
   {
+    "name": "contact",
+    "path": "/contact",
+    "component": "/Users/admin/Desktop/misery/fe/pages/contact.vue",
+    "chunkName": "pages/contact",
+    "_name": "_fe1ee038"
+  },
+  {
+    "name": "crisis",
+    "path": "/crisis",
+    "component": "/Users/admin/Desktop/misery/fe/pages/crisis.vue",
+    "chunkName": "pages/crisis",
+    "_name": "_2ffaaf2f"
+  },
+  {
     "name": "events",
     "path": "/events",
     "component": "/Users/admin/Desktop/misery/fe/pages/events/index.vue",
@@ -14,11 +28,25 @@
     "_name": "_483a0f48"
   },
   {
+    "name": "get-involved",
+    "path": "/get-involved",
+    "component": "/Users/admin/Desktop/misery/fe/pages/get-involved.vue",
+    "chunkName": "pages/get-involved",
+    "_name": "_b68d7c6c"
+  },
+  {
     "name": "press",
     "path": "/press",
     "component": "/Users/admin/Desktop/misery/fe/pages/press.vue",
     "chunkName": "pages/press",
     "_name": "_423ea187"
+  },
+  {
+    "name": "resources",
+    "path": "/resources",
+    "component": "/Users/admin/Desktop/misery/fe/pages/resources.vue",
+    "chunkName": "pages/resources",
+    "_name": "_5ca20469"
   },
   {
     "name": "index",

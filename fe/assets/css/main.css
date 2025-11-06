@@ -64,6 +64,9 @@ body {
   .see-more a:hover {
     color: #000;
   }
+  .page-content div p {
+    margin-bottom: 1.5vw;
+  }
   
 .content div p{
     line-height: 1.6;

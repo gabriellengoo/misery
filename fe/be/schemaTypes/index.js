@@ -7,6 +7,12 @@ import event from './event'
 import aboutPage from './aboutPage'
 import pressPage from './pressPage'
 import aboutSection from './aboutSection'
+import getInvolvedPage from './getInvolvedPage'
+import blockContent from './blockContent'
+import footer from './footer'
+import crisisPage from './crisisPage'
+import contactPage from './contactPage'
+import resourcesPage from './resourcesPage'
 
-export const schemaTypes = [ siteHeader, homepage,event, aboutPage, pressPage, aboutSection ]
+export const schemaTypes = [ siteHeader, homepage,event, aboutPage,  aboutSection, pressPage, getInvolvedPage, blockContent, contactPage, crisisPage, resourcesPage, footer ]
 

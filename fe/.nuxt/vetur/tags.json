@@ -8,6 +8,9 @@
   "SanityImage": {
     "description": "Auto imported from node_modules/@nuxtjs/sanity/dist/components/sanity-image.js"
   },
+  "Footer": {
+    "description": "Auto imported from components/Footer.vue"
+  },
   "PageIntro": {
     "description": "Auto imported from components/PageIntro.vue"
   },

@@ -1,9 +1,10 @@
 <template>
-  <div class="misery-page">
+  <div >
     <!-- <SiteHeader /> -->
 
-    <!-- Illustration overlays -->
-    <div
+  <div class="misery-page">
+      <!-- Illustration overlays -->
+      <div
       class="carousel-container flex justify-center w-full h-full items-center"
     >
       <img :src="images[currentIndex]" class="carolcel" alt="carousel" />
@@ -31,9 +32,10 @@
     <div class="bg">
       <img src="/images/bg.png" alt="background" />
     </div>
+  </div>
 
     <!-- Events section -->
-    <section class="all-events">
+    <div class="all-events">
       <!-- Filter bar -->
       <div class="filters">
         <span class="show">show</span>
@@ -80,7 +82,7 @@
       <div class="see-more">
         <router-link to="/events">see more →</router-link>
       </div>
-    </section>
+    </div>
   </div>
 </template>
 

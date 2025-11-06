@@ -1,8 +1,9 @@
 export default {
   name: 'event',
-  title: 'Event',
+  title: 'All Events (Event Page)',
   type: 'document',
-  fields: [
+  fields: [  
+    // { name: 'title', title: 'Page Title', type: 'string', initialValue: 'Event' },
     {
       name: 'title',
       title: 'Title',

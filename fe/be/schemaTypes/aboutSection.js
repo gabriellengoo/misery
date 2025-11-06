@@ -1,6 +1,6 @@
 export default {
     name: 'aboutSection',
-    title: 'About Section',
+    title: 'About Sections',
     type: 'document',
     fields: [
       {
