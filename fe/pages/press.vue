@@ -1,13 +1,13 @@
 <template>
   <div class="page-container" v-if="page">
-    <h1 class="page-title">{{ page.title }}</h1>
+    <!-- <h1 class="page-title">{{ page.title }}</h1> -->
 
     <div
       v-for="(section, i) in page.sections"
       :key="i"
       class="page-section"
     >
-      <!-- <h2 class="section-title">{{ section.title }}</h2> -->
+      <h2 class="section-title">{{ section.title }}</h2>
       <p class="section-description">{{ section.description }}</p>
 
       <div class="carousel-wrapper">
