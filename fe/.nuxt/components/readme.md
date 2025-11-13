@@ -12,3 +12,4 @@ You can directly use them in pages and other components without the need to impo
 - `<Footer>` | `<footer>` (components/Footer.vue)
 - `<PageIntro>` | `<page-intro>` (components/PageIntro.vue)
 - `<SiteHeader>` | `<site-header>` (components/SiteHeader.vue)
+- `<SiteHeaderhome>` | `<site-headerhome>` (components/SiteHeaderhome.vue)

@@ -4,6 +4,7 @@ export { default as SanityImage } from '../../node_modules/@nuxtjs/sanity/dist/c
 export { default as Footer } from '../../components/Footer.vue'
 export { default as PageIntro } from '../../components/PageIntro.vue'
 export { default as SiteHeader } from '../../components/SiteHeader.vue'
+export { default as SiteHeaderhome } from '../../components/SiteHeaderhome.vue'
 
 // nuxt/nuxt.js#8607
 function wrapFunctional(options) {

@@ -2,14 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+html{
+  /* background-color: #adadad; */
+}
+
+
+body, html {
+
+  /* --bg-gradient: radial-gradient(58.86% 40.63% at 10% 10%, rgba(147, 184, 213, 0.6) 0%, rgba(147, 184, 213, 0) 100%), radial-gradient(90.16% 79.58% at 24.79% 1.99%, #cfcbc2 0%, hsla(40, 6%, 62%, 0) 100%), linear-gradient(182.98deg, #a19f9b 9.96%, hsla(30, 3%, 62%, 0.5) 94.62%); */
+  padding: 0;
+  margin: 0;
+  cursor: url(https://babesonwaves.club/wp-content/uploads/2021/07/bow-cursor-20px.png) -10 -10, auto !important;
+  scrollbar-width: none;
+}
+
 body {
-    background-image: url('/images/bg.png');
+    /* background-image: url('/images/bg.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-attachment: fixed; */
     width: 100%;
     height: 100vh;
+
     font-family: 'Syne', sans-serif;
     min-height: 100vh !important;
   }
@@ -25,14 +40,26 @@ body {
   height: 200%;
   transform: translate(-50%, -50%);
   pointer-events: none;
-    /* background-image: url("https://st4.depositphotos.com/1026531/30839/i/450/depositphotos_308395272-stock-photo-tv-screen-no-signal-static.jpg"); */
+    background-image: url("https://st4.depositphotos.com/1026531/30839/i/450/depositphotos_308395272-stock-photo-tv-screen-no-signal-static.jpg");
     background-repeat: repeat;
     background-size: 700px 700px;
-    opacity: 0.05;
+    opacity: 0.02;
     animation: subtleStatic 2s steps(8) infinite;
     z-index: 9999;
     mix-blend-mode: multiply;
     cursor: url('/cursor.png') 16 16, auto;
+  }
+
+  body {
+    /* --bg-gradient: linear-gradient(169.78deg, hsla(0, 0%, 100%, 0.23) 4.65%, hsla(0, 0%, 100%, 0) 91.48%), radial-gradient(62.3% 67.27% at 20.42% 27.48%, #5e4b1e 0%, #2b2a28 100%), linear-gradient(112.91deg, #676561 3.51%, #242321 111.71%); */
+    background: radial-gradient(circle, #215623b5, #1642189e 0, #21562396 16%, #dd56ff4d, #f3c1ff4d, #eabbf6bb, #d1c8cd3c);
+    background-blend-mode: screen, overlay, normal;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+
+    /* height: 100vh;
+    overflow: hidden; */
   }
   
   @keyframes subtleStatic {
@@ -48,26 +75,153 @@ body {
     100% { transform: translate(-2%, -2%); }
   }
 
+  .bgoverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  
+    /* darken & desaturate */
+    /* filter: brightness(100%) saturate(220%); */
+    opacity: 0.02;
+    z-index: 5;
+  
+    /* optional: overlay effect */
+    mix-blend-mode: multiply;
+    /* mix-blend-mode: hard-light; */
+  }
+  /* base photo */
+  .bgoverlay img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 6;
+    /* border-radius: 50%; */
+    mix-blend-mode: hard-light;
+    /* mix-blend-mode: multiply; */
+  }
+
   .see-more {
     text-align: right;
     margin-top: 2vw;
+    z-index: 1;
   }
   
   .see-more a {
     text-decoration: none;
-    color: #50096e;
-    font-size: 1.5vw;
-    font-weight: 500;
-    transition: color 0.3s;
+    /* color: #50096e; */
+    font-size: 3vw;
+    font-weight: 100;
+    font-family: 'Times New Roman', Times, serif;
+    transition: color 0.3s, transform 0.3s;
+    display: inline-block; /* required for transform to take effect */
+    transform: skew(-30deg); /* adjust angle as needed */
   }
   
+ /* Shared base style */
+.floating-img {
+  position: absolute;
+  width: clamp(144px, 10vw, 300px);
+  transition: transform 0.3s ease;
+  z-index: 2;
+}
+
+.floating-img img {
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+/* Positions */
+.img-left {
+  top: 10%;
+  left: 35%;
+  animation: floatLeft 20s ease-in-out infinite;
+  transform: rotate(26deg);
+}
+
+.img-left2 {
+  top: 30%;
+  left: 75%;
+  width: clamp(144px, 5vw, 300px);
+  animation: floatLeft2 20s ease-in-out infinite;
+  transform: rotate(6deg);
+}
+
+.img-right {
+  top: 60%;
+  right: 70%;
+  max-width: 10vw;
+  animation: spinSlow 300s linear infinite;
+  transform: rotate(66deg);
+}
+
+/* Float animations */
+@keyframes floatLeft {
+  0%, 100% { transform: translate(0, 0) rotate(26deg); }
+  50% { transform: translate(3px, -40px) rotate(26deg); }
+}
+
+@keyframes floatLeft2 {
+  0%, 100% { transform: translate(0, 0) rotate(6deg); }
+  50% { transform: translate(30px, -40px) rotate(6deg); }
+}
+
+@keyframes spinSlow {
+  50% { transform: rotate(180deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 🪶 Fly away from cursor */
+.floating-img:hover {
+  animation: none; /* pause the float/spin */
+  transform: translate(var(--x, 0), var(--y, 0)) scale(1.1);
+}
+
+  
   .see-more a:hover {
-    color: #000;
+    color: #39c1d3;
   }
   .page-content div p {
     margin-bottom: 1.5vw;
   }
+
+
+  .accessibility-menu {
+    position: absolute;
+    top: 4.2vw;
+    left: 0;
+    /* background: white; */
+    /* border: 1px solid #ddd; */
+    /* border-radius: 8px; */
+    display: flex;
+    flex-direction: column;
+    z-index: 30;
+    /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); */
+  }
+
+  .accessibility-menu button {
+    background: none;
+    border: none;
+    /* border-radius: 0 !important; */
+    padding: 0.6vw 1vw;
+    height: 4vw;
+    width: 4vw;
+    font-size: 1.2vw;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s ease;
+  }
   
+  .accessibility-menu button:hover {
+    background: #f2f2f2;
+  }
+
 .content div p{
     line-height: 1.6;
     margin-bottom: 1.5rem;
@@ -98,7 +252,7 @@ body {
   }
 
   .event-card.past {
-    opacity: 0.5;
+    /* opacity: 0.5; */
     filter: grayscale(100%);
   }
   .event-card:hover {
@@ -121,26 +275,7 @@ body {
     position: relative;
   }
   
-  .accessibility-menu {
-    position: absolute;
-    top: 2.2vw;
-    left: 0;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    display: flex;
-    flex-direction: column;
-    z-index: 30;
-  }
-  
-  .accessibility-menu button {
-    background: none;
-    border: none;
-    padding: 0.6vw 1vw;
-    cursor: pointer;
-    text-align: left;
-    transition: background 0.2s ease;
-  }
+ 
   
   .type-tag {
     display: block;        /* ensures it goes to the next line */

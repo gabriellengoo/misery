@@ -16,5 +16,8 @@
   },
   "SiteHeader": {
     "description": "Auto imported from components/SiteHeader.vue"
+  },
+  "SiteHeaderhome": {
+    "description": "Auto imported from components/SiteHeaderhome.vue"
   }
 }

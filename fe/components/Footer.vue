@@ -99,14 +99,14 @@ export default {
 
 <style scoped>
 .site-footerall {
-  background: #fff;
-border-top: 1px solid #000;
+  /* background: #fff; */
+/* border-top: 1px solid #000; */
   /* padding-top: 2vw; */
 }
 
 .site-footer {
-  background: #fff;
-  color: #000;
+  /* background: #fff; */
+  /* color: #000; */
   padding: 4vw;
   font-family: sans-serif;
   font-size: 0.9vw;
@@ -147,7 +147,7 @@ border-top: 1px solid #000;
 }
 
 .footer-nav a {
-  color: #000;
+  /* color: #000; */
   text-decoration: none;
   transition: color 0.2s;
 }
@@ -171,7 +171,7 @@ border-top: 1px solid #000;
 }
 
 .footer-donate:hover {
-  background: #000;
+  /* background: #000; */
   color: #fff;
 }
 
@@ -180,7 +180,7 @@ border-top: 1px solid #000;
 .footer-newsletter input {
   width: 100%;
   border: none;
-  border-bottom: 1px solid #000;
+  /* border-bottom: 1px solid #000; */
   background: none;
   padding: 0.5vw 0;
   font-size: 0.9vw;
@@ -238,7 +238,7 @@ form{
   /* margin-top: 2vw; */
   /* border-top: 1px solid #000; */
   padding-top: 1vw;
-  color: #000;
+  /* color: #000; */
 }
 
 /* Mobile */

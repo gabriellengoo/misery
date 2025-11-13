@@ -3,8 +3,8 @@
     <!-- Intro animation -->
     <PageIntro v-if="showIntro" />
 
-    <!-- Header -->
-    <SiteHeader />
+    <!-- Header (hidden on index page) -->
+    <SiteHeader v-if="$route.name !== 'index'" />
 
     <!-- Main content -->
     <main class="site-main">
@@ -15,6 +15,7 @@
     <Footer />
   </div>
 </template>
+
 
 <script>
 import PageIntro from "@/components/PageIntro.vue";
