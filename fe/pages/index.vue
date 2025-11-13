@@ -67,6 +67,11 @@
 
     <!-- Events section -->
     <div class="all-events">
+         <!-- See more link -->
+         <div class="see-more">
+          <p class="see-more" to="/events">what's on</p>
+        </div>
+
       <!-- Filter bar -->
       <div class="filters">
         <span class="show">*•̩̩͙✩•̩̩͙*˚ show *•̩̩͙✩•̩̩͙*˚</span>
@@ -477,7 +482,7 @@ window.addEventListener("scroll", () => {
   transition: transform 0.3s ease-out;
   position: relative;
   z-index: 100000;
-  opacity: 0.3;
+  opacity: 0.2;
   transition: transform 0.2s ease-out, opacity 0.4s ease-out;
   will-change: transform, opacity;
   transform-origin: center top;

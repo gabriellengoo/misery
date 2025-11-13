@@ -108,6 +108,7 @@ export default {
   /* background: #fff; */
   /* color: #000; */
   padding: 4vw;
+  margin-bottom: 15vw;
   font-family: sans-serif;
   font-size: 0.9vw;
   display: flex;
@@ -180,7 +181,7 @@ export default {
 .footer-newsletter input {
   width: 100%;
   border: none;
-  /* border-bottom: 1px solid #000; */
+  border-bottom: 1px solid #000;
   background: none;
   padding: 0.5vw 0;
   font-size: 0.9vw;
@@ -236,7 +237,7 @@ form{
   text-align: center;
   font-size: 0.8vw;
   /* margin-top: 2vw; */
-  /* border-top: 1px solid #000; */
+  border-top: 1px solid #000;
   padding-top: 1vw;
   /* color: #000; */
 }

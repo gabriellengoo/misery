@@ -8,8 +8,14 @@
     </div> -->
 
     <div class="all">
+          <!-- See more link -->
+          <div class="see-more">
+          <p class="see-more" to="/events">what's on</p>
+        </div>
+        
       <!-- Filter Toolbar -->
       <div class="filter-toolbar">
+        
         <!-- <button class="filter-btn" @click="togglePanel('filters')">Filters</button> -->
         <button class="filter-btn" @click="togglePanel('date')">Date Range</button>
         <button class="filter-btn" @click="togglePanel('type')">Event Type</button>
@@ -35,6 +41,8 @@
           </button>
         </div>
       </div>
+
+     
 
       <!-- Events section -->
       <section class="all-events">
@@ -193,7 +201,7 @@ export default {
 
 .all-events {
   /* margin-top: 15vw; */
-  background: #fff;
+  /* background: #fff; */
   min-height: max-content;
   padding: 5vw 8vw;
   position: relative;
@@ -263,7 +271,7 @@ export default {
 /* Grid */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(calc(100% / 6), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(calc(100% / 4), 1fr));
   gap: 1vw;
   justify-items: center;
 }

@@ -12,7 +12,7 @@ body, html {
   /* --bg-gradient: radial-gradient(58.86% 40.63% at 10% 10%, rgba(147, 184, 213, 0.6) 0%, rgba(147, 184, 213, 0) 100%), radial-gradient(90.16% 79.58% at 24.79% 1.99%, #cfcbc2 0%, hsla(40, 6%, 62%, 0) 100%), linear-gradient(182.98deg, #a19f9b 9.96%, hsla(30, 3%, 62%, 0.5) 94.62%); */
   padding: 0;
   margin: 0;
-  cursor: url(https://babesonwaves.club/wp-content/uploads/2021/07/bow-cursor-20px.png) -10 -10, auto !important;
+  /* cursor: url(https://babesonwaves.club/wp-content/uploads/2021/07/bow-cursor-20px.png) -10 -10, auto !important; */
   scrollbar-width: none;
 }
 
@@ -43,7 +43,7 @@ body {
     background-image: url("https://st4.depositphotos.com/1026531/30839/i/450/depositphotos_308395272-stock-photo-tv-screen-no-signal-static.jpg");
     background-repeat: repeat;
     background-size: 700px 700px;
-    opacity: 0.02;
+    opacity: 0.04;
     animation: subtleStatic 2s steps(8) infinite;
     z-index: 9999;
     mix-blend-mode: multiply;
@@ -117,10 +117,24 @@ body {
     /* color: #50096e; */
     font-size: 3vw;
     font-weight: 100;
-    font-family: 'Times New Roman', Times, serif;
+    /* font-family: 'Times New Roman', Times, serif; */
     transition: color 0.3s, transform 0.3s;
     display: inline-block; /* required for transform to take effect */
     transform: skew(-30deg); /* adjust angle as needed */
+  }
+
+  .see-more p {
+    text-decoration: none;
+    /* color: #50096e; */
+    font-size: 3vw;
+    font-weight: 100;
+    text-align: left;
+    text-decoration: underline;
+    margin-bottom: 2vw;
+    /* font-family: 'Times New Roman', Times, serif; */
+    /* transition: color 0.3s, transform 0.3s; */
+    /* display: inline-block; required for transform to take effect */
+    /* transform: skew(-30deg); adjust angle as needed */
   }
   
  /* Shared base style */
