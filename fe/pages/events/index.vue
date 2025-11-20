@@ -2,52 +2,21 @@
   <div class="events-page">
     <!-- <SiteHeader /> -->
 
-    <!-- Centered Logo
+    <!-- Centered Logo -->
     <div class="logo-container">
-      <img src="/images/misery.gif" alt="logo" class="logo" />
-    </div> -->
+      <img src="/images/eventfur.png" alt="logo" class="logo" />
+    </div>
 
     <div class="all">
-          <!-- See more link -->
-          <div class="see-more">
-          <p class="see-more" to="/events">what's on</p>
-        </div>
-        
-      <!-- Filter Toolbar -->
-      <div class="filter-toolbar">
-        
-        <!-- <button class="filter-btn" @click="togglePanel('filters')">Filters</button> -->
-        <button class="filter-btn" @click="togglePanel('date')">Date Range</button>
-        <button class="filter-btn" @click="togglePanel('type')">Event Type</button>
-      </div>
-
-      <!-- Filter Panels -->
-      <div v-if="activePanel === 'date'" class="panel date-panel">
-        <label>From: <input type="date" v-model="dateRange.start" /></label>
-        <label>To: <input type="date" v-model="dateRange.end" /></label>
-        <button class="apply-btn" @click="applyDateFilter">Apply</button>
-      </div>
-
-      <div v-if="activePanel === 'type'" class="panel type-panel">
-        <div class="tag-list">
-          <button
-            v-for="tag in eventTypes"
-            :key="tag"
-            class="tag-btn"
-            :class="{ active: selectedTypes.includes(tag) }"
-            @click="toggleType(tag)"
-          >
-            {{ tag }}
-          </button>
-        </div>
-      </div>
-
-     
+      <!-- See more link -->
+      <!-- <div class="see-more">
+        <p class="see-more" to="/events">what's on</p>
+      </div> -->
 
       <!-- Events section -->
       <section class="all-events">
         <div class="filters">
-          <span class="show">show</span>
+          <span class="show">>*•̩̩͙✩•̩̩͙*˚ filter by *•̩̩͙✩•̩̩͙*˚</span>
           <button
             class="btn"
             :class="{ active: showAll, inactive: !showAll }"
@@ -62,6 +31,52 @@
           >
             current events only
           </button>
+
+          <button
+            class="btn"
+            :class="{ active: !showAll, inactive: showAll }"
+            @click="togglePanel('date')"
+          >
+            date range
+          </button>
+          <button
+            class="btn"
+            :class="{ active: !showAll, inactive: showAll }"
+            @click="togglePanel('type')"
+          >
+            event type
+          </button>
+
+          <!-- Filter Toolbar -->
+          <!-- <div class="filter-toolbar">
+        <button class="filter-btn" @click="togglePanel('date')">
+          Date Range
+        </button>
+        <button class="filter-btn" @click="togglePanel('type')">
+          Event Type
+        </button>
+      </div> -->
+        </div>
+
+        <!-- Filter Panels -->
+        <div v-if="activePanel === 'date'" class="panel date-panel">
+          <label>From: <input type="date" v-model="dateRange.start" /></label>
+          <label>To: <input type="date" v-model="dateRange.end" /></label>
+          <button class="apply-btn" @click="applyDateFilter">Apply</button>
+        </div>
+
+        <div v-if="activePanel === 'type'" class="panel type-panel">
+          <div class="tag-list">
+            <button
+              v-for="tag in eventTypes"
+              :key="tag"
+              class="tag-btn"
+              :class="{ active: selectedTypes.includes(tag) }"
+              @click="toggleType(tag)"
+            >
+              {{ tag }}
+            </button>
+          </div>
         </div>
 
         <div class="grid">
@@ -72,16 +87,20 @@
             :class="{ past: isPast(event.date) }"
             @click="goToEvent(event)"
           >
-            <img :src="event.image" :class="{ upcoming: isUpcoming(event.date) }" alt="" class="event-img" />
+            <img
+              :src="event.image"
+              :class="{ upcoming: isUpcoming(event.date) }"
+              alt=""
+              class="event-img"
+            />
             <div class="event-info">
-  <span class="date">{{ formatDate(event.date) }}</span>
-  <h3 class="titlee">{{ event.title }}</h3>
-  <span class="location">{{ event.location }}</span>
-  <span class="type-tag" v-for="tag in event.eventType" :key="tag">
-  {{ tag }}
-</span>
-</div>
-
+              <span class="date">{{ formatDate(event.date) }}</span>
+              <h3 class="titlee">{{ event.title }}</h3>
+              <span class="location">{{ event.location }}</span>
+              <span class="type-tag" v-for="tag in event.eventType" :key="tag">
+                {{ tag }}
+              </span>
+            </div>
           </div>
         </div>
       </section>
@@ -117,25 +136,27 @@ export default {
     this.events = await this.$sanity.fetch(query);
 
     // Include any new event types from Sanity dynamically
-    const sanityTypes = [...new Set(this.events.map(e => e.eventType))];
+    const sanityTypes = [...new Set(this.events.map((e) => e.eventType))];
     this.eventTypes = Array.from(new Set([...this.eventTypes, ...sanityTypes]));
   },
   computed: {
     filteredEvents() {
       let list = this.showAll
         ? this.events
-        : this.events.filter(e => !this.isPast(e.date));
+        : this.events.filter((e) => !this.isPast(e.date));
 
       // Filter by date range
       if (this.dateRange.start && this.dateRange.end) {
         const start = new Date(this.dateRange.start);
         const end = new Date(this.dateRange.end);
-        list = list.filter(e => new Date(e.date) >= start && new Date(e.date) <= end);
+        list = list.filter(
+          (e) => new Date(e.date) >= start && new Date(e.date) <= end
+        );
       }
 
       // Filter by event type
       if (this.selectedTypes.length > 0) {
-        list = list.filter(e => this.selectedTypes.includes(e.eventType));
+        list = list.filter((e) => this.selectedTypes.includes(e.eventType));
       }
 
       return list.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -170,7 +191,6 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .image-wrapper {
   position: relative;
@@ -203,22 +223,31 @@ export default {
   /* margin-top: 15vw; */
   /* background: #fff; */
   min-height: max-content;
-  padding: 5vw 8vw;
+  padding: 1vw 8vw;
   position: relative;
 }
 
-/* Logo */
+/* Logo Container — centered horizontally and spaced from top */
 .logo-container {
   position: absolute;
-  top: 2rem;
-  left: 50%;
+  position: relative;
+  top: 2rem; /* distance from top */
+  left: 50%; /* horizontal center */
   transform: translateX(-50%);
   z-index: 10;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  /* margin-bottom: 3vw;               */
+  /* spacing below logo to content */
 }
 
+/* Logo itself */
 .logo {
-  width: 10vw;
+  width: 10vw; /* responsive width */
   min-width: 120px;
+  max-width: 250px; /* optional cap */
   opacity: 0.9;
   transition: opacity 0.3s ease;
 }
@@ -237,28 +266,35 @@ export default {
 }
 
 .show {
-  font-size: 1vw;
-  color: #444;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 1.5vw;
+  color: #fff;
+  /* letter-spacing: 0.05em; */
+  /* font-family: 'Antic Didone', serif; */
+
+  /* Strong wide blue neon glow */
+  text-shadow: 0 0 10px rgba(0, 150, 255, 1), 0 0 20px rgba(0, 150, 255, 0.9),
+    0 0 40px rgba(0, 100, 255, 0.8), 0 0 60px rgba(0, 100, 255, 0.7),
+    0 0 90px rgba(0, 150, 255, 0.6);
 }
 
 .btn {
-  border: 1px solid #50096e;
+  border: 1px solid #1a1a1a;
   padding: 0.6vw 1.4vw;
-  font-size: 0.9vw;
+  font-size: 1.2vw;
   border-radius: 30px;
   cursor: pointer;
   background: transparent;
-  color: #50096e;
+  color: white;
   transition: all 0.3s ease;
 }
 .btn.inactive {
-  background: #e0e0e0;
-  color: #555;
+  background: #1a1a1a;
+  /* color: #555; */
+  color: white;
 }
 .btn.active {
-  background: #50096e;
+  background: #39c1d3;
+  border: 0px solid #39c1d3;
   color: #fff;
   box-shadow: 0 4px 8px rgba(80, 9, 110, 0.25);
 }
@@ -269,6 +305,7 @@ export default {
 }
 
 /* Grid */
+/* Grid container */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(calc(100% / 4), 1fr));
@@ -277,7 +314,7 @@ export default {
 }
 
 /* Card styling */
-.event-card {
+/* .event-card {
   background: #fafafa;
   border-radius: 1vw;
   overflow: hidden;
@@ -293,48 +330,85 @@ export default {
 .event-card:hover {
   transform: translateY(-8px) scale(1.02);
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.15);
+} */
+/* .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 2rem 4vw;
+} */
+
+/* Event Card */
+.event-card {
+  position: relative;             /* for overlay positioning */
+  border-radius: 16px;            /* curved corners */
+  overflow: hidden;               /* clip image and overlay to rounded corners */
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 12px 30px rgba(254, 0, 115, 0.3);
 }
 
-/* Image */
-.event-img {
+.event-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 30px rgba(255, 255, 255, 0.3);
+}
+
+/* Event Image as background */
+.event-card img.event-img {
   width: 100%;
-  height: 20vw;
+  height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  display: block;
+  filter: brightness(0.6);       /* darken image slightly for text readability */
+  transition: filter 0.3s ease;
 }
 
-.event-card:hover .event-img {
-  transform: scale(1.05);
+.event-card:hover img.event-img {
+  filter: brightness(0.5);
 }
 
-/* Text block */
+/* Text overlay container */
 .event-info {
-  padding: 1.2vw;
-  text-align: left;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.7),
+    rgba(0, 0, 0, 0.3),
+    transparent
+  );                               /* subtle gradient for readability */
+  color: #fff;                     /* text color on dark overlay */
+  text-transform: lowercase;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }
 
-.event-info .date {
-  color: #777;
-  font-size: 0.9vw;
-  text-transform: uppercase;
+/* Individual text elements */
+.event-info .date,
+.event-info .location,
+.event-info .type-tag {
+  font-size: 0.9rem;
   letter-spacing: 0.05em;
 }
 
 .event-info .titlee {
-  font-size: 1.3vw;
-  margin: 0.6vw 0;
-  color: #222;
-  text-transform: lowercase;
-  transition: color 0.3s ease;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0.2rem 0;
+  letter-spacing: 0.05em;
 }
 
-.event-info .location {
-  color: #888;
-  font-size: 1vw;
-}
+
+
+
+
 
 .event-card:hover .event-info .titlee {
-  color: #50096e;
+  /* color: #50096e; */
 }
 
 /* --- Filter Toolbar --- */
@@ -456,6 +530,40 @@ export default {
 .tag-btn.active {
   background: #50096e;
   color: #fff;
+}
+
+/* Make whole top section align left */
+.all {
+  width: 100%;
+  padding-left: 4vw;
+  /* padding-top: 2vw; */
+}
+
+/* LOGO — bigger + left aligned */
+.logo-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start; /* left */
+  padding-left: 4vw;
+  margin-top: 6vw;
+}
+
+.logo {
+  width: 20vw; /* increase size */
+  max-width: 280px;
+  height: auto;
+}
+
+/* “WHAT’S ON” TEXT — big serif + left aligned */
+.see-more p {
+  font-family: "Antic Didone", serif;
+  font-size: 4vw;
+  font-weight: 400;
+  margin: 1vw 0 2vw 0;
+  text-align: left;
+  display: block;
+  text-transform: lowercase;
+  letter-spacing: 0.5px;
 }
 
 /* Mobile */

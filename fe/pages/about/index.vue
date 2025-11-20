@@ -1,5 +1,11 @@
 <template>
   <div class="about-page">
+
+        <!-- Centered Logo -->
+        <div class="logo-container">
+      <img src="/images/aboumis.png" alt="logo" class="logo" />
+    </div>
+
      <!-- Misery banner -->
      <div class="misery-banner">
     <span class="fixed-word">
@@ -181,43 +187,113 @@ export default {
 }
 .sections-grid {
   display: grid;
+  justify-items: center;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 3rem;
 }
+
+/* Card */
 .section-card {
+  position: relative;
   cursor: pointer;
-  text-align: center;
-  transition: opacity 0.3s ease;
+  overflow: hidden;
+  border-radius: 12px;
+  width: 20vw;
+  height: 20vw;
+  transition: transform 0.3s ease;
 }
+
 .section-card:hover {
-  opacity: 0.7;
+  transform: scale(1.02);
 }
+
+/* Image fills card */
 .thumb {
   width: 100%;
-  height: auto;
-  object-fit: contain;
-  border-radius: 6px;
-  margin-bottom: 1rem;
+  height: 100%;
+  object-fit: contain;       /* fill the card */
+  display: block;
+  filter: brightness(0.7); /* slightly darken for readability */
+  transition: filter 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 12px;     /* match card corners */
 }
-.section-card h2 {
-  font-size: 1.3rem;
-  margin-bottom: 0.5rem;
+
+/* Hover: blue glow */
+.section-card:hover .thumb {
+  filter: brightness(1); /* slightly brighter on hover */
+  box-shadow: 0 0 15px #39c1d3, 0 0 30px #39c1d3, 0 0 50px #39c1d3; 
+  transition: filter 0.3s ease, box-shadow 0.3s ease;
 }
+
+
+/* Text overlay — centered */
+.section-card h2,
 .section-card p {
-  color: #666;
-  font-size: 0.95rem;
+  position: absolute;
+  top: 50%;             /* vertical center */
+  left: 50%;            /* horizontal center */
+  transform: translate(-50%, -50%);  /* perfect centering */
+  text-align: center;
+  color: white; /* keep the original color */
+  text-shadow: 0 0 7px #39c1d3, 0 0 16px #6cbaad;
+  text-transform: lowercase;
+  margin: 0.2rem 0;
+  z-index: 2;
+  pointer-events: none; /* avoid text interfering with hover */
+  /* font-family: 'Antic Didone', serif; */
 }
+
+/* Title and description */
+.section-card h2,
+.section-card p {
+  font-size: 2vw;
+  color: #fff;
+  text-align: center;
+  transition: transform 0.3s ease;
+  display: inline-block; /* needed for transform rotation */
+  pointer-events: none;
+}
+
+/* Rotate animation on hover */
+.section-card:hover h2,
+.section-card:hover p {
+  animation: tilt 0.6s infinite alternate ease-in-out;
+}
+
+/* Keyframes for tilting left and right */
+@keyframes tilt {
+  0%   { transform: rotate(-5deg); }
+  50%  { transform: rotate(5deg); }
+  100% { transform: rotate(-5deg); }
+}
+
+
+
 .misery-banner {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
   margin: 0rem 0;
-  margin-bottom: 9vw;
-  font-size: 1.2rem;
+  margin-bottom: 2vw;
+  margin-top: 5vw;
+  font-size: 2vw;
   font-weight: 200;
   text-transform: lowercase;
   color: #000000;
+  /* border: #39c1d3 2px solid; */
+  color: white; /* keep the original color */
+  text-shadow: 0 0 7px #39c1d3, 0 0 16px #6cbaad;
+  text-shadow:
+  0 0 25px rgba(57, 193, 211, 1),
+  0 0 55px rgba(57, 193, 211, 0.95),
+  0 0 110px rgba(57, 193, 211, 0.9),
+  0 0 160px rgba(57, 193, 211, 0.8),
+  0 0 240px rgba(57, 193, 211, 0.75),
+  0 0 320px rgba(57, 193, 211, 0.7),
+  0 0 420px rgba(57, 193, 211, 0.65);
+
+
 }
 
 .misery-banner .fixed-word {

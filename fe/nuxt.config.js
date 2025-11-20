@@ -18,11 +18,20 @@ export default {
     ],
     link: [
       { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+    
+      // Existing Syne font
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Syne:wght@400;700&display=swap",
       },
-    ],
+    
+      // NEW: Antic Didone (plus others if you want)
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Antic+Didone&display=swap",
+      }
+    ]
+    
   },
 
   app: {

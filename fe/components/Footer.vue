@@ -108,7 +108,7 @@ export default {
   /* background: #fff; */
   /* color: #000; */
   padding: 4vw;
-  margin-bottom: 15vw;
+  margin-bottom: 5vw;
   font-family: sans-serif;
   font-size: 0.9vw;
   display: flex;
@@ -116,6 +116,8 @@ export default {
   padding-bottom: 0;
   justify-content: space-between;
   justify-content: space-around;
+  align-items: baseline;
+  align-items: flex-end;
 }
 
 .footer-top{
@@ -162,6 +164,7 @@ export default {
   display: block;
   width: 100%;
   border: 1px solid #000;
+  border-radius: 20px; /* ← clean rounded corners */
   background: none;
   padding: 0.8vw 0;
   font-size: 0.9vw;
@@ -170,6 +173,7 @@ export default {
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
+
 
 .footer-donate:hover {
   /* background: #000; */

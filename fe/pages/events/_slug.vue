@@ -247,12 +247,18 @@ prevImage() {
   width: 100%;
   height: 100vh;
   background: #fff;
+  background-image: url('/images/micbg.png');
   z-index: 999;
   overflow-y: auto;
   padding: 4rem 6rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.event-page.dark-mode {
+  background-image: url('/images/micbg.png');
+  background-image: url('/images/bgmis.png');
 }
 
 /* Centered logo */
@@ -309,6 +315,9 @@ prevImage() {
   font-weight: 700;
   margin-bottom: 1.5rem;
   line-height: 1.1;
+  color: white;
+  text-shadow: 0 0 7px #39c1d3, 0 0 16px #6cbaad;
+  transition: text-shadow 0.3s ease;
 }
 
 .description {

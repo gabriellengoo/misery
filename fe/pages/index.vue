@@ -65,87 +65,7 @@
       </div>
     </div>
 
-    <!-- Events section -->
-    <div class="all-events">
-         <!-- See more link -->
-         <div class="see-more">
-          <p class="see-more" to="/events">what's on</p>
-        </div>
-
-      <!-- Filter bar -->
-      <div class="filters">
-        <span class="show">*•̩̩͙✩•̩̩͙*˚ show *•̩̩͙✩•̩̩͙*˚</span>
-        <button
-          class="btn"
-          :class="{ active: showAll, inactive: !showAll }"
-          @click="showAll = true"
-        >
-          all events
-        </button>
-        <button
-          class="btn"
-          :class="{ active: !showAll, inactive: showAll }"
-          @click="showAll = false"
-        >
-          current events only
-        </button>
-      </div>
-
-      <!-- Events grid -->
-      <div class="grid">
-        <div
-          v-for="(event, i) in filteredEvents"
-          :key="i"
-          class="event-card"
-          :class="{ past: isPast(event.date) }"
-          @click="goToEvent(event)"
-        >
-          <img
-            :src="event.image"
-            :class="{ upcoming: isUpcoming(event.date) }"
-            alt=""
-            class="event-img"
-          />
-          <div class="event-info">
-            <!-- <span class="date">{{ event.date }}</span> -->
-            <h3 class="titlee">{{ event.title }}</h3>
-            <p class="location flex items-center gap-2">
-              <svg
-                class="w-[2vw] fill-black dark:fill-[#a36cba]"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                viewBox="0 0 352.518 352.518"
-                xml:space="preserve"
-              >
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  <g>
-                    <g>
-                      <path
-                        d="M176.259,0c-76.645,0-139,62.355-139,139c0,28.248,8.428,55.441,24.374,78.639c14.717,21.411,34.875,38.124,58.495,48.551 l45.251,79.983c2.218,3.921,6.375,6.345,10.879,6.345s8.661-2.424,10.879-6.345l45.251-79.983 c23.62-10.427,43.778-27.14,58.495-48.551c15.948-23.197,24.376-50.391,24.376-78.639C315.259,62.355,252.903,0,176.259,0z M218.923,244.742c-2.621,1.06-4.807,2.976-6.198,5.436l-36.466,64.455l-36.466-64.455c-1.392-2.46-3.577-4.376-6.198-5.436 C90.26,227.238,62.259,185.732,62.259,139c0-62.86,51.14-114,114-114c62.86,0,114,51.14,114,114 C290.259,185.732,262.258,227.238,218.923,244.742z"
-                      ></path>
-                      <path
-                        d="M176.259,85.759c-28.949,0-52.5,23.551-52.5,52.5s23.551,52.5,52.5,52.5s52.5-23.551,52.5-52.5 S205.208,85.759,176.259,85.759z M176.259,165.759c-15.164,0-27.5-12.336-27.5-27.5s12.336-27.5,27.5-27.5s27.5,12.336,27.5,27.5 S191.423,165.759,176.259,165.759z"
-                      ></path>
-                    </g>
-                  </g>
-                </g>
-              </svg>
-              {{ event.location }}
-            </p>
-          </div>
-        </div>
-        <!-- See more link -->
-        <div class="see-more">
-          <router-link class="see-more" to="/events">see more →</router-link>
-        </div>
-      </div>
-    </div>
+ 
   </div>
 </template>
 
@@ -224,7 +144,7 @@ window.addEventListener("scroll", () => {
   `;
 
   // Fade in (from 0 → 1)
-  logo.style.opacity = progress;
+  //logo.style.opacity = progress;
 });
 
 
@@ -482,11 +402,19 @@ window.addEventListener("scroll", () => {
   transition: transform 0.3s ease-out;
   position: relative;
   z-index: 100000;
-  opacity: 0.2;
+  /* opacity: 0.2; */
   transition: transform 0.2s ease-out, opacity 0.4s ease-out;
   will-change: transform, opacity;
   transform-origin: center top;
 }
+
+.title img:hover {
+  transform: scale(1.05);
+  transition: 0.3s ease;
+  filter: drop-shadow(0 0 8px #39c1d3) drop-shadow(0 0 16px #6cbaad);
+}
+
+
 
 
 
@@ -498,6 +426,7 @@ window.addEventListener("scroll", () => {
   justify-content: center;
   align-items: center;
   position: relative;
+  mix-blend-mode: soft-light;
 }
 
 .carousel-track {
@@ -513,8 +442,11 @@ window.addEventListener("scroll", () => {
   flex-shrink: 0;
   -o-object-fit: cover;
   object-fit: cover;
-  /* border-radius: 8px; */
+  border-radius: 50vw;
   transition: transform 0.3s ease;
+  /* width: 40vw; */
+  /* height: auto; */
+  padding: 4vw;
 }
 
 .carousel-image:hover {

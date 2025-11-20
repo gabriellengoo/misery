@@ -12,7 +12,7 @@
             <button @click="toggleDarkMode">
               
               <!-- {{ darkMode ? 'Light Mode' : 'Dark Mode' }} -->
-              <svg class="w-[3vw]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g clip-path="url(#a)" fill="#39c1d3"> <path d="M12 0a1 1 0 0 1 1 1v4a1 1 0 1 1-2 0V1a1 1 0 0 1 1-1ZM4.929 3.515a1 1 0 0 0-1.414 1.414l2.828 2.828a1 1 0 0 0 1.414-1.414L4.93 3.515ZM1 11a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2H1ZM18 12a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2h-4a1 1 0 0 1-1-1ZM17.657 16.243a1 1 0 0 0-1.414 1.414l2.828 2.828a1 1 0 1 0 1.414-1.414l-2.828-2.828ZM7.757 17.657a1 1 0 1 0-1.414-1.414L3.515 19.07a1 1 0 1 0 1.414 1.414l2.828-2.828ZM20.485 4.929a1 1 0 0 0-1.414-1.414l-2.828 2.828a1 1 0 1 0 1.414 1.414l2.828-2.828ZM13 19a1 1 0 1 0-2 0v4a1 1 0 1 0 2 0v-4ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z"></path> </g> <defs> <clipPath id="a"> <path fill="#ffffff" d="M0 0h24v24H0z"></path> </clipPath> </defs> </g></svg>
+              <svg class="w-[4vw]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g clip-path="url(#a)" fill="#f2f2f2"> <path d="M12 0a1 1 0 0 1 1 1v4a1 1 0 1 1-2 0V1a1 1 0 0 1 1-1ZM4.929 3.515a1 1 0 0 0-1.414 1.414l2.828 2.828a1 1 0 0 0 1.414-1.414L4.93 3.515ZM1 11a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2H1ZM18 12a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2h-4a1 1 0 0 1-1-1ZM17.657 16.243a1 1 0 0 0-1.414 1.414l2.828 2.828a1 1 0 1 0 1.414-1.414l-2.828-2.828ZM7.757 17.657a1 1 0 1 0-1.414-1.414L3.515 19.07a1 1 0 1 0 1.414 1.414l2.828-2.828ZM20.485 4.929a1 1 0 0 0-1.414-1.414l-2.828 2.828a1 1 0 1 0 1.414 1.414l2.828-2.828ZM13 19a1 1 0 1 0-2 0v4a1 1 0 1 0 2 0v-4ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z"></path> </g> <defs> <clipPath id="a"> <path fill="#ffffff" d="M0 0h24v24H0z"></path> </clipPath> </defs> </g></svg>
             </button>
             <button @click="increaseFont">Aa+</button>
             <button @click="decreaseFont">Aa−</button>
@@ -149,27 +149,25 @@ export default {
 
 .nav-left button,
 .help {
-  background: white;
+  background: none;
   border: none;
   border-radius: 9999px;
-  padding: 0.4vw 1vw;
-  font-size: 1.5vw;
-  margin-top: 1vw;
+  padding: 0.6vw 1.4vw;
+  font-size: 2.5vw;                     /* Bigger text */
+ margin-top: 1vw;
   display: flex;
-  text-align: center;
   align-items: center;
-  /* color: #39c1d3; */
-    justify-content: center;
+  justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-family: 'Antic Didone', serif;
+  color: #fff;                      /* Light mode text */
+  text-shadow: 0 0 6px rgba(200, 0, 255, 0.4); /* Purple-pink glow */
+  text-shadow: 0 0 10px rgba(255, 0, 200, 0.9),
+               0 0 14px rgba(200, 0, 255, 0.7);
+  transform: scale(1.05);
 }
 
-.nav-left button:hover {
-  /* border: 2px solid rgb(0, 0, 0); */
-  background-color: #111;
-  color: #fff;
-  /* transform: scale(1.05); */
-}
 
 /* Accessibility dropdown */
 .accessibility {
@@ -206,11 +204,11 @@ body.dark-mode {
   color: #fff;
 }
 
-body.dark-mode .header button {
+/* body.dark-mode .header button {
   background: #222;
   color: #fff;
   border: 1px solid #444;
-}
+} */
 
 /* Sidebar */
 .left-sidebar {
@@ -220,7 +218,13 @@ body.dark-mode .header button {
     background-repeat: no-repeat;
     background-attachment: fixed;  */
     background: radial-gradient(circle, #215623b5, #1642189e 0, #21562396 16%, #dd56ff4d, #f3c1ff4d, #eabbf6bb, #d1c8cd3c);
-   
+    background-image: url('/images/bgmis.png');
+    background-image: url('/images/micbg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
   position: fixed;
   top: 0;
   left: -100%;
@@ -237,6 +241,11 @@ body.dark-mode .header button {
   height: 100vh;
   overflow: scroll;
 }
+
+.left-sidebar.dark-mode  {
+  background-image: url('/images/bgmis.png');
+}
+
 
 .left-sidebar--active {
   left: 0;
@@ -282,12 +291,19 @@ body.dark-mode .header button {
   padding: 0.9vw 0;
   border-bottom: 1px solid #000000;
   transition: all 0.3s ease;
+  font-family: 'Antic Didone', serif;
+  color: #fff;                      /* Light mode text */
+  text-shadow: 0 0 6px rgba(200, 0, 255, 0.4); /* Purple-pink glow */
+  text-shadow: 0 0 10px rgba(255, 0, 200, 0.9),
+               0 0 14px rgba(200, 0, 255, 0.7);
+  transform: scale(1.05);
 }
 
 .sidebar-menu a:hover {
   /* border-left: 4px solid #a36cba; */
   padding-left: 0.5vw;
   color: #a36cba;
+  color: white;
 }
 
 .overlay {

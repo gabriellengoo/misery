@@ -35,14 +35,14 @@
       </div>
     </div>
 
-    <div class="content">
+    <div class="content sanity-blocks">
       <h1 class="section-title">{{ section.title }}</h1>
 
       <!-- Regular block content -->
       <SanityBlocks
         v-if="section.content"
         :blocks="section.content"
-        class="portable-text"
+        class="portable-text sanity-blocks"
       />
 
       <!-- Accordion -->
@@ -54,22 +54,24 @@
             @click="toggleAccordion(i)"
           >
             {{ item.accordionTitle }}
-            <span class="arrow" :class="{ rotated: openAccordion === i }"
+            <!-- <span class="arrow" :class="{ rotated: openAccordion === i }"
               >⌄</span
-            >
+            > -->
           </button>
           <transition name="accordion">
             <div v-show="openAccordion === i" class="accordion-body">
-              <SanityBlocks :blocks="item.accordionContent" />
+              <SanityBlocks class="sanity-blocks" :blocks="item.accordionContent" />
             </div>
           </transition>
         </div>
       </div>
 
       <!-- Carousel -->
+      <!-- v-if="section.sectionType === 'carousel' && section.images?.length" -->
+
       <div
-        v-if="section.sectionType === 'carousel' && section.images?.length"
-        class="carousel"
+      v-if="section.images?.length"
+      class="carousel"
       >
         <transition name="fade">
           <img
@@ -78,12 +80,13 @@
             class="carousel-image"
           />
         </transition>
-        <button class="carousel-btn prev" @click="prev">‹</button>
-        <button class="carousel-btn next" @click="next">›</button>
+        <!-- <button class="carousel-btn prev" @click="prev">‹</button>
+        <button class="carousel-btn next" @click="next">›</button> -->
       </div>
 
   <!-- Team / Collaborators -->
 <div v-if="['team', 'collaborators'].includes(section.sectionType)" class="people-grid">
+ 
   <div
     class="person-card"
     v-for="(person, i) in section.people"
@@ -241,25 +244,42 @@ export default {
   position: relative;
   width: 100vw;
   min-height: 100vh;
-  background: #ffffff7f;
+  /* background: #ffffff7f; */
   color: #111;
+  color: white;
   overflow-y: auto;
   padding: 6rem 6vw 8rem;
   /* font-family: "Inter", "Helvetica Neue", sans-serif; */
-  backdrop-filter: blur(50px) !important;
+  /* backdrop-filter: blur(50px) !important; */
   /* background: #ffffff; */
-  background-color: hsl(0deg 0% 100% / 13%) !important;
+  /* background-color: hsl(0deg 0% 100% / 13%) !important; */
 }
 
 /* Background overlay (if needed for transitions) */
 .overlay-bg {
   position: fixed;
   inset: 0;
-  background: #f8f8f89c;
+  /* background: #f8f8f89c; */
   z-index: -1;
   transition: opacity 0.5s;
 }
 
+.carousel {
+  position: relative;
+  display: flex;
+  width: 100%;
+  justify-content: right;
+  /* align-items: center; */
+  margin: 4rem 0;
+}
+
+.carousel-image{
+  width: 50%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
 /* Close button */
 .close-btn {
   position: fixed;
@@ -283,8 +303,9 @@ export default {
   font-weight: 400;
   text-transform: lowercase;
   margin-bottom: 2rem;
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
+  border-top: 1px solid white;
+  border-bottom: 1px solid white;
+  /* border: white; */
   padding: 1rem 0;
   letter-spacing: 0.5px;
 }
@@ -323,10 +344,15 @@ export default {
 
 /* Accordions */
 .accordion-list {
-  margin-top: 3rem;
-  border-top: 1px solid #ddd;
+  /* margin-top: 3rem;
+  border-top: 1px solid #ddd; */
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+    justify-content: center;
+  /* flex-direction: column; */
 }
-
+/* 
 .accordion-header {
   width: 100%;
   background: none;
@@ -341,16 +367,47 @@ export default {
   cursor: pointer;
   color: #111;
   transition: color 0.3s ease;
+} */
+
+.accordion{
+  padding: 2vw;
+}
+.accordion-header {
+  width: 100%;
+    background: none;
+    border: none;
+    padding: 2vw;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    font-weight: 400;
+    /* padding: 2vw; */
+    width: max-content;
+    border-radius: 50px;
+    text-align: left;
+    display: flex
+;
+    justify-content: space-between;
+    cursor: pointer;
+    color: white;
+    transition: color 0.3s ease;
 }
 .accordion-header:hover {
-  color: #5a6b41; /* subtle sage tone */
+  color: black; 
+background-color: white;
 }
 .accordion-body {
   padding: 1rem 0 1.5rem;
   font-size: 0.95rem;
   line-height: 1.6;
   color: #333;
+  width: 100%;
+    left: 0;
+    margin-top: 8vw;
+    position: absolute;
+    padding: 6vw;
+    min-height: max-content;
 }
+
 
 /* Fade transition for accordions */
 .accordion-enter-active,
@@ -442,6 +499,12 @@ export default {
 
 .person-card {
   background: #f8f8f8;
+  --bg-gradient: linear-gradient(169.78deg, hsla(0, 0%, 100%, 0.23) 4.65%, hsla(0, 0%, 100%, 0) 91.48%), radial-gradient(62.3% 67.27% at 20.42% 27.48%, #5e4b1e 0%, #2b2a28 100%), linear-gradient(112.91deg, #676561 3.51%, #242321 111.71%); 
+  background: radial-gradient(circle, #215623b5, #1642189e 0, #21562396 16%, #dd56ff4d, #f3c1ff4d, #eabbf6bb, #d1c8cd3c);
+    background-blend-mode: screen, overlay, normal;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center; 
   border-radius: 1vw;
   box-shadow: 0 0.6vw 1vw rgba(0, 0, 0, 0.08);
   overflow: hidden;
@@ -469,12 +532,12 @@ export default {
 .person-info h3 {
   font-size: 1.4vw;
   font-weight: 600;
-  color: #111;
+  color: #ffffff;
 }
 
 .person-role-preview {
   font-size: 1vw;
-  color: #666;
+  color: #ffffff;
   margin-top: 0.8vw;
   min-height: 3vw;
   overflow: hidden;
@@ -487,7 +550,7 @@ export default {
 .see-more-btn {
   background: none;
   border: none;
-  color: #5a6b41;
+  color: #ffffff;
   font-size: 1vw;
   font-weight: 500;
   cursor: pointer;
@@ -495,7 +558,7 @@ export default {
   transition: color 0.2s ease;
 }
 .see-more-btn:hover {
-  color: #3c482d;
+  color: #ffffff;
 }
 
 /* Overlay */
@@ -518,6 +581,12 @@ export default {
 .overlay-content {
   display: flex;
     background: white;
+    --bg-gradient: linear-gradient(169.78deg, hsla(0, 0%, 100%, 0.23) 4.65%, hsla(0, 0%, 100%, 0) 91.48%), radial-gradient(62.3% 67.27% at 20.42% 27.48%, #5e4b1e 0%, #2b2a28 100%), linear-gradient(112.91deg, #676561 3.51%, #242321 111.71%); 
+  background: radial-gradient(circle, #215623b5, #1642189e 0, #21562396 16%, #dd56ff4d, #f3c1ff4d, #eabbf6bb, #d1c8cd3c);
+    background-blend-mode: screen, overlay, normal;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center; 
     border-radius: 1vw;
     max-width: 70vw;
     height: 100vh;
@@ -547,12 +616,12 @@ export default {
 .overlay-text h2 {
   font-size: 2vw;
   margin-bottom: 1vw;
-  color: #111;
+  color: #ffffff;
 }
 .overlay-text p {
   font-size: 1.1vw;
   line-height: 1.6;
-  color: #333;
+  color: #ffffff;
 }
 
 .close-btn {
@@ -563,7 +632,7 @@ export default {
   border: none;
   font-size: 2vw;
   cursor: pointer;
-  color: #333;
+  color: #ffffff;
 }
 
 /* Animations */
