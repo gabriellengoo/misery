@@ -3,17 +3,24 @@
   <div class="page-container" v-if="page">
 
     <div class="page-header">
-      <h1 class="page-title">{{ page.title }}</h1>
-    
+      <!-- <h1 class="page-title">{{ page.title }}</h1> -->
+      <!-- <div class="furlogo-container"> -->
+      <img src="/images/getinfur.png" alt="logo" class="furlogo2" />
+    <!-- </div> -->
+
     <p v-if="page.summary" class="page-summary">{{ page.summary }}</p>
 
     <nav class="page-toc" v-if="page.sections?.length">
       <ul>
+     
         <li v-for="(section, i) in page.sections" :key="i">
           <button @click="scrollToSection(i)">{{ section.title }}</button>
         </li>
+      
       </ul>
+   
     </nav>
+    <!-- <div class="text-[white]">   *•̩̩͙✩•̩̩͙*˚</div>s -->
     </div>
 
     <div
@@ -91,10 +98,15 @@ export default {
   margin-bottom: 3vw;
   line-height: 1.6;
   text-align: center;
+  font-size: 1.5vw;
+    color: #fff;
+    /* letter-spacing: 0.05em; */
+    /* font-family: 'Antic Didone', serif; */
+    text-shadow: 0 0 10px rgba(0, 150, 255, 1), 0 0 20px rgba(0, 150, 255, 0.9), 0 0 40px rgba(0, 100, 255, 0.8), 0 0 60px rgba(0, 100, 255, 0.7), 0 0 90px rgba(0, 150, 255, 0.6);
 }
 
 .get-involved-page{
-  background-color: #f9f9f9c7;
+  /* background-color: #f9f9f9c7; */
   padding: 2vw 0;
 }
 
@@ -110,7 +122,7 @@ export default {
 
 .page-container {
   /* background-color: white; */
-  padding: 4vw;
+  /* padding: 4vw; */
   max-width: 900px;
   margin: 0 auto;
   font-family: "Helvetica Neue", sans-serif;
@@ -139,29 +151,51 @@ export default {
   gap: 2vw;
 }
 .page-toc button {
-  background: none;
-  border: 1px solid #000000;
-  /* border-radius: 0.5vw; */
-  padding: 0.5vw 1vw;
-  cursor: pointer;
-  font-size: 1vw;
-  transition: background 0.3s, color 0.3s, border-color 0.3s;
+  border: 1px solid #ffffff;
+    padding: 0.6vw 1.4vw;
+    font-size: 1.2vw;
+    border-radius: 30px;
+    cursor: pointer;
+    /* background: #1a1a1a; */
+    color: white;
+    transition: all 0.3s ease;
 }
 .page-toc button:hover {
-  background: #5a6b41;
-  color: #fff;
-  border-color: #5a6b41;
+  background: #39c1d3;
+    border: 0px solid #39c1d3;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(80, 9, 110, 0.25);
 }
 
 /* Sections */
 .page-section {
   margin-bottom: 6vw;
+  font-size: 1.05rem;
+    line-height: 1.8;
+    /* color: #222; */
+    background-image: url('/images/textbg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  margin-bottom: 6vw;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    /* color: #ffffff; */
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .section-title {
   font-size: 2vw;
   font-weight: 600;
   margin-bottom: 1vw;
+  font-size: 4vw;
+    font-family: "Antic Didone", serif;
+    color: #39c1d3;
 }
 
 .section-description {

@@ -82,7 +82,12 @@ export default {
             type: 'object',
             fields: [
               { name: 'name', title: 'Name', type: 'string', validation: Rule => Rule.required() },
-              { name: 'role', title: 'Role / Description', type: 'text' },
+              {
+                name: 'role',
+                title: 'Role / Description',
+                type: 'array',
+                of: [{ type: 'block' }],
+              }, 
               { name: 'image', title: 'Image', type: 'image', options: { hotspot: true } },
             ],
           },

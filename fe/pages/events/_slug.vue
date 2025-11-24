@@ -1,7 +1,7 @@
 <template>
   <div class="event-page" v-if="event">
     <!-- Close Button -->
-    <div class="close-btn" @click="$router.push('/#events')">×</div>
+    <div class="close-btn" @click="$router.push('/events')">×</div>
 
     <!-- Centered Logo -->
     <div class="logo-container">
@@ -324,6 +324,11 @@ prevImage() {
   font-size: 1.05rem;
   line-height: 1.8;
   color: #222;
+  background-image: url('/images/textbg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 .description strong {
@@ -415,13 +420,14 @@ prevImage() {
 .weekday {
   font-size: 1.4rem;
   text-transform: lowercase;
-  color: #333;
+  /* color: #333; */
 }
 
 .month {
   font-size: 1.2rem;
   text-transform: lowercase;
   color: #666;
+  color: rgba(255, 0, 200, 0.9);
 }
 
 .title {

@@ -2,11 +2,12 @@
   <div class="get-involved-page">
     <div class="page-container" v-if="page">
  <div class="page-header">
-       <h1 class="page-title">{{ page.title }}</h1>
-      
+       <!-- <h1 class="page-title">{{ page.title }}</h1> -->
+       <img src="/images/resofur.png" alt="logo" class="furlogo2" />
+       <!-- <h1 class="page-title">{{ page.title }}</h1> -->
       <!-- Page Summary -->
       <!-- <div v-if="page.summary" class="page-summary" v-html="renderBlockContent(page.summary)"></div> -->
-      <nuxt-link to="/crisis" v-if="page.summary" class="page-summary">*click here for crisis support*</nuxt-link>
+      <p class="page-summary">{{ page.title }} <nuxt-link to="/crisis" class="font-bold" v-if="page.summary" >*click here for crisis support*</nuxt-link></p>
 
       
   
@@ -28,9 +29,9 @@
         :ref="'section' + i"
       >
         <h2 class="section-title">{{ section.title }}</h2>
-  
-        <div v-html="renderBlockContent(section.content)"></div>
-  
+
+        <div class="resources-body" v-html="renderBlockContent(section.content)"></div>
+
         <ul v-if="section.links?.length" class="section-links">
           <li v-for="(link, idx) in section.links" :key="idx">
             <a :href="link.url" target="_blank">{{ link.text }}</a>
@@ -44,6 +45,7 @@
         </div>
       </div>
     </div>
+    <button class="back-to-top" @click="scrollToTop">back to top ↑</button>
   </div>
   </template>
   
@@ -82,24 +84,73 @@
       scrollToSection(index) {
         const sectionEl = this.$refs['section' + index][0];
         sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      },
+      scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
   }; 
   </script>
   
   <style scoped>
+:deep(.resources-body a) {
+  color: #39c1d3;
+  text-decoration: underline;
+  border-bottom: none;
+}
+
+:deep(.resources-body a:hover) {
+  color: #fff;
+  background: #39c1d3;
+}
+
+
   .page-summary {
     font-size: 1.4vw;
-    color: #444;
+    /* color: #444; */
     margin-bottom: 3vw;
     line-height: 1.6;
     text-align: center;
+  }
+
+  a:hover{
+    text-decoration: underline;
   }
   
   .get-involved-page{
     background-color: #f9f9f9c7;
     background-color: #ffffff;
     padding: 2vw 0;
+    transition: background-color 0.3s ease;
+  }
+  body.dark-mode .get-involved-page {
+    background-color: #050505;
+    color: white;
+  }
+  body.dark-mode .get-involved-page .page-container {
+    color: white;
+  }
+
+  .back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #111;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 0.8rem 1.5rem;
+    text-transform: lowercase;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    z-index: 50;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .back-to-top:hover {
+    transform: translateY(-4px);
+    background: #39c1d3;
+    color: #050505;
   }
   
   .page-header {
@@ -143,19 +194,30 @@
     gap: 2vw;
   }
   .page-toc button {
-    background: none;
     border: 1px solid #000000;
-    /* border-radius: 0.5vw; */
-    padding: 0.5vw 1vw;
+    padding: 0.6vw 1.4vw;
+    font-size: 1.2vw;
+    border-radius: 30px;
     cursor: pointer;
-    font-size: 1vw;
-    transition: background 0.3s, color 0.3s, border-color 0.3s;
-  }
-  .page-toc button:hover {
-    background: #5a6b41;
-    color: #fff;
-    border-color: #5a6b41;
-  }
+    /* background: #1a1a1a; */
+    /* color: white; */
+    transition: all 0.3s ease;
+}
+.page-toc button:hover {
+  background: #39c1d3;
+    border: 0px solid #39c1d3;
+    /* color: #fff; */
+    box-shadow: 0 4px 8px rgba(80, 9, 110, 0.25);
+}
+
+.page-toc button.dark-mode{
+  border: 1px solid #ffffff;
+    color: white;
+}
+body.dark-mode .page-toc button {
+  border-color: #ffffff;
+  color: #ffffff;
+}
   
   /* Sections */
   .page-section {
@@ -174,9 +236,23 @@
     margin-bottom: 2vw;
   }
   
-  .page-section div p {
-    margin-bottom: 1.5vw;
-  }
+:deep(.resources-body) {
+  font-size: 1.5vw;
+  line-height: 1.7;
+}
+:deep(.resources-body p) {
+  margin-bottom: 1.5vw;
+}
+:deep(.resources-body a) {
+  color: #39c1d3;
+  text-decoration: underline;
+  border-bottom: none;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+:deep(.resources-body a:hover) {
+  color: #fff;
+  background: #39c1d3;
+}
   
   /* Links */
   .section-links {

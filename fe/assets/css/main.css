@@ -76,6 +76,8 @@ body.dark-mode {
 }
 
 
+
+
 /* Container for Sanity content */
 .sanity-blocks {
   /* font-family: 'Inter', sans-serif; */
@@ -100,6 +102,54 @@ body.dark-mode {
 .sanity-blocks p i {
   font-style: italic;
   font-family: 'Antic Didone', serif; /* optional for special italic style */
+}
+
+.overlay-text div  p em{
+  font-size: 2vw !important;  
+  display: contents;
+      font-style: italic;
+      font-weight: 400;
+      padding:0;
+      margin-right: 1vw;
+      font-family: 'Antic Didone', serif;
+      transform: scale(1.7) skewX(-10deg);
+      transform-origin: left center;
+      line-height: 1;
+}
+
+/* Logo Container — centered horizontally and spaced from top */
+.furlogo-container {
+  position: absolute;
+  position: relative;
+  top: 2rem; /* distance from top */
+  left: 50%; /* horizontal center */
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  /* margin-bottom: 3vw;               */
+  /* spacing below logo to content */
+}
+
+/* Logo itself */
+.furlogo {
+  width: 15vw; /* responsive width */
+  min-width: 120px;
+  max-width: 250px; /* optional cap */
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.furlogo2 {
+  width: 25vw; /* responsive width */
+  min-width: 120px;
+  /* max-width: 250px;  */
+  opacity: 0.9;
+  margin-bottom: 4vw;
+  margin-top: 4vw;
+  transition: opacity 0.3s ease;
 }
 
 /* Underlined text with yellow background and padding above border */
@@ -150,6 +200,48 @@ body.dark-mode {
   transform: scale(1.7) skewX(-10deg);  /* scale + skew */
   transform-origin: left center;   /* keeps text aligned */
   line-height: 1;                  /* prevents weird spacing */
+}
+
+.overlay-sanity-blocks p {
+  font-size: 0.9vw !important;
+  line-height: 1.5 !important;
+  color: #ffffff !important;
+  background: none !important;
+  padding: 0 !important;
+  margin: 0 0 0.8vw !important;
+  font-family: inherit !important;
+}
+
+.overlay-sanity-blocks p em,
+.overlay-sanity-blocks p i {
+  display: inline !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transform: none !important;
+  font-family: inherit !important;
+  font-style: italic !important;
+  font-weight: inherit !important;
+}
+
+.overlay-sanity-blocks p span,
+.overlay-sanity-blocks p .highlight {
+  transform: none !important;
+  background: none !important;
+  color: inherit !important;
+  padding: 0 !important;
+  border: none !important;
+  text-decoration: underline !important;
+}
+
+.overlay-sanity-blocks p a {
+  border-bottom-color: rgba(255, 255, 255, 0.4) !important;
+  color: #9efcff !important;
+}
+
+.overlay-sanity-blocks p a:hover {
+  color: #050505 !important;
+  background-color: #9efcff !important;
+  border-bottom-color: transparent !important;
 }
 
   
@@ -348,6 +440,27 @@ body.dark-mode {
     /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); */
   }
 
+.leftarr{
+  width: 6vw;
+    position: relative;
+    left: -1vw;
+    background: #a36cbaa1;
+    border-radius: 50%;
+    box-shadow: 0 0 25px rgba(200, 0, 255, 0.7);
+    padding: 0.5vw;
+}
+
+.righttarr{
+  width: 6vw;
+  position: relative;
+  /* left: 2.5vw; */
+  background: #a36cbaa1;
+  border-radius: 50%;
+  box-shadow: 0 0 25px rgba(200, 0, 255, 0.7);
+  padding: 0.5vw;
+}
+  
+
   .accessibility-menu button {
     background: none;
     border: none;
@@ -427,6 +540,7 @@ body.dark-mode {
     color: #5a6b41;        /* optional: green-ish like your theme */
     margin-top: 0.5rem;    /* spacing from previous element */
     letter-spacing: 0.5px; /* optional styling */
+    color: rgba(255, 0, 200, 0.9);
   }
   
   .accessibility-menu button:hover {

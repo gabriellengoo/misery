@@ -12,7 +12,7 @@
     </main>
 
     <!-- Footer -->
-    <Footer />
+    <Footer v-if="!hideFooter" />
   </div>
 </template>
 
@@ -26,6 +26,11 @@ export default {
   components: { PageIntro, SiteHeader, Footer },
   data() {
     return { showIntro: false };
+  },
+  computed: {
+    hideFooter() {
+      return this.$route.name === "resources";
+    },
   },
   mounted() {
     this.playIntro();

@@ -107,7 +107,7 @@
       <p class="person-role-preview">{{ truncatedBio(person.role) }}</p>
 
       <button
-        v-if="person.role"
+        v-if="hasRoleContent(person.role)"
         class="see-more-btn"
         @click="openOverlay(person)"
       >
@@ -124,8 +124,13 @@
           <img :src="activePerson.image.asset.url" :alt="activePerson.name" />
         </div>
         <div class="overlay-text">
-          <h2>{{ activePerson.name }}</h2>
-          <p>{{ activePerson.role }}</p>
+          <!-- <h2>{{ activePerson.name }}</h2> -->
+          <SanityBlocks
+            v-if="isBlockContent(activePerson && activePerson.role)"
+            :blocks="activePerson.role"
+            class="overlay-role overlay-sanity-blocks portable-text sanity-blocks"
+          />
+          <p v-else-if="activePerson && activePerson.role">{{ activePerson.role }}</p>
           <button class="close-btn" @click="closeOverlay">×</button>
         </div>
       </div>
@@ -191,9 +196,40 @@ export default {
     },
   },
   methods: {
-    truncatedBio(text) {
+    truncatedBio(content) {
+      const text = this.extractPlainText(content);
       if (!text) return '';
       return text.length > 100 ? text.slice(0, 100) + '…' : text;
+    },
+    extractPlainText(content) {
+      if (!content) return '';
+      if (typeof content === 'string') return content;
+      if (Array.isArray(content)) {
+        return content
+          .map(block => {
+            if (!block || block._type !== 'block' || !Array.isArray(block.children)) {
+              return '';
+            }
+            return block.children.map(child => child?.text || '').join('');
+          })
+          .join('\n')
+          .trim();
+      }
+      return '';
+    },
+    hasRoleContent(content) {
+      if (Array.isArray(content)) {
+        return content.some(
+          block =>
+            block?._type === 'block' &&
+            Array.isArray(block.children) &&
+            block.children.some(child => child?.text)
+        );
+      }
+      return Boolean(content);
+    },
+    isBlockContent(content) {
+      return Array.isArray(content);
     },
     openOverlay(person) {
       this.activePerson = person;
@@ -308,6 +344,14 @@ export default {
   /* border: white; */
   padding: 1rem 0;
   letter-spacing: 0.5px;
+}
+
+p {
+  background-image: url('/images/textbg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 /* Portable text — main content */
@@ -623,6 +667,17 @@ background-color: white;
   line-height: 1.6;
   color: #ffffff;
 }
+.overlay-text :deep(.overlay-sanity-blocks p) {
+  font-size: 0.9vw;
+  line-height: 1.5;
+  color: #ffffff;
+  margin-bottom: 0.8vw;
+}
+.overlay-text :deep(.overlay-sanity-blocks p em),
+.overlay-text :deep(.overlay-sanity-blocks p strong) {
+  font-size: inherit;
+  line-height: inherit;
+}
 
 .close-btn {
   position: absolute;
@@ -660,6 +715,10 @@ background-color: white;
   }
   .overlay-text p {
     font-size: 3.5vw;
+  }
+  .overlay-text :deep(.overlay-sanity-blocks p) {
+    font-size: 3vw;
+    line-height: 1.6;
   }
 }
 

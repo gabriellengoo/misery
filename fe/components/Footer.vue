@@ -180,6 +180,14 @@ export default {
   color: #fff;
 }
 
+.dark-mode .footer-donate {
+  border-color: #fff;
+  color: #fff;
+}
+.dark-mode .footer-donate:hover {
+  color: #050505;
+}
+
 /* Search + Newsletter Section */
 .footer-search input,
 .footer-newsletter input {
@@ -190,6 +198,15 @@ export default {
   padding: 0.5vw 0;
   font-size: 0.9vw;
   margin-bottom: 1vw;
+}
+.dark-mode .footer-search input,
+.dark-mode .footer-newsletter input {
+  border-bottom-color: #fff;
+  color: #fff;
+}
+.dark-mode .footer-search input::placeholder,
+.dark-mode .footer-newsletter input::placeholder {
+  color: rgba(255,255,255,0.7);
 }
 
 .footer-newsletter button {
@@ -241,8 +258,8 @@ form{
   text-align: center;
   font-size: 0.8vw;
   /* margin-top: 2vw; */
-  border-top: 1px solid #000;
-  padding-top: 1vw;
+  /* border-top: 1px solid #000; */
+  /* padding-top: 1vw; */
   /* color: #000; */
 }
 

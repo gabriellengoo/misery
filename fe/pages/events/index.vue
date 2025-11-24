@@ -3,8 +3,8 @@
     <!-- <SiteHeader /> -->
 
     <!-- Centered Logo -->
-    <div class="logo-container">
-      <img src="/images/eventfur.png" alt="logo" class="logo" />
+    <div class="furlogo-container">
+      <img src="/images/eventfur.png" alt="logo" class="furlogo" />
     </div>
 
     <div class="all">
@@ -34,14 +34,14 @@
 
           <button
             class="btn"
-            :class="{ active: !showAll, inactive: showAll }"
+            :class="{ active: activePanel === 'date', inactive: activePanel !== 'date' }"
             @click="togglePanel('date')"
           >
             date range
           </button>
           <button
             class="btn"
-            :class="{ active: !showAll, inactive: showAll }"
+            :class="{ active: activePanel === 'type', inactive: activePanel !== 'type' }"
             @click="togglePanel('type')"
           >
             event type
@@ -97,9 +97,7 @@
               <span class="date">{{ formatDate(event.date) }}</span>
               <h3 class="titlee">{{ event.title }}</h3>
               <span class="location">{{ event.location }}</span>
-              <span class="type-tag" v-for="tag in event.eventType" :key="tag">
-                {{ tag }}
-              </span>
+              <span class="type-tag">{{ formatTags(event.eventType) }}</span>
             </div>
           </div>
         </div>
@@ -136,8 +134,10 @@ export default {
     this.events = await this.$sanity.fetch(query);
 
     // Include any new event types from Sanity dynamically
-    const sanityTypes = [...new Set(this.events.map((e) => e.eventType))];
-    this.eventTypes = Array.from(new Set([...this.eventTypes, ...sanityTypes]));
+    const sanityTypes = [
+      ...new Set(this.events.flatMap((e) => e.eventType || [])),
+    ];
+    this.eventTypes = sanityTypes;
   },
   computed: {
     filteredEvents() {
@@ -156,7 +156,9 @@ export default {
 
       // Filter by event type
       if (this.selectedTypes.length > 0) {
-        list = list.filter((e) => this.selectedTypes.includes(e.eventType));
+        list = list.filter((e) =>
+          (e.eventType || []).some((type) => this.selectedTypes.includes(type))
+        );
       }
 
       return list.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -186,6 +188,10 @@ export default {
     formatDate(date) {
       const d = new Date(date);
       return d.toDateString();
+    },
+    formatTags(tags) {
+      if (!tags?.length) return '';
+      return tags.join(', ');
     },
   },
 };

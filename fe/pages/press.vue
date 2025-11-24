@@ -1,6 +1,10 @@
 <template>
   <div class="page-container" v-if="page">
     <!-- <h1 class="page-title">{{ page.title }}</h1> -->
+    <!-- Centered Logo -->
+    <div class="furlogo-container mb-[8vw]">
+      <img src="/images/pressfur.png" alt="logo" class="furlogo" />
+    </div>
 
     <div
       v-for="(section, i) in page.sections"
@@ -17,7 +21,7 @@
           class="carousel-arrow left"
           @click="scrollLeft(i)"
         >
-          ◀
+        <svg class="leftarr" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M11 9L8 12M8 12L11 15M8 12H16M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
         </button>
 
         <!-- Flex container for horizontal scroll -->
@@ -32,7 +36,7 @@
             <div class="flyer-image" v-if="article.image?.asset?.url">
               <img :src="article.image.asset.url" :alt="article.title" />
             </div>
-            <div class="flyer-info">
+            <div v-if="article.title || article.shortDescription" class="flyer-info">
               <h3>{{ article.title }}</h3>
               <p>{{ article.shortDescription }}</p>
             </div>
@@ -45,8 +49,7 @@
           class="carousel-arrow right"
           @click="scrollRight(i)"
         >
-          ▶
-        </button>
+        <svg class="righttarr" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M13 15L16 12M16 12L13 9M16 12H8M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>        </button>
       </div>
     </div>
   </div>
@@ -119,6 +122,12 @@ export default {
   font-size: 2vw;
   font-weight: 600;
   margin-bottom: 1vw;
+  font-size: 4vw;
+  font-family: "Antic Didone", serif;
+  color: #ffffff;
+  text-shadow: 0 0 7px #39c1d3, 0 0 16px #6cbaad;
+  transition: text-shadow 0.3s ease;
+  text-align: center;
 }
 
 .section-description {
@@ -130,16 +139,24 @@ export default {
 /* Carousel wrapper */
 .carousel-wrapper {
   position: relative;
+  padding: 0vw 4vw;
 }
 
 .flyers-carousel {
-  display: flex; /* changed from grid */
-  gap: 2vw;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding-bottom: 1vw;
-  padding-left: 1vw; /* optional small offset */
+  display: flex;
+    gap: 2vw;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 1vw;
+    padding-left: 1vw;
+    align-content: center;
+    align-items: center;
 }
+/* 
+.flyers-carousel:hover {
+  transform: translateY(-0.5vw);
+  box-shadow: 0 1vw 2vw rgba(0, 0, 0, 0.12);
+} */
 
 /* Peek effect: show partial next card */
 .flyers-carousel::after {
@@ -161,11 +178,18 @@ export default {
   flex: 0 0 18vw; /* fixed width for horizontal layout */
   display: flex;
   flex-direction: column;
-  background: #f8f8f8;
+  /* background: #f8f8f8; */
+  --bg-gradient: linear-gradient(169.78deg, hsla(0, 0%, 100%, 0.23) 4.65%, hsla(0, 0%, 100%, 0) 91.48%), radial-gradient(62.3% 67.27% at 20.42% 27.48%, #5e4b1e 0%, #2b2a28 100%), linear-gradient(112.91deg, #676561 3.51%, #242321 111.71%); 
+  background: radial-gradient(circle, #215623b5, #1642189e 0, #21562396 16%, #dd56ff4d, #f3c1ff4d, #eabbf6bb, #d1c8cd3c);
+    background-blend-mode: screen, overlay, normal;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center; 
   border-radius: 1vw;
   overflow: hidden;
   text-decoration: none;
-  color: #111;
+  color: #ffffff;
+  height: max-content;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -175,8 +199,8 @@ export default {
 }
 
 .flyer-image img {
-  width: 100%;
-  height: 20vw;
+  width: auto;
+  height: auto;
   object-fit: cover;
 }
 
@@ -265,11 +289,11 @@ export default {
   flex: 0 0 calc((100% - 4vw) / 3); /* 3 cards with 2vw gap */
   display: flex;
   flex-direction: column;
-  background: #f8f8f8;
+  /* background: #f8f8f8; */
   border-radius: 1vw;
   overflow: hidden;
   text-decoration: none;
-  color: #111;
+  /* color: #111; */
   width: 50vw;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
