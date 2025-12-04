@@ -268,7 +268,8 @@ export default {
   align-items: center;
   gap: 1vw;
   margin-bottom: 3vw;
-  justify-content: left;
+  justify-content: flex-start;
+  flex-wrap: wrap;
 }
 
 .show {
@@ -500,6 +501,20 @@ export default {
 
 .date-panel label {
   margin-right: 1.5vw;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.5vw;
+  font-size: 1.1vw;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.panel input {
+  border: 1px solid #333;
+  border-radius: 50px;
+  padding: 0.5vw 1vw;
+  background: transparent;
+  color: #fff;
 }
 
 .apply-btn {
@@ -541,7 +556,7 @@ export default {
 /* Make whole top section align left */
 .all {
   width: 100%;
-  padding-left: 4vw;
+  /* padding-left: 4vw; */
   /* padding-top: 2vw; */
 }
 
@@ -574,17 +589,59 @@ export default {
 
 /* Mobile */
 @media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 3vw;
+  }
+
+  .show {
+    font-size: 4vw;
+    text-align: center;
+    width: 100%;
+  }
+
+  .btn {
+    width: 60%;
+    text-align: center;
+    align-self: center;
+  }
+
   .filter-toolbar {
     padding: 4vw;
     gap: 3vw;
+    flex-direction: column;
+    align-items: stretch;
   }
+
   .filter-btn {
-    font-size: 3vw;
-    padding: 2vw 5vw;
+    font-size: 3.5vw;
+    padding: 3vw 5vw;
+    width: 50%;
+    justify-content: center;
+    align-self: center;
   }
+
   .panel {
     margin: 4vw;
     padding: 4vw;
+  }
+
+  .panel label {
+    font-size: 3vw;
+    width: 100%;
+  }
+
+  .panel input {
+    padding: 2vw 3vw;
+    font-size: 3.2vw;
+  }
+
+  .apply-btn {
+    width: 100%;
+    margin: 3vw 0 0;
+    padding: 2.5vw;
+    font-size: 3.2vw;
   }
 }
 
@@ -595,14 +652,26 @@ export default {
   }
 
   .filter-btn {
-    font-size: 2.5vw;
-    padding: 1.5vw 4vw;
+    font-size: 3.5vw;
+    padding: 3vw 5vw;
     border-radius: 40px;
   }
 
   .filter-icon {
     width: 3vw;
     height: 3vw;
+  }
+
+  .tag-btn {
+    font-size: 3vw;
+    padding: 2vw 6vw;
+    width: 100%;
+    text-align: center;
+  }
+
+  .tag-list {
+    width: 100%;
+    gap: 2vw;
   }
 }
 
@@ -628,8 +697,12 @@ export default {
   }
 
   .grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 4vw;
+    grid-template-columns: 1fr;
+    gap: 6vw;
+  }
+
+  .event-img {
+    height: 60vw;
   }
 
   .event-card {
@@ -637,20 +710,39 @@ export default {
   }
 
   .event-info {
-    padding: 3vw;
+    padding: 4vw 5vw;
+    gap: 1vw;
+  }
+
+  .event-info .type-tag {
+    font-size: 2.5vw;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+  }
+
+  .filters{
+    padding-top: 13vw;
+    padding-bottom: 13vw;
+  }
+
+  .event-info .location {
+    font-size: 3vw;
+    font-weight: 500;
   }
 
   .event-info .titlee {
-    font-size: 3.5vw;
+    font-size: 5vw;
+    line-height: 1.2;
+    text-shadow: 0 0 12px rgba(0, 0, 0, 0.9);
   }
 
   .event-info .date,
   .event-info .location {
-    font-size: 2.5vw;
+    font-size: 3vw;
   }
 
   .btn {
-    font-size: 2.5vw;
+    font-size: 4.5vw;
     padding: 1vw 3vw;
   }
 }

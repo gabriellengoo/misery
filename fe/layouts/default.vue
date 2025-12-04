@@ -8,7 +8,7 @@
 
     <!-- Main content -->
     <main class="site-main">
-      <Nuxt />
+      <Nuxt :key="$route.fullPath" />
     </main>
 
     <!-- Footer -->
@@ -29,7 +29,7 @@ export default {
   },
   computed: {
     hideFooter() {
-      return this.$route.name === "resources";
+      return this.$route.name === "resources" || this.$route.name === "crisis";
     },
   },
   mounted() {

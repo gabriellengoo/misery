@@ -1,13 +1,6 @@
 <template>
   <div class="section-page" v-if="section">
     <div class="overlay-bg"></div>
-    <img
-      class="close-btn"
-      src="/images/close.svg"
-      alt="close"
-      @click="$router.push('/about')"
-    />
-
     <!-- URLs / Video Embeds -->
     <div v-if="section.urls?.length" class="urls">
       <div v-for="(url, i) in section.urls" :key="i" class="url-item">
@@ -120,8 +113,12 @@
   <transition name="overlay-fade-slide">
     <div v-if="activePerson" class="overlay" @click.self="closeOverlay">
       <div class="overlay-content">
-        <div class="overlay-image">
-          <img :src="activePerson.image.asset.url" :alt="activePerson.name" />
+        <div          v-if="hasActivePersonImage" class="overlay-image">
+          <img
+   
+            :src="activePerson.image.asset.url"
+            :alt="activePerson.name"
+          />
         </div>
         <div class="overlay-text">
           <!-- <h2>{{ activePerson.name }}</h2> -->
@@ -131,7 +128,10 @@
             class="overlay-role overlay-sanity-blocks portable-text sanity-blocks"
           />
           <p v-else-if="activePerson && activePerson.role">{{ activePerson.role }}</p>
-          <button class="close-btn" @click="closeOverlay">×</button>
+          <button class="close-btn" @click="closeOverlay">    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="white" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg></button>
         </div>
       </div>
     </div>
@@ -193,6 +193,14 @@ export default {
       if (!this.section?.people) return {};
       const offset = -this.currentIndex * 100;
       return { transform: `translateX(${offset}%)` };
+    },
+    hasActivePersonImage() {
+      return Boolean(
+        this.activePerson &&
+          this.activePerson.image &&
+          this.activePerson.image.asset &&
+          this.activePerson.image.asset.url
+      );
     },
   },
   methods: {
@@ -317,21 +325,6 @@ export default {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 /* Close button */
-.close-btn {
-  position: fixed;
-  top: 1.5rem;
-  right: 2rem;
-  width: 26px;
-  height: 26px;
-  cursor: pointer;
-  opacity: 0.8;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-.close-btn:hover {
-  transform: rotate(10deg) scale(1.1);
-  opacity: 1;
-}
-
 /* Section title */
 .section-title {
   text-align: left;
@@ -679,15 +672,25 @@ background-color: white;
   line-height: inherit;
 }
 
-.close-btn {
-  position: absolute;
-  top: 1vw;
-  right: 1vw;
-  background: none;
-  border: none;
-  font-size: 2vw;
-  cursor: pointer;
-  color: #ffffff;
+.overlay .close-btn {
+  position: fixed;
+    top: 3vw;
+    right: 3vw;
+    transform: none;
+    font-size: 3vw;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    width: 3vw;
+    height: 3vw;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+.overlay .close-btn:hover {
+  color: #39c1d3;
+  border: 1px solid  #39c1d3;
+   
 }
 
 /* Animations */
@@ -703,9 +706,109 @@ background-color: white;
 
 /* Mobile */
 @media (max-width: 768px) {
+  .section-page {
+    padding: 4rem 1.5rem 5rem;
+  }
+
+  .section-title {
+    font-size: 8vw;
+    text-align: center;
+    padding: 2rem 0;
+  }
+
+  .portable-text {
+    font-size: 4vw;
+    line-height: 1.9;
+    margin: 1.5rem 0;
+  }
+
+  .portable-text h2 {
+    font-size: 5vw;
+  }
+
+  .portable-text h3 {
+    font-size: 4vw;
+  }
+
+  .carousel {
+    justify-content: center;
+    margin: 2rem 0;
+  }
+
+  .carousel-image {
+    width: 100%;
+    max-height: 60vh;
+  }
+
+  .accordion-list {
+    flex-direction: column;
+    gap: 4vw;
+  }
+
+  .accordion {
+    width: 100%;
+    padding: 0;
+  }
+
+  .accordion-header {
+    width: 100%;
+    font-size: 4vw;
+    padding: 4vw;
+    border-radius: 999px;
+    justify-content: center;
+  }
+
+  .accordion-body {
+    position: static;
+    margin-top: 2vw;
+    padding: 5vw 0;
+  }
+
+  .url-item iframe {
+    height: 60vh;
+  }
+
+  .people-grid {
+    grid-template-columns: 1fr;
+    gap: 6vw;
+    padding: 2vw 0;
+  }
+
+  .person-card {
+    padding: 6vw;
+    border-radius: 6vw;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .person-image img {
+    height: 70vw;
+    border-radius: 5vw;
+  }
+
+  .person-info h3 {
+    font-size: 5vw;
+  }
+
+  .person-role-preview {
+    font-size: 4vw;
+    min-height: auto;
+  }
+
+  .see-more-btn {
+    font-size: 4vw;
+  }
+
   .overlay-content {
     flex-direction: column;
     max-width: 90vw;
+    height: auto;
+    height: 80vh;
+    overflow: scroll;
+  }
+
+  .overlay-image {
+    height: auto;
+    height: 20vh;
   }
   .overlay-text {
     padding: 6vw;
@@ -719,6 +822,26 @@ background-color: white;
   .overlay-text :deep(.overlay-sanity-blocks p) {
     font-size: 3vw;
     line-height: 1.6;
+  }
+
+  .overlay .close-btn {
+    position: fixed;
+    top: 3vw;
+    right: 3vw;
+    transform: none;
+    font-size: 12vw;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    width: 14vw;
+    height: 14vw;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .overlay-image {
+    order: 0;
   }
 }
 

@@ -324,4 +324,52 @@ export default {
 .fade-text-leave-from {
   opacity: 1;
 }
+
+@media (max-width: 768px) {
+  .about-page {
+    padding: 2.5rem 1.5rem 5rem;
+  }
+
+  .misery-banner {
+    flex-direction: column;
+    font-size: 4vw;
+    gap: 2vw;
+    text-align: center;
+    padding: 4vw 6vw;
+    padding: 16vw 6vw 4vw 4vw;
+    border-radius: 30px;
+  }
+
+  .logob {
+    max-height: 10vw;
+  }
+
+  .sections-grid {
+    grid-template-columns: 1fr;
+    gap: 6vw;
+  }
+
+  .section-card {
+    width: 100%;
+    height: 70vw;
+    border-radius: 24px;
+  }
+
+  .section-card h2,
+  .section-card p {
+    font-size: 6vw;
+    width: 80%;
+    line-height: 1.2;
+  }
+
+  .thumb {
+    border-radius: 24px;
+    filter: brightness(0.55);
+  }
+
+  .about-page :deep(p) {
+    font-size: 4vw;
+    line-height: 1.9;
+  }
+}
 </style>

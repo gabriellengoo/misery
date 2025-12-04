@@ -247,10 +247,66 @@ export default {
 
 /* Mobile */
 @media (max-width: 768px) {
-  .page-title { font-size: 6vw; }
-  .page-toc button { font-size: 3vw; padding: 1vw 2vw; margin-bottom: 2vw; }
-  .section-title { font-size: 5vw; }
-  .section-description { font-size: 3.5vw; margin-bottom: 4vw; }
-  .carousel-item { min-width: 60vw; }
+  .page-header {
+    height: auto;
+    padding: 12vw 6vw;
+    gap: 6vw;
+  }
+
+  .page-summary {
+    font-size: 4vw;
+    line-height: 1.7;
+    padding: 0 6vw;
+  }
+
+  .page-title {
+    font-size: 8vw;
+  }
+
+  .page-toc {
+    padding: 0 4vw;
+  }
+  .page-toc ul {
+    flex-direction: column;
+    gap: 3vw;
+  }
+  .page-toc button {
+    font-size: 3.8vw;
+    padding: 3vw;
+    border-radius: 999px;
+  }
+
+  .page-section {
+    margin-bottom: 10vw;
+    padding: 6vw;
+    border-radius: 6vw;
+  }
+
+  .section-title {
+    font-size: 6vw;
+  }
+
+  .section-description {
+    font-size: 4vw;
+    margin-bottom: 6vw;
+  }
+
+  .section-links {
+    flex-direction: column;
+    gap: 4vw;
+  }
+  .section-links a {
+    font-size: 4vw;
+  }
+
+  .section-carousel {
+    gap: 4vw;
+    scroll-snap-type: x mandatory;
+    padding: 2vw 0 4vw;
+  }
+  .carousel-item {
+    min-width: 80vw;
+    scroll-snap-align: center;
+  }
 }
 </style>

@@ -7,7 +7,7 @@
        <!-- <h1 class="page-title">{{ page.title }}</h1> -->
       <!-- Page Summary -->
       <!-- <div v-if="page.summary" class="page-summary" v-html="renderBlockContent(page.summary)"></div> -->
-      <p class="page-summary">{{ page.title }} <nuxt-link to="/crisis" class="font-bold" v-if="page.summary" >*click here for crisis support*</nuxt-link></p>
+      <p class="page-summary">{{ page.title }} <nuxt-link to="/crisis" class="crisis-pill" v-if="page.summary" >*click here for crisis support*</nuxt-link></p>
 
       
   
@@ -104,13 +104,29 @@
   background: #39c1d3;
 }
 
+:deep(.resources-body strong) {
+  background: rgba(57, 193, 211, 0.3);
+  color: #050505;
+  padding: 0.15em 0.45em;
+  border-radius: 0.2em;
+  font-size: 1.2vw;
+  display: inline-block;
+}
+
 
   .page-summary {
-    font-size: 1.4vw;
-    /* color: #444; */
+    font-size: 1.8vw;
     margin-bottom: 3vw;
     line-height: 1.6;
     text-align: center;
+    display: inline-flex;
+    gap: 0.6vw;
+    align-items: center;
+    justify-content: center;
+    padding: 1vw 2vw;
+    border-radius: 999px;
+    background: rgba(57, 193, 211, 0.1);
+    border: 1px solid rgba(57, 193, 211, 0.3);
   }
 
   a:hover{
@@ -144,7 +160,7 @@
     letter-spacing: 0.15em;
     cursor: pointer;
     box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    z-index: 50;
+    z-index: 49;
     transition: transform 0.2s ease, background 0.2s ease;
   }
   .back-to-top:hover {
@@ -298,6 +314,30 @@ body.dark-mode .page-toc button {
     .section-title { font-size: 5vw; }
     .section-description { font-size: 3.5vw; margin-bottom: 4vw; }
     .carousel-item { min-width: 60vw; }
+    .page-summary {
+      font-size: 4vw;
+      margin-bottom: 6vw;
+    }
+    .resources-body {
+    font-size: 3.5vw;
+    line-height: 1.7;
+    }
   }
   </style>
   
+  .crisis-pill {
+    text-transform: lowercase;
+    letter-spacing: 0.2em;
+    font-size: 1.2vw;
+    padding: 0.8vw 1.6vw;
+    border-radius: 999px;
+    background: rgba(57, 193, 211, 0.2);
+    border: 1px solid rgba(57, 193, 211, 0.4);
+    color: #fff;
+    text-decoration: none;
+    transition: background 0.2s ease;
+  }
+
+  .crisis-pill:hover {
+    background: rgba(57, 193, 211, 0.35);
+  }

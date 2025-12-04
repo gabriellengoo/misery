@@ -32,6 +32,30 @@
           <img src="https://i.ibb.co/VvxBzzg/Misery-Meets2square.png" alt="" />
         </div>
 
+        <div class="floating-img img-orbit">
+          <img src="https://i.ibb.co/1fnPWwYv/1.png" alt="floating collage 1" />
+        </div>
+
+        <div class="floating-img img-burst">
+          <img src="https://i.ibb.co/1J285jQ9/Layer-19.png" alt="floating collage 2" />
+        </div>
+
+        <div class="floating-img img-drift">
+          <img src="https://i.ibb.co/PspPkhDf/Layer-20.png" alt="floating collage 3" />
+        </div>
+
+        <div class="floating-img img-glow">
+          <img src="https://i.ibb.co/VWmwtcLn/Layer-21.png" alt="floating collage 4" />
+        </div>
+
+        <div class="floating-img img-swirl">
+          <img src="https://i.ibb.co/sdTLb7Sj/Layer-22.png" alt="floating collage 5" />
+        </div>
+
+        <div class="floating-img img-arc">
+          <img src="https://i.ibb.co/Vcm8FdC4/Layer-23.png" alt="floating collage 6" />
+        </div>
+
         <!-- <div
             class="absolute top-0 left-0 w-full h-full pointer-events-none z-[1]"
           >
@@ -118,10 +142,16 @@ export default {
     floatingImgs.forEach((img) => {
       img.addEventListener("mousemove", (e) => {
         const rect = img.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width - 0.5;
-        const y = (e.clientY - rect.top) / rect.height - 0.5;
-        img.style.setProperty("--x", `${x * -50}px`);
-        img.style.setProperty("--y", `${y * -50}px`);
+        const relX = (e.clientX - rect.left) / rect.width - 0.5;
+        const relY = (e.clientY - rect.top) / rect.height - 0.5;
+        const distance = Math.sqrt(relX * relX + relY * relY);
+        const maxDistance = 0.8;
+        const force = Math.max(0, maxDistance - distance) / maxDistance;
+        const maxShift = 150;
+        const moveX = -relX * maxShift * force;
+        const moveY = -relY * maxShift * force;
+        img.style.setProperty("--x", `${moveX}px`);
+        img.style.setProperty("--y", `${moveY}px`);
       });
       img.addEventListener("mouseleave", () => {
         img.style.setProperty("--x", "0px");
@@ -488,6 +518,22 @@ window.addEventListener("scroll", () => {
   .filter-icon {
     width: 3vw;
     height: 3vw;
+  }
+
+  .carousel-wrapper {
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    height: 100vh;
+  }
+
+  .carousel-image {
+    height: 60vh;
+    padding: 6vw;
+  }
+
+  .title img {
+    height: 26vw;
   }
 }
 

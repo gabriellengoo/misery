@@ -25,25 +25,37 @@
         <img src="/images/misery.gif" alt="logo" />
       </div>
 
-      <!-- Right help button -->
-      <button class="help" @click="$router.push(headerData?.helpLink)">
-        {{ headerData?.helpLabel }}
-      </button>
+      <!-- Right actions -->
+      <div class="header-actions">
+        <button
+          v-if="isAboutDetail"
+          class="back-btn"
+          @click="goBackToAbout"
+        >
+          Back
+        </button>
+        <button class="help" @click="$router.push(headerData?.helpLink)">
+          {{ headerData?.helpLabel }}
+        </button>
+      </div>
     </header>
 
     <!-- Sidebar -->
     <aside :class="['left-sidebar', { 'left-sidebar--active': sidebarOpen }]">
-      <button class="close-btn" @click="toggleSidebar">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="black" stroke-width="2">
+      <button v-if="sidebarOpen" class="close-btn" @click="toggleSidebar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="white" stroke-width="2">
           <line x1="18" y1="6" x2="6" y2="18" />
           <line x1="6" y1="6" x2="18" y2="18" />
         </svg>
       </button>
 
-      <nav v-for="link in headerData?.menuLinks" class="sidebar-menu">
-        <!-- <span class="text-[1vw]">*•̩̩͙✩•̩̩͙*˚</span> -->
-        <!-- <span class="text-[1vw] flex justify-center items-center w-[100%]">＊*•̩̩͙✩•̩̩͙*˚</span> -->
-        <a  :key="link._key" :href="link.url"> {{ link.label }}</a>
+      <nav class="sidebar-menu">
+        <div v-for="link in headerData?.menuLinks" :key="link._key">
+          <a :href="link.url">{{ link.label }}</a>
+        </div>
+        <!-- <div>
+          <nuxt-link to="/shop">shop</nuxt-link>
+        </div> -->
       </nav>
 
       <!-- Social Media Icons -->
@@ -92,6 +104,23 @@ export default {
     if (this.darkMode) document.body.classList.add('dark-mode')
     this.applyFontSize()
   },
+  watch: {
+    sidebarOpen(isOpen) {
+      if (process.client) {
+        document.body.classList.toggle('menu-open', isOpen)
+      }
+    },
+  },
+  beforeDestroy() {
+    if (process.client) {
+      document.body.classList.remove('menu-open')
+    }
+  },
+  computed: {
+    isAboutDetail() {
+      return this.$route?.name?.startsWith('about-slug')
+    },
+  },
   methods: {
     toggleSidebar() {
       this.sidebarOpen = !this.sidebarOpen
@@ -128,6 +157,9 @@ export default {
       this.fontSize = Math.max(this.fontSize - 0.1, 0.8)
       this.applyFontSize()
       localStorage.setItem('fontSize', this.fontSize)
+    },
+    goBackToAbout() {
+      this.$router.push('/about')
     },
   },
 }
@@ -166,6 +198,12 @@ export default {
   align-items: center;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.8vw;
+}
+
 .nav-left button,
 .help {
   background: none;
@@ -173,7 +211,7 @@ export default {
   border-radius: 9999px;
   padding: 0.6vw 1.4vw;
   font-size: 2.5vw;                     /* Bigger text */
- margin-top: 1vw;
+ /* margin-top: 1vw; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -185,6 +223,27 @@ export default {
   text-shadow: 0 0 10px rgba(255, 0, 200, 0.9),
                0 0 14px rgba(200, 0, 255, 0.7);
   transform: scale(1.05);
+}
+
+.back-btn {
+  border: 1px solid rgba(57, 193, 211, 0.8);
+  border-radius: 9999px;
+  padding: 0.4vw 1.4vw;
+  font-size: 1.2vw;
+  /* text-transform: uppercase; */
+  padding: 0.6vw 1.4vw;
+  font-size: 1.5vw;
+  letter-spacing: 0.1em;
+  color: #e9fcff;
+  background: rgb(20, 35, 70);
+  box-shadow: 0 0 12px rgba(57, 193, 211, 0.9), 0 0 22px rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.back-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 16px rgba(57, 193, 211, 1), 0 0 28px rgba(255, 255, 255, 0.8);
 }
 
 
@@ -297,6 +356,9 @@ body.dark-mode {
   /* border-radius: 50%; */
   width: 40px;
   height: 40px;
+  border: 1px solid #ffffff;
+  border-radius: 50%;
+  padding: 0.5vw;
   display: flex;
   /* color: #000 !important; */
   align-items: center;
@@ -315,20 +377,19 @@ body.dark-mode {
 .sidebar-menu {
   display: flex;
   flex-direction: column;
-
-  /* margin-top: 2vw; */
+  gap: 0.5vw;
 }
 
-.sidebar-menu a {
+.sidebar-menu a,
+.sidebar-menu :deep(a.nuxt-link-active) {
   text-decoration: none;
-  color: black;
+  display: block;
   font-size: 1.5vw;
-  text-align: center;
   text-align: left;
   font-weight: 500;
   text-transform: lowercase;
   padding: 0.9vw 0;
-  border-bottom: 1px solid #000000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
   transition: all 0.3s ease;
   font-family: 'Antic Didone', serif;
   color: #fff;                      /* Light mode text */
@@ -353,5 +414,78 @@ body.dark-mode {
   height: 100vh;
   background: rgba(0,0,0,0.3);
   z-index: 40;
+}
+
+@media (max-width: 768px) {
+  .back-btn {
+    font-size: 4vw;
+    padding: 2vw 5vw;
+    letter-spacing: 0.3em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .close-btn {
+    position: fixed;
+    top: 4vw;
+    right: 6vw;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 50%;
+    padding: 2vw;
+    z-index: 60;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  .left-sidebar {
+    width: 100vw;
+    left: -100vw;
+    padding: 12vw 8vw;
+  }
+
+  .left-sidebar--active {
+    left: 0;
+  }
+
+  .sidebar-menu {
+    gap: 2vw;
+  }
+
+  .sidebar-menu a {
+    font-size: 5.5vw;
+    padding: 4vw 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .sidebar-socials svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .nav-left button,
+  .help {
+    font-size: 5.5vw;
+    margin-top: 2vw;
+    
+  }
+
+  .header-logo img {
+    height: 8vw;
+    max-height: 50px;
+    margin-top: 3vw;
+
+}
+
+.accessibility-menu {
+    position: absolute;
+    top: 10.2vw;
+    left: 3vw;
+  }
+
+  .close-btn {
+    padding: 2vw;
+  }
+
 }
 </style>

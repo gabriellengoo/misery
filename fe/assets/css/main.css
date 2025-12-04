@@ -37,6 +37,39 @@ body.dark-mode {
   background-image: url('/images/bgmis.png');
 }
 
+body .left-sidebar {
+  background-image: url('/images/micbg.png') !important;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+
+body.dark-mode .left-sidebar {
+  background-image: url('/images/bgmis.png') !important;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+body .event-page {
+  background-image: url('/images/micbg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+body.dark-mode .event-page {
+  background-image: url('/images/bgmis.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
 /* Dark mode */
 body.dark-mode {
   background-color: #111;
@@ -265,6 +298,9 @@ body.dark-mode {
     mix-blend-mode: multiply;
     cursor: url('/cursor.png') 16 16, auto;
   }
+  body.menu-open::before {
+    opacity: 0;
+  }
 
   body {
     /* --bg-gradient: linear-gradient(169.78deg, hsla(0, 0%, 100%, 0.23) 4.65%, hsla(0, 0%, 100%, 0) 91.48%), radial-gradient(62.3% 67.27% at 20.42% 27.48%, #5e4b1e 0%, #2b2a28 100%), linear-gradient(112.91deg, #676561 3.51%, #242321 111.71%); */
@@ -276,6 +312,9 @@ body.dark-mode {
 
     /* height: 100vh;
     overflow: hidden; */
+  }
+  body.menu-open {
+    overflow: hidden;
   }
   
   @keyframes subtleStatic {
@@ -356,21 +395,24 @@ body.dark-mode {
  /* Shared base style */
 .floating-img {
   position: absolute;
-  width: clamp(144px, 10vw, 300px);
-  transition: transform 0.3s ease;
+  width: clamp(120px, 9vw, 12vw);
   z-index: 2;
+  --x: 0px;
+  --y: 0px;
 }
 
 .floating-img img {
   width: 100%;
   height: auto;
-  /* pointer-events: none; */
+  transform: translate(var(--x), var(--y));
+  transition: transform 0.25s ease;
 }
 
 /* Positions */
 .img-left {
   top: 10%;
   left: 35%;
+  width: clamp(130px, 9.5vw, 12vw);
   animation: floatLeft 20s ease-in-out infinite;
   transform: rotate(26deg);
 }
@@ -378,17 +420,65 @@ body.dark-mode {
 .img-left2 {
   top: 30%;
   left: 75%;
-  width: clamp(144px, 5vw, 300px);
+  width: clamp(100px, 6vw, 12vw);
   animation: floatLeft2 20s ease-in-out infinite;
   transform: rotate(6deg);
 }
 
 .img-right {
-  top: 60%;
+  top: 70%;
   right: 70%;
-  max-width: 10vw;
+  width: clamp(110px, 8vw, 10vw);
   animation: spinSlow 300s linear infinite;
   transform: rotate(66deg);
+}
+
+.img-orbit {
+  top: 8%;
+  left: 8%;
+  width: clamp(115px, 10.5vw, 12vw);
+  animation: floatOrbit 24s ease-in-out infinite;
+  transform: rotate(-8deg);
+}
+
+.img-burst {
+  top: 4%;
+  right: 10%;
+  width: clamp(90px, 6.5vw, 11vw);
+  animation: floatPulse 18s ease-in-out infinite;
+  transform: rotate(5deg);
+}
+
+.img-drift {
+  top: 38%;
+  left: 10%;
+  width: clamp(105px, 7.5vw, 11.5vw);
+  animation: floatDrift 22s ease-in-out infinite;
+  transform: rotate(-16deg);
+}
+
+.img-glow {
+  top: 50%;
+  right: 14%;
+  width: clamp(120px, 9vw, 12vw);
+  animation: floatRise 30s ease-in-out infinite;
+  transform: rotate(12deg);
+}
+
+.img-swirl {
+  bottom: 20%;
+  left: 28%;
+  width: clamp(110px, 8.5vw, 12vw);
+  animation: floatSwing 26s ease-in-out infinite;
+  transform: rotate(-4deg);
+}
+
+.img-arc {
+  bottom: 0%;
+  right: 12%;
+  width: clamp(100px, 7vw, 11vw);
+  animation: floatArc 28s ease-in-out infinite;
+  transform: rotate(22deg);
 }
 
 /* Float animations */
@@ -407,15 +497,50 @@ body.dark-mode {
   100% { transform: rotate(360deg); }
 }
 
+@keyframes floatOrbit {
+  0%, 100% { transform: translate(0, 0) rotate(-8deg); }
+  40% { transform: translate(-15px, -25px) rotate(-2deg); }
+  70% { transform: translate(10px, -10px) rotate(-10deg); }
+}
+
+@keyframes floatPulse {
+  0%, 100% { transform: translate(0, 0) rotate(5deg) scale(1); }
+  50% { transform: translate(-12px, 18px) rotate(0deg) scale(1.05); }
+}
+
+@keyframes floatDrift {
+  0%, 100% { transform: translate(0, 0) rotate(-16deg); }
+  50% { transform: translate(18px, -30px) rotate(-10deg); }
+}
+
+@keyframes floatRise {
+  0%, 100% { transform: translate(0, 0) rotate(12deg); }
+  30% { transform: translate(-25px, -15px) rotate(0deg); }
+  60% { transform: translate(12px, -35px) rotate(18deg); }
+}
+
+@keyframes floatSwing {
+  0%, 100% { transform: translate(0, 0) rotate(-4deg); }
+  50% { transform: translate(20px, -15px) rotate(3deg); }
+}
+
+@keyframes floatArc {
+  0%, 100% { transform: translate(0, 0) rotate(22deg); }
+  50% { transform: translate(-18px, -35px) rotate(12deg); }
+}
+
+@media (max-width: 768px) {
+  .floating-img {
+    width: clamp(70px, 22vw, 110px);
+  }
+}
 /* 🪶 Fly away from cursor */
 .floating-img:hover {
   animation: none; /* pause the float/spin */
-  transform: none !important;  
-  /* transform: translate(var(--x, 0), var(--y, 0)) scale(1.1); */
 }
 
 .floating-img:hover img {
-  transform: translate(var(--x, 0), var(--y, 0)) scale(1.1);
+  transform: translate(var(--x, 0), var(--y, 0)) scale(1.08);
 }
 
   
@@ -597,7 +722,7 @@ body.dark-mode {
 .carousel-arrow {
   position: absolute;
   top: 0;
-  width: 50vw;
+  width: 8vw;
   height: 100%;
   display: flex;
   align-items: center;
@@ -629,4 +754,51 @@ body.dark-mode {
   right: 0;
   justify-content: flex-end;
   padding-right: 2rem;
+}
+
+@media screen and (max-width: 768px) {
+  .accessibility-menu button {
+    height: 10vw;
+    width: 9vw;
+    margin-top: 6vw !important;
+    background: #50096e !important;
+    font-size: 3.5vw !important;
+  }
+
+  .overlay-text div p em {
+    font-size: 4vw !important;
+  }
+
+  .leftarr{
+    width: 12vw;
+    position: relative;
+    left: -10vw;
+  }
+
+  .righttarr {
+    width: 12vw;}
+
+    .carousel-arrow{
+      width: 20vw;
+    }
+    .furlogo-container {
+      padding-top: 10vw;
+    }
+}
+:deep(.crisis-body strong) {
+  font-size: 2vw;
+  background: rgba(57, 193, 211, 0.3);
+  color: #050505;
+  padding: 0.2em 0.45em;
+  border-radius: 0.2em;
+  display: inline-block;
+}
+
+:deep(.resources-body strong) {
+  font-size: 1.4vw;
+  background: rgba(57, 193, 211, 0.3);
+  color: #050505;
+  padding: 0.2em 0.45em;
+  border-radius: 0.2em;
+  display: inline-block;
 }

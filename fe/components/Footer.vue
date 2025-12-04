@@ -113,6 +113,7 @@ export default {
   font-size: 0.9vw;
   display: flex;
   gap: 4vw;
+  flex-wrap: wrap;
   padding-bottom: 0;
   justify-content: space-between;
   justify-content: space-around;
@@ -267,26 +268,57 @@ form{
 @media (max-width: 768px) {
   .site-footer {
     flex-direction: column;
-    gap: 3vw;
+    align-items: center;
+    gap: 8vw;
+    padding: 10vw 6vw;
   }
-  .footer-column {
+
+  .footer-top,
+  .footer-newsletter,
+  .footer-search {
     width: 100%;
+    text-align: center;
   }
+
+  .footer-nav ul {
+    gap: 4vw;
+    align-items: center;
+  }
+
+  .footer-nav a {
+    font-size: 5vw;
+  }
+
+  .footer-donate {
+    border-width: 1px;
+    font-size: 4vw;
+    padding: 3vw 0;
+  }
+
+  .footer-newsletter h3 {
+    font-size: 5vw;
+  }
+
+  .footer-newsletter p {
+    font-size: 3.5vw;
+  }
+
+  form {
+    flex-direction: column;
+    gap: 4vw;
+    align-items: stretch;
+  }
+
   .footer-newsletter input,
   .footer-newsletter button,
-  .footer-search input,
-  .footer-donate {
-    width: 100%;
-    font-size: 3vw;
-  }
-  .footer-newsletter h3 {
+  .footer-search input {
     font-size: 4vw;
+    padding: 2.5vw 0;
   }
-  .footer-newsletter p {
-    font-size: 3vw;
-  }
+
   .footer-copy {
-    font-size: 3vw;
+    font-size: 3.5vw;
+    padding: 4vw 0;
   }
 }
 

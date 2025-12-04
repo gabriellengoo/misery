@@ -52,12 +52,12 @@
   }
   
   /* tear animation */
-  .tear {
-    width: 1.2vw;
-    height: auto;
-    animation: dropTear 2s ease-in-out 1.5s forwards;
-    opacity: 0;
-  }
+.tear {
+  width: 1.2vw;
+  height: auto;
+  animation: dropTear 2s ease-in-out 1.5s forwards;
+  opacity: 0;
+}
   
   /* Text fades in then fades out slightly before leaving */
   @keyframes fadeText {
@@ -106,5 +106,16 @@
   .fade-leave-to {
     opacity: 0;
   }
+
+@media (max-width: 768px) {
+  .intro-text {
+    font-size: 5vw;
+    gap: 4vw;
+  }
+
+  .tear {
+    width: 4vw;
+  }
+}
   </style>
   

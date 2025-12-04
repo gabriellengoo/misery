@@ -144,13 +144,14 @@ export default {
 
 .flyers-carousel {
   display: flex;
-    gap: 2vw;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    padding-bottom: 1vw;
-    padding-left: 1vw;
-    align-content: center;
-    align-items: center;
+  gap: 2vw;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 1vw;
+  padding-left: 1vw;
+  align-content: center;
+  align-items: center;
+  scroll-snap-type: x proximity;
 }
 /* 
 .flyers-carousel:hover {
@@ -191,6 +192,7 @@ export default {
   color: #ffffff;
   height: max-content;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  scroll-snap-align: start;
 }
 
 .flyer-card:hover {
@@ -245,8 +247,15 @@ export default {
 
 /* Mobile */
 @media (max-width: 768px) {
+  .page-container {
+    padding: 10vw 6vw;
+    padding-right: 0;
+  }
   .page-title {
     font-size: 6vw;
+  }
+  .furlogo-container{
+    padding-bottom: 12vw;
   }
   .section-title {
     font-size: 5vw;
@@ -254,24 +263,38 @@ export default {
   .section-description {
     font-size: 3.5vw;
     margin-bottom: 4vw;
+    text-align: center;
   }
   .flyers-carousel {
-    gap: 4vw;
+    gap: 6vw;
+    padding: 0 4vw 6vw;
+    scroll-snap-type: x mandatory;
   }
   .flyer-card {
-    flex: 0 0 60vw;
+    flex: 0 0 90%;
+    border-radius: 6vw;
+    padding: 4vw;
+    scroll-snap-align: start;
   }
   .flyer-image img {
-    height: 40vw;
+    height: 50vw;
+    border-radius: 4vw;
   }
   .flyer-info h3 {
-    font-size: 4vw;
+    font-size: 5vw;
+    margin-bottom: 2vw;
   }
   .flyer-info p {
-    font-size: 3vw;
+    font-size: 3.6vw;
+    line-height: 1.6;
   }
   .carousel-arrow {
-    font-size: 5vw;
+    font-size: 7vw;
+    top: auto;
+    bottom: -3vw;
+  }
+  .carousel-wrapper {
+    padding: 0;
   }
 }
 
@@ -329,13 +352,13 @@ export default {
 /* Mobile adjustments */
 @media (max-width: 768px) {
   .flyers-carousel {
-    gap: 4vw;
+    gap: 6vw;
   }
   .flyer-card {
-    flex: 0 0 80%; /* show one card mostly on mobile */
+    flex: 0 0 90%;
   }
   .carousel-arrow {
-    font-size: 5vw;
+    font-size: 7vw;
   }
 }
 </style>

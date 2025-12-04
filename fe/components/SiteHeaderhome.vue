@@ -33,8 +33,8 @@
 
     <!-- Sidebar -->
     <aside :class="['left-sidebar', { 'left-sidebar--active': sidebarOpen }]">
-      <button class="close-btn" @click="toggleSidebar">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="black" stroke-width="2">
+      <button v-if="sidebarOpen" class="close-btn" @click="toggleSidebar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="white" stroke-width="2">
           <line x1="18" y1="6" x2="6" y2="18" />
           <line x1="6" y1="6" x2="18" y2="18" />
         </svg>
@@ -91,6 +91,18 @@ export default {
 
     if (this.darkMode) document.body.classList.add('dark-mode')
     this.applyFontSize()
+  },
+  watch: {
+    sidebarOpen(isOpen) {
+      if (process.client) {
+        document.body.classList.toggle('menu-open', isOpen)
+      }
+    },
+  },
+  beforeDestroy() {
+    if (process.client) {
+      document.body.classList.remove('menu-open')
+    }
   },
   methods: {
     toggleSidebar() {
@@ -173,7 +185,7 @@ export default {
   border-radius: 9999px;
   padding: 0.6vw 1.4vw;
   font-size: 2.5vw;                     /* Bigger text */
- margin-top: 1vw;
+ /* margin-top: 1vw; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -296,6 +308,9 @@ body.dark-mode {
   /* border-radius: 50%; */
   width: 40px;
   height: 40px;
+  border: 1px solid #ffffff;
+  border-radius: 50%;
+  padding: 0.5vw;
   display: flex;
   /* color: #000 !important; */
   align-items: center;
@@ -314,20 +329,18 @@ body.dark-mode {
 .sidebar-menu {
   display: flex;
   flex-direction: column;
-
-  /* margin-top: 2vw; */
+  gap: 0.5vw;
 }
 
 .sidebar-menu a {
   text-decoration: none;
-  color: black;
+  display: block;
   font-size: 1.5vw;
-  text-align: center;
   text-align: left;
   font-weight: 500;
   text-transform: lowercase;
   padding: 0.9vw 0;
-  border-bottom: 1px solid #000000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
   transition: all 0.3s ease;
   font-family: 'Antic Didone', serif;
   color: #fff;                      /* Light mode text */
@@ -352,5 +365,57 @@ body.dark-mode {
   height: 100vh;
   background: rgba(0,0,0,0.3);
   z-index: 40;
+}
+
+@media (max-width: 768px) {
+  .left-sidebar {
+    width: 100vw;
+    left: -100vw;
+    padding: 12vw 8vw;
+  }
+
+  .left-sidebar--active {
+    left: 0;
+  }
+
+  .sidebar-menu {
+    gap: 2vw;
+  }
+
+  .sidebar-menu a {
+    font-size: 5.5vw;
+    padding: 4vw 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .close-btn {
+    position: fixed;
+    top: 4vw;
+    right: 6vw;
+    padding: 2vw;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    z-index: 60;
+  }
+  .sidebar-socials svg {
+    width: 24px;
+    height: 24px;
+  }
+  .nav-left button,
+  .help {
+    font-size: 5.5vw;
+    margin-top: 2vw;
+  }
+
+  .header-logo img {
+    height: 8vw;
+    max-height: 50px;
+    margin-top: 3vw;
+
+}
+
+
 }
 </style>
