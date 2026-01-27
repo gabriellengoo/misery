@@ -9,6 +9,7 @@ const _fe1ee038 = () => interopDefault(import('../pages/contact.vue' /* webpackC
 const _2ffaaf2f = () => interopDefault(import('../pages/crisis.vue' /* webpackChunkName: "pages/crisis" */))
 const _483a0f48 = () => interopDefault(import('../pages/events/index.vue' /* webpackChunkName: "pages/events/index" */))
 const _b68d7c6c = () => interopDefault(import('../pages/get-involved.vue' /* webpackChunkName: "pages/get-involved" */))
+const _48c8d3f7 = () => interopDefault(import('../pages/preorder.vue' /* webpackChunkName: "pages/preorder" */))
 const _423ea187 = () => interopDefault(import('../pages/press.vue' /* webpackChunkName: "pages/press" */))
 const _5ca20469 = () => interopDefault(import('../pages/resources.vue' /* webpackChunkName: "pages/resources" */))
 const _48574696 = () => interopDefault(import('../pages/index.vue' /* webpackChunkName: "pages/index" */))
@@ -46,6 +47,10 @@ export const routerOptions = {
     path: "/get-involved",
     component: _b68d7c6c,
     name: "get-involved"
+  }, {
+    path: "/preorder",
+    component: _48c8d3f7,
+    name: "preorder"
   }, {
     path: "/press",
     component: _423ea187,

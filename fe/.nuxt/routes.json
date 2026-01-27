@@ -35,6 +35,13 @@
     "_name": "_b68d7c6c"
   },
   {
+    "name": "preorder",
+    "path": "/preorder",
+    "component": "/Users/admin/Desktop/misery/fe/pages/preorder.vue",
+    "chunkName": "pages/preorder",
+    "_name": "_48c8d3f7"
+  },
+  {
     "name": "press",
     "path": "/press",
     "component": "/Users/admin/Desktop/misery/fe/pages/press.vue",

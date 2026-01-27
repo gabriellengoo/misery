@@ -13,6 +13,20 @@ import footer from './footer'
 import crisisPage from './crisisPage'
 import contactPage from './contactPage'
 import resourcesPage from './resourcesPage'
+import preorderPage from './preorderPage'
 
-export const schemaTypes = [ siteHeader, homepage,event, aboutPage,  aboutSection, pressPage, getInvolvedPage, blockContent, contactPage, crisisPage, resourcesPage, footer ]
-
+export const schemaTypes = [
+  siteHeader,
+  homepage,
+  event,
+  aboutPage,
+  aboutSection,
+  pressPage,
+  getInvolvedPage,
+  blockContent,
+  contactPage,
+  preorderPage,
+  crisisPage,
+  resourcesPage,
+  footer,
+]
