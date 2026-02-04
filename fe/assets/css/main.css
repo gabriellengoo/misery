@@ -481,6 +481,8 @@ body.dark-mode {
   transform: rotate(22deg);
 }
 
+
+
 /* Float animations */
 @keyframes floatLeft {
   0%, 100% { transform: translate(0, 0) rotate(26deg); }

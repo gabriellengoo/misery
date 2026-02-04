@@ -30,7 +30,14 @@ export default {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Antic+Didone&display=swap",
       }
-    ]
+    ],
+    script: [
+      {
+        src: "https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js",
+        type: "module",
+        defer: true,
+      },
+    ],
     
   },
 

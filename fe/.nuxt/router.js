@@ -6,6 +6,7 @@ import scrollBehavior from './router.scrollBehavior.js'
 
 const _73e61194 = () => interopDefault(import('../pages/about/index.vue' /* webpackChunkName: "pages/about/index" */))
 const _fe1ee038 = () => interopDefault(import('../pages/contact.vue' /* webpackChunkName: "pages/contact" */))
+const _3861949d = () => interopDefault(import('../pages/cookbook.vue' /* webpackChunkName: "pages/cookbook" */))
 const _2ffaaf2f = () => interopDefault(import('../pages/crisis.vue' /* webpackChunkName: "pages/crisis" */))
 const _483a0f48 = () => interopDefault(import('../pages/events/index.vue' /* webpackChunkName: "pages/events/index" */))
 const _b68d7c6c = () => interopDefault(import('../pages/get-involved.vue' /* webpackChunkName: "pages/get-involved" */))
@@ -35,6 +36,10 @@ export const routerOptions = {
     path: "/contact",
     component: _fe1ee038,
     name: "contact"
+  }, {
+    path: "/cookbook",
+    component: _3861949d,
+    name: "cookbook"
   }, {
     path: "/crisis",
     component: _2ffaaf2f,

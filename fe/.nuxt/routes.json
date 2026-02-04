@@ -14,6 +14,13 @@
     "_name": "_fe1ee038"
   },
   {
+    "name": "cookbook",
+    "path": "/cookbook",
+    "component": "/Users/admin/Desktop/misery/fe/pages/cookbook.vue",
+    "chunkName": "pages/cookbook",
+    "_name": "_3861949d"
+  },
+  {
     "name": "crisis",
     "path": "/crisis",
     "component": "/Users/admin/Desktop/misery/fe/pages/crisis.vue",
