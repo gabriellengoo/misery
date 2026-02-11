@@ -16,6 +16,7 @@ const _5ca20469 = () => interopDefault(import('../pages/resources.vue' /* webpac
 const _48574696 = () => interopDefault(import('../pages/index.vue' /* webpackChunkName: "pages/index" */))
 const _722f704c = () => interopDefault(import('../pages/about/_slug.vue' /* webpackChunkName: "pages/about/_slug" */))
 const _46836e00 = () => interopDefault(import('../pages/events/_slug.vue' /* webpackChunkName: "pages/events/_slug" */))
+const _b6b7df38 = () => interopDefault(import('../pages/recipes/_slug.vue' /* webpackChunkName: "pages/recipes/_slug" */))
 
 const emptyFn = () => {}
 
@@ -76,6 +77,10 @@ export const routerOptions = {
     path: "/events/:slug",
     component: _46836e00,
     name: "events-slug"
+  }, {
+    path: "/recipes/:slug?",
+    component: _b6b7df38,
+    name: "recipes-slug"
   }],
 
   fallback: false

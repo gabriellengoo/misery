@@ -1,4 +1,4 @@
-import blockContent from './blockContent';
+import blockContent from './blockContent.js';
 
 export default {
   name: 'getInvolvedPage',

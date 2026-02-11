@@ -1,19 +1,20 @@
 
 
 
-import siteHeader from './header'
-import homepage from './homepage'
-import event from './event'
-import aboutPage from './aboutPage'
-import pressPage from './pressPage'
-import aboutSection from './aboutSection'
-import getInvolvedPage from './getInvolvedPage'
-import blockContent from './blockContent'
-import footer from './footer'
-import crisisPage from './crisisPage'
-import contactPage from './contactPage'
-import resourcesPage from './resourcesPage'
-import preorderPage from './preorderPage'
+import siteHeader from './header.js'
+import homepage from './homepage.js'
+import event from './event.js'
+import aboutPage from './aboutPage.js'
+import pressPage from './pressPage.js'
+import aboutSection from './aboutSection.js'
+import getInvolvedPage from './getInvolvedPage.js'
+import blockContent from './blockContent.js'
+import footer from './footer.js'
+import crisisPage from './crisisPage.js'
+import contactPage from './contactPage.js'
+import resourcesPage from './resourcesPage.js'
+import preorderPage from './preorderPage.js'
+import recipe from './recipe.js'
 
 export const schemaTypes = [
   siteHeader,
@@ -29,4 +30,5 @@ export const schemaTypes = [
   crisisPage,
   resourcesPage,
   footer,
+  recipe,
 ]

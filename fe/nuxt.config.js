@@ -122,15 +122,16 @@ export default {
         });
       }
     },
-    transpile: ['@portabletext/to-html'],
-    // build: {
+    transpile: ['@portabletext/to-html', '@nuxtjs/composition-api'],
+    alias: {
+      vue$: 'vue/dist/vue.runtime.esm.js',
+    },
     postcss: {
       plugins: {
         tailwindcss: {},
         autoprefixer: {},
       },
     },
-    // },
   },
 
   compatibilityDate: "2025-01-17",

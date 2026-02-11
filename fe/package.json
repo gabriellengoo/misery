@@ -39,7 +39,9 @@
         "vue-masonry-wall": "^0.3.2",
         "vue-scrollto": "^2.20.0",
         "vue-server-renderer": "^2.7.10",
-        "vue-template-compiler": "^2.7.10"
+        "vue-template-compiler": "^2.7.10",
+        "dompurify": "^3.0.0",
+        "jsdom": "^26.0.0"
     },
     "devDependencies": {
         "@babel/preset-env": "^7.24.0",

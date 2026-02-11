@@ -82,5 +82,12 @@
     "component": "/Users/admin/Desktop/misery/fe/pages/events/_slug.vue",
     "chunkName": "pages/events/_slug",
     "_name": "_46836e00"
+  },
+  {
+    "name": "recipes-slug",
+    "path": "/recipes/:slug?",
+    "component": "/Users/admin/Desktop/misery/fe/pages/recipes/_slug.vue",
+    "chunkName": "pages/recipes/_slug",
+    "_name": "_b6b7df38"
   }
 ]

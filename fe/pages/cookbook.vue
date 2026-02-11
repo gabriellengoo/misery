@@ -33,13 +33,13 @@
         src="/images/spoon.png"
         alt=""
         aria-hidden="true"
-        class="cookbook-spoon"
+        :class="['cookbook-spoon', { 'cookbook-spoon-hidden': started }]"
       />
-        <img
+      <img
         src="/images/spoon.png"
         alt=""
         aria-hidden="true"
-        class="cookbook-spoon2"
+        :class="['cookbook-spoon2', { 'cookbook-spoon-hidden': started }]"
       />
 
       <!-- FLOATING IMAGES (fade out when started) -->
@@ -90,18 +90,29 @@
             <Transition name="qa" mode="out-in">
               <div :key="currentNode.id" class="qa-card-wrap">
                 <!-- QUESTION NODE (circle) -->
-                <div v-if="currentNode.type === 'question'" class="qa-node qa-circle">
-                  <p class="qa-text">{{ currentNode.text }}</p>
+                <div v-if="currentNode.type === 'question'" class="qa-question-wrap">
+                  <div class="qa-node qa-circle">
+                    <p class="qa-text">{{ currentNode.text }}</p>
+                  </div>
 
-                  <div class="qa-options">
+                  <div class="qa-options qa-options--stars">
                     <button
                       v-for="opt in currentNode.options"
                       :key="opt.label"
                       type="button"
-                      class="qa-pill"
+                      class="qa-star-btn"
+                      :class="getStarTone(opt.label)"
                       @click="goNext(opt.nextId)"
                     >
-                      {{ opt.label }}
+                      <svg
+                        class="qa-star-icon"
+                        viewBox="0 0 32 32"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                      >
+                        <path d="M16 4.588l2.833 8.719H28l-7.416 5.387 2.832 8.719L16 22.023l-7.417 5.389 2.833-8.719L4 13.307h9.167L16 4.588z" />
+                      </svg>
+                      <span class="qa-star-label">{{ opt.label }}</span>
                     </button>
                   </div>
                 </div>
@@ -110,8 +121,27 @@
                 <div v-else class="qa-node qa-box">
                   <p class="qa-text">{{ currentNode.text }}</p>
 
+                  <div class="qa-result-meta" v-if="recipeLoading || selectedRecipe || recipeError">
+                    <p class="qa-result-note" v-if="recipeLoading">
+                      Selecting a recipe that honours your spoons...
+                    </p>
+                    <p class="qa-result-note" v-else-if="recipeError">
+                      {{ recipeError }}
+                    </p>
+                    <p class="qa-result-note" v-else>
+                      Redirecting you to {{ selectedRecipe.title }} ...
+                    </p>
+                  </div>
+
                   <div class="qa-options">
                     <button type="button" class="qa-pill" @click="restart">Restart</button>
+                    <nuxt-link
+                      v-if="recipeLink"
+                      :to="recipeLink"
+                      class="qa-pill qa-pill--primary"
+                    >
+                      View recipe
+                    </nuxt-link>
                   </div>
                 </div>
               </div>
@@ -131,7 +161,7 @@
     </section>
 
     <!-- ZINE TEXT (after existing content) -->
-    <section class="cookbook-zine" :class="{ 'is-hidden': started }" aria-label="Spoon Theory zine text">
+    <section v-if="!started" class="cookbook-zine" aria-label="Spoon Theory zine text">
       <div class="zine-inner">
         <p>
           Spoon Theory is especially important for people with chronic pain, fatigue, neurodivergence, limited mobility and invisible illnesses as it helps visualise and explain that:
@@ -202,7 +232,8 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import sanityClient from "@/plugins/sanity";
 
 const bodyClass = "cookbook-body-bg";
 
@@ -228,24 +259,12 @@ const starPresets = [
   { size: 126, top: "68%", left: "34%", rotate: "4deg", opacity: 0.77 },
 ];
 
+const deterministicFills = [hotPink, hotPink, "#ffffff", "#ffffff", "#ffffff"];
+
 function buildStars() {
-  const stars = starPresets.map((star) => ({
+  return starPresets.map((star, index) => ({
     ...star,
-    fill: starColors[Math.floor(Math.random() * starColors.length)],
-  }));
-
-  let pinkCount = stars.filter((star) => star.fill === hotPink).length;
-  if (pinkCount < 2) {
-    for (let i = 0; pinkCount < 2 && i < stars.length; i += 1) {
-      if (stars[i].fill !== hotPink) {
-        stars[i].fill = hotPink;
-        pinkCount += 1;
-      }
-    }
-  }
-
-  return stars.map((star) => ({
-    ...star,
+    fill: deterministicFills[index] ?? "#ffffff",
     style: {
       width: `${star.size}px`,
       height: `${star.size}px`,
@@ -260,6 +279,15 @@ function buildStars() {
 const stars = buildStars();
 const pinkStars = stars.filter((star) => star.fill === hotPink);
 const whiteStars = stars.filter((star) => star.fill !== hotPink);
+
+const selectedRecipe = ref(null);
+const recipeLoading = ref(false);
+const recipeError = ref("");
+const recipeLink = computed(() =>
+  selectedRecipe.value?.slug?.current ? `/recipes/${selectedRecipe.value.slug.current}` : ""
+);
+const navigationLock = ref(false);
+let recipeRequestToken = 0;
 
 const getStartHereDotLottie = () => startHereLottieRef.value?.dotLottie;
 
@@ -322,6 +350,9 @@ const nodes = {
     type: "result",
     text: "Wanna take a moment to do some gentle appetite regulation somatics on P.? (and then take yourself over here)",
     options: [],
+    meta: {
+      spoonMax: 1,
+    },
   },
   q2: {
     id: "q2",
@@ -337,6 +368,9 @@ const nodes = {
     type: "result",
     text: "Take a slow deep breath & checkout your food safety plan on P. We got this <3",
     options: [],
+    meta: {
+      spoonMax: 2,
+    },
   },
   q3: {
     id: "q3",
@@ -352,6 +386,10 @@ const nodes = {
     type: "result",
     text: "Maybe our crip guide to food shopping can help? Check it out on P. (you might want to look at this one too)",
     options: [],
+    meta: {
+      spoonMin: 2,
+      spoonMax: 3,
+    },
   },
 
   // A “hub” after home-food = yes (you can extend with the rest of the chart)
@@ -378,6 +416,9 @@ const nodes = {
     type: "result",
     text: "Okay—aim for soft/no-chew options (yogurt, soup, smoothies, porridge) + hydration.",
     options: [],
+    meta: {
+      spoonMax: 1,
+    },
   },
   q_heat: {
     id: "q_heat",
@@ -393,12 +434,18 @@ const nodes = {
     type: "result",
     text: "Cool—go for the fastest heated thing you trust (microwave, toaster, air fryer, kettle).",
     options: [],
+    meta: {
+      spoonMin: 2,
+    },
   },
   r_noheat: {
     id: "r_noheat",
     type: "result",
     text: "No-heat win: something grabby + safe (fruit, bread + spread, cereal, ready snacks).",
     options: [],
+    meta: {
+      spoonMax: 2,
+    },
   },
   q_energy: {
     id: "q_energy",
@@ -451,12 +498,18 @@ const nodes = {
     type: "result",
     text: "Okay—longer cook vibes. Pick a comfort recipe and take it slow.",
     options: [],
+    meta: {
+      spoonMin: 3,
+    },
   },
   r_quick: {
     id: "r_quick",
     type: "result",
     text: "Quick win: choose the fastest thing that feels safe + satisfying.",
     options: [],
+    meta: {
+      spoonMax: 3,
+    },
   },
 };
 
@@ -482,6 +535,106 @@ function restart() {
   started.value = false;
   // allow fade out/in nicely
   setTimeout(() => startFlow(), 250);
+  resetRecipeSelection();
+}
+
+function getStarTone(label) {
+  const normalized = label.toLowerCase();
+  if (/yes|yeah|yep|yum|sure/.test(normalized)) {
+    return "qa-star-btn--yes";
+  }
+
+  if (/no|nah|not|nope/.test(normalized)) {
+    return "qa-star-btn--no";
+  }
+
+  return "qa-star-btn--no";
+}
+
+watch(
+  currentNodeId,
+  (id) => {
+    const node = nodes[id];
+    if (started.value && node?.type === "result") {
+      fetchRecipeForNode(node);
+    } else {
+      resetRecipeSelection();
+    }
+  }
+);
+
+watch(started, (isStarted) => {
+  if (!isStarted) {
+    resetRecipeSelection();
+    return;
+  }
+
+  if (currentNode.value?.type === "result") {
+    fetchRecipeForNode(currentNode.value);
+  }
+});
+
+function resetRecipeSelection() {
+  selectedRecipe.value = null;
+  recipeError.value = "";
+  recipeLoading.value = false;
+  recipeRequestToken += 1;
+  navigationLock.value = false;
+}
+
+async function fetchRecipeForNode(node) {
+  if (!node) return;
+  const meta = node.meta || {};
+  const spoonMin = Math.max(0, meta.spoonMin ?? 0);
+  const spoonMax = Math.min(5, meta.spoonMax ?? 5);
+  const veganFilter = typeof meta.vegan === "boolean" ? meta.vegan : null;
+
+  recipeLoading.value = true;
+  recipeError.value = "";
+  selectedRecipe.value = null;
+  const requestId = ++recipeRequestToken;
+
+  const filters = [
+    `_type == "recipe"`,
+    `spoonLevel >= $spoonMin`,
+    `spoonLevel <= $spoonMax`,
+  ];
+  if (veganFilter === true) {
+    filters.push("vegan == true");
+  } else if (veganFilter === false) {
+    filters.push("vegan == false");
+  }
+
+  const query = `*[${filters.join(" && ")}] | order(spoonLevel asc, _createdAt desc)[0]{ title, slug, chef, spoonLevel, vegan }`;
+
+  try {
+    const recipe = await sanityClient.fetch(query, { spoonMin, spoonMax });
+    if (recipeRequestToken !== requestId) return;
+    if (recipe) {
+      selectedRecipe.value = recipe;
+      recipeError.value = "";
+      if (!navigationLock.value) {
+        const slug = recipe.slug?.current;
+        if (slug) {
+          navigationLock.value = true;
+          if (typeof window !== "undefined") {
+            window.location.href = `/recipes/${slug}`;
+          }
+        } else {
+          recipeError.value = "We found a match but couldn't build a slug yet.";
+        }
+      }
+    } else {
+      recipeError.value = "No recipe match for that flow yet — try another thread or restart.";
+    }
+  } catch (error) {
+    if (recipeRequestToken !== requestId) return;
+    recipeError.value = error?.message ?? "Unable to load a recipe.";
+  } finally {
+    if (recipeRequestToken === requestId) {
+      recipeLoading.value = false;
+    }
+  }
 }
 </script>
 
@@ -604,6 +757,12 @@ function restart() {
     z-index: 2;
     pointer-events: none;
     animation: cookbook-spoon2-bounce 5.3s ease-in-out infinite;
+}
+
+.cookbook-spoon-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 240ms ease;
 }
 
 @keyframes cookbook-spoon-bounce {
@@ -744,6 +903,18 @@ width: 20vw;
   justify-items: center;
 }
 
+.qa-card-wrap {
+  width: 100%;
+}
+
+.qa-question-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
 /* node base */
 .qa-node {
   width: 100%;
@@ -755,16 +926,18 @@ width: 20vw;
 
 /* circle style (question) */
 .qa-circle {
-  width: min(440px, 92vw);
+  width: min(300px, 70vw);
   aspect-ratio: 1 / 1;
   border-radius: 999px;
-  display: grid;
-  align-content: center;
-  gap: 14px;
-
-  background: rgba(255, 192, 216, 0.88); /* pastel pink */
-  border: 4px solid rgba(140, 120, 190, 0.75); /* purple-ish */
+  background: #eaaab9;
+  border: 3px solid #9e88b7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(24px, 4vw, 32px);
   animation: qa-circle-pulse 4s ease-in-out infinite;
+  box-shadow: 0 25px 35px rgba(0, 0, 0, 0.2);
 }
 
 /* dashed rounded box style (result) */
@@ -776,9 +949,10 @@ width: 20vw;
 
 .qa-text {
   margin: 0;
-  font-size: 16px;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
   line-height: 1.35;
-  color: rgba(90, 40, 70, 0.92);
+  color: #c33770;
+  font-weight: 600;
 }
 
 .qa-options {
@@ -787,6 +961,80 @@ width: 20vw;
   justify-content: center;
   gap: 10px;
   margin-top: 12px;
+   font-weight: 600;
+}
+
+.qa-result-meta {
+  margin: 12px 0 4px;
+  min-height: 26px;
+}
+
+.qa-result-note {
+  margin: 0;
+  font-size: clamp(0.75rem, 1vw, 0.95rem);
+  text-transform: lowercase;
+  color: rgba(195, 56, 110, 0.9);
+}
+
+.qa-options.qa-options--stars {
+  margin-top: 0;
+  gap: 16px;
+}
+
+.qa-star-btn {
+  border: none;
+  background: transparent;
+  position: relative;
+  width: clamp(72px, 10vw, 120px);
+  height: clamp(72px, 10vw, 120px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 220ms ease, filter 220ms ease;
+  color: #ff4fb8;
+}
+
+.qa-star-btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 6px;
+  border-radius: 999px;
+}
+
+.qa-star-icon {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.25));
+  transition: transform 200ms ease;
+}
+
+.qa-star-btn:hover .qa-star-icon,
+.qa-star-btn:focus-visible .qa-star-icon {
+  transform: scale(1.05);
+}
+
+.qa-star-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-size: clamp(0.65rem, 1vw, 0.9rem);
+  font-family: "Inter", sans-serif;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  text-transform: lowercase;
+}
+
+.qa-star-btn--yes {
+  color: #57ab54;
+}
+
+.qa-star-btn--no {
+  color: #c3386e;
 }
 
 .qa-pill {
@@ -804,6 +1052,17 @@ width: 20vw;
   transform: translateY(-1px);
 }
 
+.qa-pill--primary {
+  background: #ff4fb8;
+  border-color: #ff4fb8;
+  color: #fff;
+  margin-left: 4px;
+  box-shadow: 0 10px 25px rgba(255, 79, 184, 0.35);
+}
+.qa-pill--primary:hover {
+  transform: translateY(-2px);
+}
+
 .qa-pill:focus-visible {
   outline: 2px solid rgba(255, 79, 184, 0.9);
   outline-offset: 4px;
@@ -812,7 +1071,7 @@ width: 20vw;
 @keyframes qa-circle-pulse {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(255, 79, 184, 0.35);
+    box-shadow: 0 0 0 0 #9e88b798;
   }
   50% {
     transform: scale(1.02);
@@ -931,15 +1190,6 @@ width: 20vw;
   .zine-inner {
     column-count: 1;
   }
-}
-
-/* optional: hide zine text while questionnaire is active (cleaner) */
-.cookbook-page .cookbook-zine {
-  transition: opacity 250ms ease;
-}
-.cookbook-page .cookbook-zine.is-hidden {
-  opacity: 0;
-  pointer-events: none;
 }
 
 
