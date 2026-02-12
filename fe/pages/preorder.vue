@@ -17,10 +17,10 @@
 
     <div class="preorder-shell">
       <header class="preorder-hero">
-        <p class="hero-eyebrow">preorder our cookbook!</p>
-        <h1 class="hero-title">preorder our cookbook!</h1>
+        <p class="hero-eyebrow">pre-order Misery Meals!</p>
+        <h1 class="hero-title">pre-order Misery Meals!</h1>
         <p class="hero-description">
-          A handcrafted collection of queer recipes, rituals, and the anarchic energy that fuels Misery.
+          Misery Meals is a handcrafted collection of queer recipes, rituals, and the anarchic energy that fuels Misery.
           The limited print run is almost ready—reserve your copy now and we will update your inbox with drop
           details and community shout-outs.
         </p>
@@ -47,13 +47,17 @@
         <p class="card-label">newsletter</p>
         <h2>stay in the loop</h2>
         <p class="portable-text">
-          Subscribe for dispatch updates, early access, and queer-affirming secret codes from the Misery
-          crew—vibes, no spam, just solidarity.
+          we are a mental health collective, outdoor education programme, ancestral wisdom hub & sober rave by
+          & for queer/trans people of the global majority, based in ldn @miseryparty
         </p>
-        <form action="https://formspree.io/f/mjvlyreg" method="POST" target="_blank">
-          <input type="email" name="email" placeholder="your email" required />
-          <button type="submit">subscribe</button>
-        </form>
+        <a
+          class="subscribe-btn"
+          href="https://miseryparty.substack.com/subscribe"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          subscribe
+        </a>
       </section>
     </div>
   </div>
@@ -256,47 +260,19 @@ export default {
   color: rgba(255, 255, 255, 0.9);
 }
 
-.newsletter-card form {
+.subscribe-btn {
+  display: inline-flex;
   margin-top: 1.25rem;
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.newsletter-card input[type='email'] {
-  flex: 1 1 220px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: white;
-  padding: 0.75rem 1.25rem;
-  border-radius: 999px;
-  font-size: 1rem;
-  outline: none;
-  transition: border-color 0.2s ease;
-}
-
-.newsletter-card input::placeholder {
-  color: rgba(255, 255, 255, 0.45);
-}
-
-.newsletter-card input:focus {
-  border-color: #9efcff;
-}
-
-.newsletter-card button {
-  flex: 0 0 auto;
   padding: 0.75rem 1.75rem;
   border-radius: 999px;
-  border: none;
   text-transform: lowercase;
+  font-weight: 600;
   background: linear-gradient(120deg, #39c1d3, #ff73f0);
   color: #050505;
-  font-weight: 600;
-  cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.newsletter-card button:hover {
+.subscribe-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 15px 35px rgba(80, 9, 110, 0.25);
 }
@@ -336,15 +312,6 @@ export default {
     padding: 1.5rem;
   }
 
-  .newsletter-card form {
-  flex-direction: column;
-}
-
-.newsletter-card input,
-.newsletter-card button {
-    width: 100%;
-    flex: 1 1 0;
-  }
 }
 
 .coming-soon-text {
