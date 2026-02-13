@@ -148,6 +148,11 @@ export default {
   padding: 5rem 5vw 6rem;
   color: white;
   overflow: hidden;
+  background-image: url('/images/micbg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 .overlay-bg {
@@ -320,5 +325,17 @@ export default {
   color: rgba(255, 255, 255, 0.6);
   text-transform: lowercase;
   margin: 0;
+}
+
+:global(body) {
+  background-image: url('/images/bgmis.png'), url('/images/micbg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  width: 100%;
+  height: 100vh;
+  font-family: 'Syne', sans-serif;
+  min-height: 100vh !important;
 }
 </style>
