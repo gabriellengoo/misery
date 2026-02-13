@@ -1,6 +1,6 @@
 <template>
   <div class="coming-soon-page">
-    <p class="coming-soon-text">coming soon</p>
+    <p class="coming-soon-text">coming soon <3 </p>
   </div>
 </template>
 
@@ -25,8 +25,8 @@ export default {
   margin: 0;
   font-size: clamp(2.5rem, 6vw, 6rem);
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  /* letter-spacing: 0.08em; */
+  /* text-transform: uppercase; */
   color: #111;
 }
 </style>

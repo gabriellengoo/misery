@@ -64,12 +64,14 @@
 </template>
 
 <script>
+const SHOPWIRED_PREORDER_URL = 'https://misery-2.myshopwired.com/';
+
 export default {
   layout: 'preorder',
   data() {
     return {
-      preorderLink: '',
-      hasLink: false,
+      preorderLink: SHOPWIRED_PREORDER_URL,
+      hasLink: true,
       floatingImages: [
         {
           className: 'img-right',
@@ -125,8 +127,10 @@ export default {
     const doc = await this.$sanity.fetch(query);
     if (doc?.preorderLink) {
       this.preorderLink = doc.preorderLink;
-      this.hasLink = true;
+    } else {
+      this.preorderLink = SHOPWIRED_PREORDER_URL;
     }
+    this.hasLink = true;
   },
   computed: {
     preorderHref() {

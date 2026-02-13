@@ -11,14 +11,15 @@
       "dest": "/preorder"
     },
     {
-      "src": "/.*",
-      "has": [{ "type": "host", "value": "miseryparty.org" }],
-      "dest": "/coming-soon"
+      "src": "/(.*)",
+      "has": [{ "type": "host", "value": "www.miseryparty.org" }],
+      "status": 308,
+      "dest": "https://miseryparty.org/$1"
     },
     {
       "src": "/.*",
-      "has": [{ "type": "host", "value": "www.miseryparty.org" }],
-      "dest": "/coming-soon"
+      "has": [{ "type": "host", "value": "miseryparty.org" }],
+      "dest": "/comingsoon"
     }
   ]
 }
