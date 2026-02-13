@@ -159,7 +159,7 @@ export default {
   padding: 5rem 5vw 6rem;
   color: white;
   overflow: hidden;
-  background-image:url('/images/micbg.png'), url('/images/bgmis.png');
+  background-image:url('https://i.ibb.co/QFVGVJ8p/micbg.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

@@ -1,9 +1,24 @@
 {
-  "redirects": [
+  "routes": [
     {
-      "source": "/((?!preorder).*)",
-      "destination": "/preorder",
-      "permanent": false
+      "src": "/(_nuxt/.*|_next/.*|assets/.*|images/.*|favicon.ico|robots.txt|sitemap.xml)",
+      "dest": "/$1"
+    },
+
+    {
+      "src": "/.*",
+      "has": [{ "type": "host", "value": "preorder.miseryparty.org" }],
+      "dest": "/preorder"
+    },
+    {
+      "src": "/.*",
+      "has": [{ "type": "host", "value": "miseryparty.org" }],
+      "dest": "/coming-soon"
+    },
+    {
+      "src": "/.*",
+      "has": [{ "type": "host", "value": "www.miseryparty.org" }],
+      "dest": "/coming-soon"
     }
   ]
 }

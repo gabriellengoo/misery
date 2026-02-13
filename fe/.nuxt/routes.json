@@ -7,6 +7,13 @@
     "_name": "_73e61194"
   },
   {
+    "name": "coming-soon",
+    "path": "/coming-soon",
+    "component": "/Users/admin/Desktop/misery/fe/pages/coming-soon.vue",
+    "chunkName": "pages/coming-soon",
+    "_name": "_120251ea"
+  },
+  {
     "name": "contact",
     "path": "/contact",
     "component": "/Users/admin/Desktop/misery/fe/pages/contact.vue",
