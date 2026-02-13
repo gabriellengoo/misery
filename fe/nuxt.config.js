@@ -1,3 +1,5 @@
+const baseURL = process.env.NUXT_PUBLIC_BASE_URL || "/";
+
 export default {
   // Target: https://go.nuxtjs.dev/config-target
   // target: 'static',
@@ -42,7 +44,7 @@ export default {
   },
 
   app: {
-    baseURL: "/misery/",
+    baseURL,
   },
 
   // Alternatively, ensure static is used correctly

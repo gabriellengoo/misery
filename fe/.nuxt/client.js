@@ -229,7 +229,7 @@ function resolveComponents (route) {
 }
 
 function callMiddleware (Components, context, layout, renderState) {
-  let midd = []
+  let midd = ["preorderRedirect"]
   let unknownMiddleware = false
 
   // If layout is undefined, only call global middleware

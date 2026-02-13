@@ -147,7 +147,7 @@ const render404Page = () => {
   /*
   ** Call global middleware (nuxt.config.js)
   */
-  let midd = []
+  let midd = ["preorderRedirect"]
     midd = midd.map((name) => {
       if (typeof name === 'function') {
         return name
