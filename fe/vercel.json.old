@@ -1,0 +1,9 @@
+// {
+//   "redirects": [
+//     {
+//       "source": "/((?!preorder).*)",
+//       "destination": "/preorder",
+//       "permanent": false
+//     }
+//   ]
+// }
