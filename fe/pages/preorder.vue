@@ -117,6 +117,7 @@ export default {
           alt: 'floating arc',
         },
       ],
+      bodyClass: 'preorder-body-bg',
     };
   },
   async fetch() {
@@ -138,6 +139,16 @@ export default {
       return this.hasLink ? 'noopener noreferrer' : undefined;
     },
   },
+  mounted() {
+    if (process.client) {
+      document.body.classList.add(this.bodyClass);
+    }
+  },
+  beforeDestroy() {
+    if (process.client) {
+      document.body.classList.remove(this.bodyClass);
+    }
+  },
 };
 </script>
 
@@ -148,7 +159,7 @@ export default {
   padding: 5rem 5vw 6rem;
   color: white;
   overflow: hidden;
-  background-image: url('/images/micbg.png');
+  background-image:url('/images/micbg.png'), url('/images/bgmis.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -327,7 +338,10 @@ export default {
   margin: 0;
 }
 
-:global(body) {
+</style>
+
+<style>
+.preorder-body-bg {
   background-image: url('/images/bgmis.png'), url('/images/micbg.png');
   background-size: cover;
   background-position: center;
