@@ -76,6 +76,7 @@ export default {
   ],
 
   router: {
+    middleware: ["preorderRedirect"],
     scrollBehavior(to, from, savedPosition) {
       // If the user used browser back/forward, restore saved position
       if (savedPosition) {
