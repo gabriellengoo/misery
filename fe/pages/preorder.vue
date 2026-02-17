@@ -17,12 +17,10 @@
 
     <div class="preorder-shell">
       <header class="preorder-hero">
-        <p class="hero-eyebrow">pre-order Misery Meals!</p>
-        <h1 class="hero-title">pre-order Misery Meals!</h1>
+        <p class="hero-eyebrow">pre-order our cookbook!</p>
+        <h1 class="hero-title">pre-order our cookbook!</h1>
         <p class="hero-description">
-          Misery Meals is a handcrafted collection of queer recipes, rituals, and the anarchic energy that fuels Misery.
-          The limited print run is almost ready—reserve your copy now and we will update your inbox with drop
-          details and community shout-outs.
+      misery meals is a choose-your-own-adventure collection of recipes, art and resources by mad and disabled, queer and trans, global majority people world-over, to be used always, but especially when we’re feeling miserable. This is an intuitive guide for when we need to eat but aren’t sure exactly when or what or fucking how.
         </p>
 
         <div class="hero-actions">
@@ -37,8 +35,7 @@
             pre order link
           </a>
           <p class="coming-soon-text">
-            coming soon: collective shipping windows, prideful notes, and sneak peeks—locked in via the
-            newsletter below.
+           preorder currently only available uk-wide. sign up to newsletter to hear when we go international!
           </p>
         </div>
       </header>
@@ -47,8 +44,7 @@
         <p class="card-label">newsletter</p>
         <h2>stay in the loop</h2>
         <p class="portable-text">
-          we are a mental health collective, outdoor education programme, ancestral wisdom hub & sober rave by
-          & for queer/trans people of the global majority, based in ldn @miseryparty
+    everything we do is announced through our newsletter first! sign up for event tickets, book updates, our monthly misery messageboard and more <3
         </p>
         <a
           class="subscribe-btn"
