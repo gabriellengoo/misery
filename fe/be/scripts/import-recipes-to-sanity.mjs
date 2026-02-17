@@ -1,15 +1,18 @@
 #!/usr/bin/env node
-import fs from 'node:fs/promises'
-import path from 'node:path'
 import {createClient} from '@sanity/client'
 import config from '../sanity.config.js'
 
-const DATA_FILE = path.resolve(process.cwd(), 'data', 'recipes.json')
 const SANITY_TOKEN =
   process.env.SANITY_API_TOKEN || process.env.SANITY_WRITE_TOKEN || process.env.SANITY_TOKEN
+const RECIPE_SHEET_ENDPOINT =
+  process.env.RECIPE_SHEET_ENDPOINT || process.env.DOC_EXPORT_ENDPOINT || ''
 
 if (!SANITY_TOKEN) {
   throw new Error('Set SANITY_API_TOKEN (or SANITY_WRITE_TOKEN) before running this script')
+}
+
+if (!RECIPE_SHEET_ENDPOINT) {
+  throw new Error('Set RECIPE_SHEET_ENDPOINT (or DOC_EXPORT_ENDPOINT) before running this script')
 }
 
 const client = createClient({
@@ -43,7 +46,7 @@ function getValue(row, keys) {
   for (const key of keys) {
     if (!key) continue
     const lookup = key.trim().toLowerCase()
-    if (row[lookup]) {
+    if (row[lookup] !== undefined && row[lookup] !== null && row[lookup] !== '') {
       return row[lookup]
     }
   }
@@ -60,20 +63,39 @@ function parseSpoonLevel(raw) {
 
 function parseVegan(raw) {
   if (typeof raw !== 'string') return Boolean(raw)
-  return /^(y(es)?|true)$/i.test(raw.trim())
+  return /^(y(es)?|true|vegan)$/i.test(raw.trim())
 }
 
-async function loadRecipes() {
-  const file = await fs.readFile(DATA_FILE, 'utf8')
-  const rows = JSON.parse(file)
-  if (!Array.isArray(rows) || !rows.length) {
-    throw new Error(`No rows found in ${DATA_FILE}`)
+function normalizeEndpoint(base, includeDocs = true) {
+  const separator = base.includes('?') ? '&' : '?'
+  const suffix = includeDocs
+    ? 'mode=recipes&includeDocs=true&docFormat=both'
+    : 'mode=recipes'
+  return `${base}${separator}${suffix}`
+}
+
+async function loadRecipesFromEndpoint() {
+  const endpoint = normalizeEndpoint(RECIPE_SHEET_ENDPOINT, true)
+  const response = await fetch(endpoint)
+  if (!response.ok) {
+    throw new Error(`Recipe endpoint failed with ${response.status}`)
   }
+
+  const payload = await response.json()
+  if (!payload?.ok) {
+    throw new Error(payload?.error || 'Recipe endpoint returned an error')
+  }
+
+  const rows = Array.isArray(payload.recipes) ? payload.recipes : []
+  if (!rows.length) {
+    throw new Error('No recipe rows returned from recipe endpoint')
+  }
+
   return rows.map(normalizeRow)
 }
 
 async function importRecipe(batchRow, index) {
-  const title = getValue(batchRow, ['recipe name', 'recipe', 'title', 'name'])
+  const title = getValue(batchRow, ['recipe name', 'recipename', 'recipe', 'title', 'name'])
   if (!title) {
     console.warn(`Skipping row ${index + 1}: missing title`)
     return null
@@ -90,14 +112,14 @@ async function importRecipe(batchRow, index) {
   const vegan = parseVegan(getValue(batchRow, ['vn', 'vegan']))
   const extras = getValue(batchRow, ['extras?', 'extras', 'notes']) || ''
   const docUrl = getValue(batchRow, ['doc url', 'docUrl', 'google doc', 'doc'])
+  const contentText = getValue(batchRow, ['contenttext', 'content text'])
+  const contentHtml = getValue(batchRow, ['contenthtml', 'content html'])
   const voiceNoteUrl = getValue(batchRow, [
     'voice note url',
     'voice note',
     'voicenote',
     'audio link',
   ])
-  const content = getValue(batchRow, ['content', 'recipe details', 'details'])
-
   const payload = {
     _id: `recipe-${slug}`,
     _type: 'recipe',
@@ -112,7 +134,9 @@ async function importRecipe(batchRow, index) {
     extras: extras || undefined,
     docUrl: docUrl || undefined,
     voiceNoteUrl: voiceNoteUrl || undefined,
-    content: content || undefined,
+    contentText: contentText || undefined,
+    contentHtml: contentHtml || undefined,
+    content: contentText || undefined,
   }
 
   await client.createOrReplace(payload)
@@ -121,7 +145,8 @@ async function importRecipe(batchRow, index) {
 }
 
 async function main() {
-  const rows = await loadRecipes()
+  const rows = await loadRecipesFromEndpoint()
+  console.log(`Loaded ${rows.length} recipe row(s) from Apps Script endpoint`)
   for (const [index, row] of rows.entries()) {
     // eslint-disable-next-line no-await-in-loop -- keep imports serial for easier debugging
     await importRecipe(row, index)

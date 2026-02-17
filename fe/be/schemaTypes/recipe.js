@@ -66,6 +66,13 @@ export default {
       description: 'Paste the full recipe/notes that you want to appear on the recipe page',
     },
     {
+      name: 'contentText',
+      title: 'Doc content (text)',
+      type: 'text',
+      rows: 10,
+      description: 'Imported plain text from the Google Doc',
+    },
+    {
       name: 'docUrl',
       title: 'Doc URL',
       type: 'url',
