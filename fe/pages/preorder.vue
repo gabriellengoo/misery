@@ -60,7 +60,7 @@
 </template>
 
 <script>
-const SHOPWIRED_PREORDER_URL = 'https://misery-2.myshopwired.com/';
+const SHOPWIRED_PREORDER_URL = 'cookbook.miseryparty.org';
 
 export default {
   layout: 'preorder',
