@@ -6,9 +6,10 @@
     },
 
     {
-      "src": "/.*",
+      "src": "^/$",
       "has": [{ "type": "host", "value": "preorder.miseryparty.org" }],
-      "dest": "/preorder"
+      "status": 308,
+      "dest": "https://preorder.miseryparty.org/preorder"
     },
     {
       "src": "/(.*)",
