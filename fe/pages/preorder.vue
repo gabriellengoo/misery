@@ -60,7 +60,24 @@
 </template>
 
 <script>
-const SHOPWIRED_PREORDER_URL = 'cookbook.miseryparty.org';
+const SHOPWIRED_PREORDER_URL = 'https://cookbook.miseryparty.org';
+
+function normalizeExternalUrl(url) {
+  if (!url || typeof url !== 'string') {
+    return '';
+  }
+
+  const trimmed = url.trim();
+  if (!trimmed) {
+    return '';
+  }
+
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+
+  return `https://${trimmed.replace(/^\/+/, '')}`;
+}
 
 export default {
   layout: 'preorder',
@@ -130,7 +147,7 @@ export default {
   },
   computed: {
     preorderHref() {
-      return this.hasLink ? this.preorderLink : '#';
+      return this.hasLink ? normalizeExternalUrl(this.preorderLink) : '#';
     },
     preorderTarget() {
       return this.hasLink ? '_blank' : undefined;
