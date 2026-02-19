@@ -13,6 +13,7 @@ const _483a0f48 = () => interopDefault(import('../pages/events/index.vue' /* web
 const _b68d7c6c = () => interopDefault(import('../pages/get-involved.vue' /* webpackChunkName: "pages/get-involved" */))
 const _48c8d3f7 = () => interopDefault(import('../pages/preorder.vue' /* webpackChunkName: "pages/preorder" */))
 const _423ea187 = () => interopDefault(import('../pages/press.vue' /* webpackChunkName: "pages/press" */))
+const _b34a9ca8 = () => interopDefault(import('../pages/recipes/index.vue' /* webpackChunkName: "pages/recipes/index" */))
 const _5ca20469 = () => interopDefault(import('../pages/resources.vue' /* webpackChunkName: "pages/resources" */))
 const _48574696 = () => interopDefault(import('../pages/index.vue' /* webpackChunkName: "pages/index" */))
 const _722f704c = () => interopDefault(import('../pages/about/_slug.vue' /* webpackChunkName: "pages/about/_slug" */))
@@ -67,6 +68,10 @@ export const routerOptions = {
     component: _423ea187,
     name: "press"
   }, {
+    path: "/recipes",
+    component: _b34a9ca8,
+    name: "recipes"
+  }, {
     path: "/resources",
     component: _5ca20469,
     name: "resources"
@@ -83,7 +88,7 @@ export const routerOptions = {
     component: _46836e00,
     name: "events-slug"
   }, {
-    path: "/recipes/:slug?",
+    path: "/recipes/:slug",
     component: _b6b7df38,
     name: "recipes-slug"
   }],

@@ -81,6 +81,9 @@
             START HERE
           </span>
         </button>
+        <nuxt-link class="skip-qa-btn" to="/recipes">
+          Skip questionnaire
+        </nuxt-link>
       </div>
 
       <!-- QUESTIONNAIRE -->
@@ -102,7 +105,7 @@
                       type="button"
                       class="qa-star-btn"
                       :class="getStarTone(opt.label)"
-                      @click="goNext(opt.nextId)"
+                      @click="goNext(opt)"
                     >
                       <svg
                         class="qa-star-icon"
@@ -121,26 +124,30 @@
                 <div v-else class="qa-node qa-box">
                   <p class="qa-text">{{ currentNode.text }}</p>
 
-                  <div class="qa-result-meta" v-if="recipeLoading || selectedRecipe || recipeError">
-                    <p class="qa-result-note" v-if="recipeLoading">
-                      Selecting a recipe that honours your spoons...
-                    </p>
-                    <p class="qa-result-note" v-else-if="recipeError">
-                      {{ recipeError }}
-                    </p>
-                    <p class="qa-result-note" v-else>
-                      Redirecting you to {{ selectedRecipe.title }} ...
+                  <div class="qa-result-meta">
+                    <p class="qa-result-note">
+                      Spoon level:
+                      <span class="qa-spoon-icons" :aria-label="`${spoonScore} spoons`">
+                        <img
+                          v-for="n in spoonScore"
+                          :key="`qa-spoon-${n}`"
+                          src="/images/spoon.png"
+                          alt=""
+                          aria-hidden="true"
+                          class="qa-spoon-icon"
+                        />
+                        <span v-if="spoonScore === 0">0</span>
+                      </span>
                     </p>
                   </div>
 
                   <div class="qa-options">
                     <button type="button" class="qa-pill" @click="restart">Restart</button>
                     <nuxt-link
-                      v-if="recipeLink"
-                      :to="recipeLink"
+                      :to="recipesLink"
                       class="qa-pill qa-pill--primary"
                     >
-                      View recipe
+                      See recipes
                     </nuxt-link>
                   </div>
                 </div>
@@ -154,6 +161,9 @@
               <button type="button" class="qa-link" @click="restart">
                 Restart
               </button>
+              <nuxt-link class="qa-link qa-link--pill" to="/recipes">
+                Skip questionnaire
+              </nuxt-link>
             </div>
           </div>
         </section>
@@ -233,7 +243,6 @@
 
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import sanityClient from "@/plugins/sanity";
 
 const bodyClass = "cookbook-body-bg";
 
@@ -279,15 +288,9 @@ function buildStars() {
 const stars = buildStars();
 const pinkStars = stars.filter((star) => star.fill === hotPink);
 const whiteStars = stars.filter((star) => star.fill !== hotPink);
-
-const selectedRecipe = ref(null);
-const recipeLoading = ref(false);
-const recipeError = ref("");
-const recipeLink = computed(() =>
-  selectedRecipe.value?.slug?.current ? `/recipes/${selectedRecipe.value.slug.current}` : ""
-);
-const navigationLock = ref(false);
-let recipeRequestToken = 0;
+const defaultSpoonScore = 3;
+const spoonScore = ref(defaultSpoonScore);
+const recipesLink = computed(() => ({ path: "/recipes", query: { spoons: spoonScore.value } }));
 
 const getStartHereDotLottie = () => startHereLottieRef.value?.dotLottie;
 
@@ -341,8 +344,8 @@ const nodes = {
     type: "question",
     text: "Do you want to eat?",
     options: [
-      { label: "yes", nextId: "q2" },
-      { label: "no", nextId: "r_appetite" },
+      { label: "yes", nextId: "q2", spoonsDelta: 0 },
+      { label: "no", nextId: "r_appetite", spoonsSet: 1 },
     ],
   },
   r_appetite: {
@@ -359,8 +362,8 @@ const nodes = {
     type: "question",
     text: "Do you feel like you can nourish yourself alone right now?",
     options: [
-      { label: "yes", nextId: "q3" },
-      { label: "no", nextId: "r_safety" },
+      { label: "yes", nextId: "q3", spoonsDelta: 0 },
+      { label: "no", nextId: "r_safety", spoonsSet: 2 },
     ],
   },
   r_safety: {
@@ -377,8 +380,8 @@ const nodes = {
     type: "question",
     text: "Do you have enough food at home?",
     options: [
-      { label: "yes", nextId: "q4" },
-      { label: "no", nextId: "r_shopping" },
+      { label: "yes", nextId: "q4", spoonsDelta: 0 },
+      { label: "no", nextId: "r_shopping", spoonsDelta: -1 },
     ],
   },
   r_shopping: {
@@ -398,8 +401,8 @@ const nodes = {
     type: "question",
     text: "Do you feel able to get out of bed?",
     options: [
-      { label: "yes", nextId: "q_energy" },
-      { label: "not really", nextId: "q_chew" },
+      { label: "yes", nextId: "q_energy", spoonsDelta: 1 },
+      { label: "not really", nextId: "q_chew", spoonsSet: 1 },
     ],
   },
   q_chew: {
@@ -407,8 +410,8 @@ const nodes = {
     type: "question",
     text: "Do you feel up for chewing?",
     options: [
-      { label: "yeah", nextId: "q_heat" },
-      { label: "no", nextId: "r_soft" },
+      { label: "yeah", nextId: "q_heat", spoonsDelta: 0 },
+      { label: "no", nextId: "r_soft", spoonsSet: 1 },
     ],
   },
   r_soft: {
@@ -425,8 +428,8 @@ const nodes = {
     type: "question",
     text: "Can you be bothered to heat something up right now?",
     options: [
-      { label: "yeah", nextId: "r_heat_yes" },
-      { label: "no", nextId: "r_noheat" },
+      { label: "yeah", nextId: "r_heat_yes", spoonsDelta: 0 },
+      { label: "no", nextId: "r_noheat", spoonsDelta: -1 },
     ],
   },
   r_heat_yes: {
@@ -452,8 +455,8 @@ const nodes = {
     type: "question",
     text: "Do you feel like you have the energy to try something new today?",
     options: [
-      { label: "yum / yes", nextId: "q_when" },
-      { label: "nah", nextId: "q_steps" },
+      { label: "yum / yes", nextId: "q_when", spoonsDelta: 1 },
+      { label: "nah", nextId: "q_steps", spoonsDelta: -1 },
     ],
   },
   q_steps: {
@@ -461,8 +464,8 @@ const nodes = {
     type: "question",
     text: "Are you in a space where you can follow multi-step instruction?",
     options: [
-      { label: "yes", nextId: "q_when" },
-      { label: "nope (2–3 steps max)", nextId: "q_when" },
+      { label: "yes", nextId: "q_when", spoonsDelta: 1 },
+      { label: "nope (2–3 steps max)", nextId: "q_when", spoonsDelta: -1 },
     ],
   },
   q_when: {
@@ -470,8 +473,8 @@ const nodes = {
     type: "question",
     text: "How soon do you want something in your mouth?",
     options: [
-      { label: "within 30 mins", nextId: "q_vibe" },
-      { label: "i could wait up to an hour", nextId: "q_vibe" },
+      { label: "within 30 mins", nextId: "q_vibe", spoonsDelta: -1 },
+      { label: "i could wait up to an hour", nextId: "q_vibe", spoonsDelta: 1 },
     ],
   },
   q_vibe: {
@@ -479,9 +482,9 @@ const nodes = {
     type: "question",
     text: "Is today giving gourmet guru or basic baddie?",
     options: [
-      { label: "guru", nextId: "q_time" },
-      { label: "baddie", nextId: "q_time" },
-      { label: "yep", nextId: "q_time" },
+      { label: "guru", nextId: "q_time", spoonsDelta: 1 },
+      { label: "baddie", nextId: "q_time", spoonsDelta: -1 },
+      { label: "yep", nextId: "q_time", spoonsDelta: 0 },
     ],
   },
   q_time: {
@@ -489,8 +492,8 @@ const nodes = {
     type: "question",
     text: "Are you cool with being in the kitchen for longer than 30 mins?",
     options: [
-      { label: "sure", nextId: "r_long" },
-      { label: "no", nextId: "r_quick" },
+      { label: "sure", nextId: "r_long", spoonsSet: 5 },
+      { label: "no", nextId: "r_quick", spoonsSet: 3 },
     ],
   },
   r_long: {
@@ -519,23 +522,42 @@ function startFlow() {
   started.value = true;
   currentNodeId.value = "q1";
   history.value = [];
+  spoonScore.value = defaultSpoonScore;
 }
 
-function goNext(nextId) {
-  history.value.push(currentNodeId.value);
-  currentNodeId.value = nextId;
+function clampSpoons(value) {
+  return Math.max(0, Math.min(5, value));
+}
+
+function goNext(option) {
+  if (!option?.nextId) return;
+
+  history.value.push({
+    nodeId: currentNodeId.value,
+    spoonScore: spoonScore.value,
+  });
+
+  if (Number.isInteger(option.spoonsSet)) {
+    spoonScore.value = clampSpoons(option.spoonsSet);
+  } else if (Number.isInteger(option.spoonsDelta)) {
+    spoonScore.value = clampSpoons(spoonScore.value + option.spoonsDelta);
+  }
+
+  currentNodeId.value = option.nextId;
 }
 
 function goBack() {
   const prev = history.value.pop();
-  if (prev) currentNodeId.value = prev;
+  if (!prev) return;
+  currentNodeId.value = prev.nodeId;
+  spoonScore.value = clampSpoons(prev.spoonScore);
 }
 
 function restart() {
   started.value = false;
   // allow fade out/in nicely
   setTimeout(() => startFlow(), 250);
-  resetRecipeSelection();
+  spoonScore.value = defaultSpoonScore;
 }
 
 function getStarTone(label) {
@@ -551,91 +573,12 @@ function getStarTone(label) {
   return "qa-star-btn--no";
 }
 
-watch(
-  currentNodeId,
-  (id) => {
-    const node = nodes[id];
-    if (started.value && node?.type === "result") {
-      fetchRecipeForNode(node);
-    } else {
-      resetRecipeSelection();
-    }
-  }
-);
-
-watch(started, (isStarted) => {
-  if (!isStarted) {
-    resetRecipeSelection();
-    return;
-  }
-
-  if (currentNode.value?.type === "result") {
-    fetchRecipeForNode(currentNode.value);
+watch(currentNodeId, (id) => {
+  const node = nodes[id];
+  if (started.value && (node?.type === "result" || node?.type === "end")) {
+    spoonScore.value = clampSpoons(spoonScore.value);
   }
 });
-
-function resetRecipeSelection() {
-  selectedRecipe.value = null;
-  recipeError.value = "";
-  recipeLoading.value = false;
-  recipeRequestToken += 1;
-  navigationLock.value = false;
-}
-
-async function fetchRecipeForNode(node) {
-  if (!node) return;
-  const meta = node.meta || {};
-  const spoonMin = Math.max(0, meta.spoonMin ?? 0);
-  const spoonMax = Math.min(5, meta.spoonMax ?? 5);
-  const veganFilter = typeof meta.vegan === "boolean" ? meta.vegan : null;
-
-  recipeLoading.value = true;
-  recipeError.value = "";
-  selectedRecipe.value = null;
-  const requestId = ++recipeRequestToken;
-
-  const filters = [
-    `_type == "recipe"`,
-    `spoonLevel >= $spoonMin`,
-    `spoonLevel <= $spoonMax`,
-  ];
-  if (veganFilter === true) {
-    filters.push("vegan == true");
-  } else if (veganFilter === false) {
-    filters.push("vegan == false");
-  }
-
-  const query = `*[${filters.join(" && ")}] | order(spoonLevel asc, _createdAt desc)[0]{ title, slug, chef, spoonLevel, vegan }`;
-
-  try {
-    const recipe = await sanityClient.fetch(query, { spoonMin, spoonMax });
-    if (recipeRequestToken !== requestId) return;
-    if (recipe) {
-      selectedRecipe.value = recipe;
-      recipeError.value = "";
-      if (!navigationLock.value) {
-        const slug = recipe.slug?.current;
-        if (slug) {
-          navigationLock.value = true;
-          if (typeof window !== "undefined") {
-            window.location.href = `/recipes/${slug}`;
-          }
-        } else {
-          recipeError.value = "We found a match but couldn't build a slug yet.";
-        }
-      }
-    } else {
-      recipeError.value = "No recipe match for that flow yet — try another thread or restart.";
-    }
-  } catch (error) {
-    if (recipeRequestToken !== requestId) return;
-    recipeError.value = error?.message ?? "Unable to load a recipe.";
-  } finally {
-    if (recipeRequestToken === requestId) {
-      recipeLoading.value = false;
-    }
-  }
-}
 </script>
 
 <style>
@@ -824,6 +767,10 @@ async function fetchRecipeForNode(node) {
   transform: translateX(-50%);
   z-index: 5;
   transition: opacity 300ms ease, transform 300ms ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
 .start-here-btn {
@@ -882,6 +829,24 @@ width: 20vw;
 .start-here-lottie {
   transform: scale(-1, -1);
     transform-origin: center;
+}
+
+.skip-qa-btn {
+  font-family: "Inter", sans-serif;
+  font-size: clamp(0.8rem, 1.4vw, 1rem);
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.12);
+  padding: 8px 14px;
+  border-radius: 999px;
+  backdrop-filter: blur(2px);
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.skip-qa-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 
@@ -974,6 +939,21 @@ width: 20vw;
   font-size: clamp(0.75rem, 1vw, 0.95rem);
   text-transform: lowercase;
   color: rgba(195, 56, 110, 0.9);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qa-spoon-icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.qa-spoon-icon {
+  width: clamp(14px, 1.6vw, 20px);
+  height: auto;
+  object-fit: contain;
 }
 
 .qa-options.qa-options--stars {
@@ -1095,6 +1075,15 @@ width: 20vw;
   cursor: pointer;
   padding: 8px 10px;
   font-family: "Cherry Bomb One", "Pinyon Script", cursive;
+}
+
+.qa-link--pill {
+  font-size: clamp(0.9rem, 1.4vw, 1.15rem);
+  border: 1px solid rgba(255, 79, 184, 0.45);
+  border-radius: 999px;
+  padding: 8px 14px;
+  text-decoration: none;
+  font-family: "Inter", sans-serif;
 }
 
 .qa-link:disabled {

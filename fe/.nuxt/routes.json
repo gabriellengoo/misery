@@ -63,6 +63,13 @@
     "_name": "_423ea187"
   },
   {
+    "name": "recipes",
+    "path": "/recipes",
+    "component": "/Users/admin/Desktop/misery/fe/pages/recipes/index.vue",
+    "chunkName": "pages/recipes/index",
+    "_name": "_b34a9ca8"
+  },
+  {
     "name": "resources",
     "path": "/resources",
     "component": "/Users/admin/Desktop/misery/fe/pages/resources.vue",
@@ -92,7 +99,7 @@
   },
   {
     "name": "recipes-slug",
-    "path": "/recipes/:slug?",
+    "path": "/recipes/:slug",
     "component": "/Users/admin/Desktop/misery/fe/pages/recipes/_slug.vue",
     "chunkName": "pages/recipes/_slug",
     "_name": "_b6b7df38"
