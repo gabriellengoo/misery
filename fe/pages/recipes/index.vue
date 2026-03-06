@@ -128,7 +128,7 @@ const SPOON_GUIDE_CONTENT = {
     name: 'NELLY - No-Spoons',
     line: 'Nelly No-Spoons will take you there',
     cta: '(not you? how about one over?)',
-  },
+  }, 
   1: {
     name: 'WARDEN - One-Spoon',
     line: 'Follow One-Spoon Warden',
