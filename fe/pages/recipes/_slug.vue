@@ -124,7 +124,6 @@ import { resolveSpoonMascot } from '@/utils/spoonMascots'
 
 const PDF_JS_SCRIPT = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'
 const PDF_JS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
-const COOKBOOK_PDF_URL = String(process.env.NUXT_ENV_COOKBOOK_PDF_URL || '').trim()
 
 function toNumber(value, fallback = 0) {
   const parsed = Number(value)
@@ -332,7 +331,7 @@ export default {
         pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_JS_WORKER
 
         const configuredPath = String(this.recipe?.pdfPath || '').trim()
-        const candidatePaths = ['/api/cookbook.pdf', configuredPath, COOKBOOK_PDF_URL, '/cookbook.pdf', '/images/cookbook.pdf'].filter(Boolean)
+        const candidatePaths = ['/api/cookbook.pdf', configuredPath, '/cookbook.pdf', '/images/cookbook.pdf'].filter(Boolean)
 
         let pdf = null
         let lastError = null

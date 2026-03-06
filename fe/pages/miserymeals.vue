@@ -314,7 +314,6 @@ import { resolveSpoonColor } from "@/utils/spoonColors";
 const bodyClass = "cookbook-body-bg";
 const PDF_JS_SCRIPT = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
 const PDF_JS_WORKER = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-const COOKBOOK_PDF_URL = String(process.env.NUXT_ENV_COOKBOOK_PDF_URL || "").trim();
 
 const SPOON_SPREAD_PAGES = {
   0: [24, 25],
@@ -515,7 +514,7 @@ function loadPdfJsScript() {
 async function loadSpreadPdf(pdfjsLib) {
   if (spreadPdfPromise) return spreadPdfPromise;
 
-  const candidatePaths = ["/api/cookbook.pdf", COOKBOOK_PDF_URL, "/images/cookbook.pdf", "/cookbook.pdf"].filter(Boolean);
+  const candidatePaths = ["/api/cookbook.pdf", "/images/cookbook.pdf", "/cookbook.pdf"];
   spreadPdfPromise = (async () => {
     let lastError = null;
     for (const path of candidatePaths) {

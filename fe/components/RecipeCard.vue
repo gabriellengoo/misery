@@ -30,7 +30,6 @@ import { resolveSpoonMascot } from '@/utils/spoonMascots'
 
 const PDF_JS_SCRIPT = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'
 const PDF_JS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
-const COOKBOOK_PDF_URL = String(process.env.NUXT_ENV_COOKBOOK_PDF_URL || '').trim()
 
 let pdfScriptPromise = null
 const pdfDocumentCache = new Map()
@@ -161,7 +160,7 @@ export default {
 
         pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_JS_WORKER
 
-        const candidatePaths = ['/api/cookbook.pdf', this.pdfPath, COOKBOOK_PDF_URL, '/cookbook.pdf', '/images/cookbook.pdf'].filter(Boolean)
+        const candidatePaths = ['/api/cookbook.pdf', this.pdfPath, '/cookbook.pdf', '/images/cookbook.pdf'].filter(Boolean)
         let pdf = null
         for (const path of candidatePaths) {
           try {
