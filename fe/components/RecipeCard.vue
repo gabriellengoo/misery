@@ -160,7 +160,7 @@ export default {
 
         pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_JS_WORKER
 
-        const candidatePaths = ['/api/cookbook.pdf', this.pdfPath, '/cookbook.pdf', '/images/cookbook.pdf'].filter(Boolean)
+        const candidatePaths = ['/api/cookbook-pdf', '/api/cookbook.pdf', this.pdfPath, '/cookbook.pdf', '/images/cookbook.pdf'].filter(Boolean)
         let pdf = null
         for (const path of candidatePaths) {
           try {
