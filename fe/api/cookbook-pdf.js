@@ -31,6 +31,15 @@ function fetchWithRedirects(urlString, req, res, redirects = 0) {
         return;
       }
 
+      const contentType = String(upstreamRes.headers["content-type"] || "").toLowerCase();
+      if (!contentType.includes("application/pdf")) {
+        upstreamRes.resume();
+        res.status(502).send(
+          "Upstream URL did not return a PDF. Check NUXT_ENV_COOKBOOK_PDF_URL and release visibility."
+        );
+        return;
+      }
+
       res.status(status);
       const passthroughHeaders = [
         "accept-ranges",
