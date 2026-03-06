@@ -520,7 +520,14 @@ async function loadSpreadPdf(pdfjsLib) {
     for (const path of candidatePaths) {
       try {
         // eslint-disable-next-line no-await-in-loop
-        return await pdfjsLib.getDocument(path).promise;
+        return await pdfjsLib
+          .getDocument({
+            url: path,
+            rangeChunkSize: 65536,
+            disableAutoFetch: true,
+            disableStream: false,
+          })
+          .promise;
       } catch (error) {
         lastError = error;
       }

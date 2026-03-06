@@ -45,7 +45,6 @@ function fetchWithRedirects(urlString, req, res, redirects = 0) {
         "accept-ranges",
         "content-length",
         "content-range",
-        "cache-control",
         "etag",
         "last-modified",
       ];
@@ -54,6 +53,7 @@ function fetchWithRedirects(urlString, req, res, redirects = 0) {
           res.setHeader(name, upstreamRes.headers[name]);
         }
       });
+      res.setHeader("cache-control", "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800");
       res.setHeader("content-type", "application/pdf");
       upstreamRes.pipe(res);
     }
