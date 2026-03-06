@@ -515,7 +515,7 @@ function loadPdfJsScript() {
 async function loadSpreadPdf(pdfjsLib) {
   if (spreadPdfPromise) return spreadPdfPromise;
 
-  const candidatePaths = [COOKBOOK_PDF_URL, "/images/cookbook.pdf", "/cookbook.pdf"].filter(Boolean);
+  const candidatePaths = ["/api/cookbook.pdf", COOKBOOK_PDF_URL, "/images/cookbook.pdf", "/cookbook.pdf"].filter(Boolean);
   spreadPdfPromise = (async () => {
     let lastError = null;
     for (const path of candidatePaths) {

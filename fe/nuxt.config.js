@@ -85,6 +85,10 @@ export default {
     },
   },
 
+  serverMiddleware: [
+    "~/server-middleware/cookbook-pdf.js",
+  ],
+
   // modules: ['@nuxtjs/axios', '@nuxtjs/proxy'],
 
   // axios: {
