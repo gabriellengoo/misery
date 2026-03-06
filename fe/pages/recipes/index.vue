@@ -121,7 +121,7 @@ function shiftRgb(color, amount) {
 function rgbaFromRgb(color, alpha) {
   const [r, g, b] = parseRgbChannels(color)
   return `rgba(${r}, ${g}, ${b}, ${alpha})`
-}
+} 
 
 const SPOON_GUIDE_CONTENT = {
   0: {
