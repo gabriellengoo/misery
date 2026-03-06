@@ -29,7 +29,7 @@ export default {
   },
   computed: {
     hideFooter() {
-      return this.$route.name === "resources" || this.$route.name === "crisis";
+      return this.$route.name === "resources" || this.$route.name === "crisis" || this.$route.name === "miserymeals";
     },
   },
   mounted() {

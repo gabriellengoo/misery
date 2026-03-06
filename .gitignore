@@ -1,0 +1,11 @@
+# Dependencies and build output
+fe/node_modules/
+fe/.nuxt/
+
+# Local environment files
+fe/be/.env
+
+# Large local/exported assets
+fe/be/static/cookbook.pdf
+fe/public/cookbook.pdf
+fe/public/images/cookbook.pdf

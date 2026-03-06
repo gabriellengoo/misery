@@ -19,6 +19,7 @@ export default {
       {
         name: 'featuredEvents',
         title: 'Featured Events (for homepage section)',
+        hidden: true,
         type: 'array',
         of: [
           {
@@ -30,5 +31,4 @@ export default {
     ],
   }
   
-
 
