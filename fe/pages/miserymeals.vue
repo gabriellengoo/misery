@@ -646,7 +646,7 @@ const nodes = {
     text: "Maybe our crip guide to food shopping can help? Check it out",
     options: [],
     meta: {
-      spoonSet: 0,
+      spoonSet: 0, 
       primaryLink: "/recipes/crip-guide-to-food-shopping",
       primaryLabel: "crip guide to food shopping",
       secondaryLink: "/recipes/food-safety-plan",
