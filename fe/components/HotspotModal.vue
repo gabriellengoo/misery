@@ -6,9 +6,13 @@
 
       <section v-if="type === 'audio'">
         <h2>Audio note</h2>
-        <audio v-if="audioUrl" controls autoplay :src="audioUrl" class="hotspot-audio">
+        <audio v-if="normalizedAudioUrl" controls autoplay preload="metadata" class="hotspot-audio">
+          <source :src="normalizedAudioUrl" :type="audioMimeType" />
           Your browser does not support audio playback.
         </audio>
+        <p v-if="normalizedAudioUrl" class="hotspot-audio-link">
+          <a :href="normalizedAudioUrl" target="_blank" rel="noreferrer">Open audio in a new tab</a>
+        </p>
         <p v-else>No audio URL provided for this hotspot.</p>
       </section>
 
@@ -45,6 +49,60 @@
 </template>
 
 <script>
+function extractGoogleDriveFileId(url) {
+  const value = String(url || '').trim()
+  if (!value) return ''
+
+  const directMatch = value.match(/[?&]id=([\w-]+)/)
+  if (directMatch?.[1]) return directMatch[1]
+
+  const patterns = [
+    /drive\.google\.com\/file\/d\/([\w-]+)/,
+    /drive\.google\.com\/open\?id=([\w-]+)/,
+    /drive\.google\.com\/uc\?.*id=([\w-]+)/,
+  ]
+
+  for (const pattern of patterns) {
+    const match = value.match(pattern)
+    if (match?.[1]) return match[1]
+  }
+
+  return ''
+}
+
+function normalizeAudioUrl(url) {
+  const value = String(url || '').trim()
+  if (!value) return ''
+
+  if (/drive\.google\.com/i.test(value)) {
+    const fileId = extractGoogleDriveFileId(value)
+    if (fileId) {
+      return `https://drive.google.com/uc?export=download&id=${fileId}`
+    }
+  }
+
+  if (/dropbox\.com/i.test(value)) {
+    if (/[?&]raw=1\b/i.test(value)) return value
+    if (/[?&]dl=0\b/i.test(value)) return value.replace(/[?&]dl=0\b/i, (match) => match.replace('0', '1'))
+    return `${value}${value.includes('?') ? '&' : '?'}raw=1`
+  }
+
+  return value
+}
+
+function detectAudioMimeType(url) {
+  const value = String(url || '').trim().toLowerCase()
+  if (!value) return 'audio/mpeg'
+  if (/\.m4a(?:$|\?)/.test(value)) return 'audio/mp4'
+  if (/\.mp3(?:$|\?)/.test(value)) return 'audio/mpeg'
+  if (/\.wav(?:$|\?)/.test(value)) return 'audio/wav'
+  if (/\.ogg(?:$|\?)/.test(value)) return 'audio/ogg'
+  if (/\.aac(?:$|\?)/.test(value)) return 'audio/aac'
+  if (/\.flac(?:$|\?)/.test(value)) return 'audio/flac'
+  if (/\.webm(?:$|\?)/.test(value)) return 'audio/webm'
+  return 'audio/mpeg'
+}
+
 function extractYouTubeId(url) {
   const value = String(url || '').trim()
   if (!value) return ''
@@ -99,6 +157,12 @@ export default {
     },
   },
   computed: {
+    normalizedAudioUrl() {
+      return normalizeAudioUrl(this.audioUrl)
+    },
+    audioMimeType() {
+      return detectAudioMimeType(this.normalizedAudioUrl)
+    },
     isMp4() {
       return /\.mp4(?:$|\?)/i.test(this.videoUrl || '')
     },
@@ -157,6 +221,10 @@ export default {
 .hotspot-audio,
 .hotspot-video-player {
   width: 100%;
+}
+
+.hotspot-audio-link {
+  margin-top: 10px;
 }
 
 .hotspot-video-frame {

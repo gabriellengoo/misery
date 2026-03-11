@@ -120,9 +120,15 @@ function parseSpoonLevel(raw) {
   return Math.max(0, Math.min(5, value))
 }
 
+function cleanUrl(value = '') {
+  return String(value || '')
+    .trim()
+    .replace(/[>\],.;:!?]+$/g, '')
+}
+
 function extractFirstUrl(value = '') {
   const match = String(value).match(/https?:\/\/[^\s)]+/i)
-  return match?.[0] ? match[0].trim() : ''
+  return match?.[0] ? cleanUrl(match[0]) : ''
 }
 
 function extractVoiceNoteUrlFromDocText(docText = '') {
@@ -152,7 +158,7 @@ function extractVoiceNoteUrlFromDocText(docText = '') {
 function pickFirstNonEmpty(...values) {
   for (const value of values) {
     if (value === undefined || value === null) continue
-    const text = String(value).trim()
+    const text = cleanUrl(value)
     if (text) return text
   }
   return ''
@@ -333,15 +339,17 @@ function indexRowsByNormalizedTitle(rows, label) {
 
 function extractDriveFileId(urlOrId) {
   if (!urlOrId) return null
-  const value = String(urlOrId).trim()
+  const value = cleanUrl(urlOrId)
   if (/^[a-zA-Z0-9_-]{20,}$/.test(value) && value.indexOf('http') !== 0) {
     return value
   }
 
   const patterns = [
+    /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)(?:\/|$)/,
     /drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/,
-    /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/,
+    /drive\.google\.com\/u\/\d+\/file\/d\/([a-zA-Z0-9_-]+)(?:\/|$)/,
     /drive\.google\.com\/uc\?[^#]*[?&]id=([a-zA-Z0-9_-]+)/,
+    /drive\.google\.com\/thumbnail\?[^#]*[?&]id=([a-zA-Z0-9_-]+)/,
     /[?&]id=([a-zA-Z0-9_-]+)/,
   ]
 
@@ -365,8 +373,53 @@ function filenameFromUrl(url) {
   return `recipe-cover-${Date.now()}.jpg`
 }
 
-function buildFileProxyUrl(fileId) {
-  return `${APPS_SCRIPT_BASE_URL}?mode=file&fileId=${encodeURIComponent(fileId)}`
+function extensionFromContentType(contentType = '', fallback = 'bin') {
+  const normalized = String(contentType || '').toLowerCase().split(';')[0].trim()
+  const map = {
+    'audio/mpeg': 'mp3',
+    'audio/mp3': 'mp3',
+    'audio/wav': 'wav',
+    'audio/x-wav': 'wav',
+    'audio/ogg': 'ogg',
+    'audio/mp4': 'm4a',
+    'audio/x-m4a': 'm4a',
+    'audio/aac': 'aac',
+    'audio/flac': 'flac',
+    'audio/x-flac': 'flac',
+    'audio/webm': 'webm',
+    'application/octet-stream': fallback,
+  }
+  return map[normalized] || fallback
+}
+
+function detectAudioContentTypeFromFilename(filename = '') {
+  const lower = String(filename || '').toLowerCase()
+  if (/\.(mp3)(?:$|\?)/.test(lower)) return 'audio/mpeg'
+  if (/\.(m4a)(?:$|\?)/.test(lower)) return 'audio/mp4'
+  if (/\.(wav)(?:$|\?)/.test(lower)) return 'audio/wav'
+  if (/\.(ogg)(?:$|\?)/.test(lower)) return 'audio/ogg'
+  if (/\.(aac)(?:$|\?)/.test(lower)) return 'audio/aac'
+  if (/\.(flac)(?:$|\?)/.test(lower)) return 'audio/flac'
+  if (/\.(webm)(?:$|\?)/.test(lower)) return 'audio/webm'
+  return 'audio/mpeg'
+}
+
+function ensureFilenameExtension(filename, contentType, fallbackBase) {
+  const trimmed = String(filename || '').trim()
+  if (trimmed && /\.[a-zA-Z0-9]{2,8}$/.test(trimmed)) return trimmed
+  const ext = extensionFromContentType(contentType, 'bin')
+  const base = trimmed || fallbackBase
+  return `${base}.${ext}`
+}
+
+function buildFileProxyUrl({fileId, url} = {}) {
+  if (fileId) {
+    return `${APPS_SCRIPT_BASE_URL}?mode=file&fileId=${encodeURIComponent(fileId)}`
+  }
+  if (url) {
+    return `${APPS_SCRIPT_BASE_URL}?mode=file&url=${encodeURIComponent(url)}`
+  }
+  throw new Error('Missing fileId/url for proxy request')
 }
 
 function createImageKey() {
@@ -377,14 +430,30 @@ function hasCoverImage(doc) {
   return Boolean(doc?.coverImage?.asset?._ref)
 }
 
+function hasVoiceNoteFile(doc) {
+  return Boolean(doc?.voiceNote?.asset?._ref)
+}
+
 async function fetchExistingRecipe(recipeId) {
   return client.fetch(
     `*[_id == $id][0]{
       _id,
-      coverImage{asset}
+      coverImage{asset},
+      voiceNote{asset}
     }`,
     {id: recipeId}
   )
+}
+
+function isAcceptedAudioLikeType(contentType = '', filename = '') {
+  const normalizedType = String(contentType || '').toLowerCase().split(';')[0]
+  if (!normalizedType) return false
+  if (normalizedType.startsWith('audio/')) return true
+  if (normalizedType === 'application/octet-stream') return true
+  if (normalizedType === 'video/mp4') return true
+
+  const lowerName = String(filename || '').toLowerCase()
+  return /\.(mp3|m4a|wav|ogg|aac|flac|webm)(?:$|\?)/.test(lowerName)
 }
 
 async function downloadImagePayload({imageUrl, imageFileId}) {
@@ -486,6 +555,113 @@ async function uploadCoverImage(recipeId, row, existingRecipe) {
   return {uploaded: true, reason: 'uploaded'}
 }
 
+async function downloadAudioPayload(voiceNoteUrl) {
+  const directUrl = String(voiceNoteUrl || '').trim()
+  const driveId = extractDriveFileId(directUrl)
+
+  if (driveId || /drive\.google\.com/i.test(directUrl)) {
+    const proxyUrl = buildFileProxyUrl({fileId: driveId, url: directUrl})
+    const response = await fetch(proxyUrl)
+    if (!response.ok) {
+      throw new Error(`proxy download failed: HTTP ${response.status}`)
+    }
+
+    const contentTypeRaw = String(response.headers.get('content-type') || '').toLowerCase()
+
+    if (contentTypeRaw.includes('application/json')) {
+      const payload = await response.json()
+      if (!payload?.ok) {
+        throw new Error(`proxy returned error JSON: ${payload?.error || 'unknown error'}`)
+      }
+
+      const payloadType = String(payload?.contentType || '').toLowerCase().split(';')[0]
+      const payloadFilename = String(payload?.filename || '').trim() || filenameFromUrl(directUrl)
+      if (!isAcceptedAudioLikeType(payloadType, payloadFilename)) {
+        throw new Error(`proxy JSON contentType is not audio/* (${payloadType || 'missing'})`)
+      }
+
+      if (!payload?.dataBase64) {
+        throw new Error('proxy JSON missing dataBase64')
+      }
+
+      return {
+        buffer: Buffer.from(payload.dataBase64, 'base64'),
+        contentType: payloadType || detectAudioContentTypeFromFilename(payloadFilename),
+        filename: ensureFilenameExtension(
+          payloadFilename,
+          payloadType || detectAudioContentTypeFromFilename(payloadFilename),
+          `voice-note-${Date.now()}`
+        ),
+      }
+    }
+
+    const normalizedType = contentTypeRaw.split(';')[0]
+    const rawFilename = filenameFromUrl(directUrl)
+    if (!isAcceptedAudioLikeType(normalizedType, rawFilename)) {
+      throw new Error(`proxy response content-type is not audio/* (${contentTypeRaw || 'missing'})`)
+    }
+
+    return {
+      buffer: Buffer.from(await response.arrayBuffer()),
+      contentType: normalizedType || detectAudioContentTypeFromFilename(rawFilename),
+      filename: ensureFilenameExtension(rawFilename, normalizedType || detectAudioContentTypeFromFilename(rawFilename), `voice-note-${Date.now()}`),
+    }
+  }
+
+  if (!directUrl) {
+    throw new Error('no voice note URL provided')
+  }
+
+  const response = await fetch(directUrl)
+  if (!response.ok) {
+    throw new Error(`audio download failed: HTTP ${response.status}`)
+  }
+
+  const contentTypeRaw = String(response.headers.get('content-type') || '').toLowerCase()
+  const normalizedType = contentTypeRaw.split(';')[0]
+  const directFilename = filenameFromUrl(directUrl)
+  if (!isAcceptedAudioLikeType(normalizedType, directFilename)) {
+    throw new Error(`audio content-type is not audio/* (${contentTypeRaw || 'missing'})`)
+  }
+
+  return {
+    buffer: Buffer.from(await response.arrayBuffer()),
+    contentType: normalizedType || detectAudioContentTypeFromFilename(directFilename),
+    filename: ensureFilenameExtension(directFilename, normalizedType || detectAudioContentTypeFromFilename(directFilename), `voice-note-${Date.now()}`),
+  }
+}
+
+async function uploadVoiceNoteFile(recipeId, voiceNoteUrl, existingRecipe) {
+  if (!voiceNoteUrl) {
+    return {uploaded: false, reason: 'skipped (no voiceNoteUrl)'}
+  }
+
+  if (hasVoiceNoteFile(existingRecipe)) {
+    return {uploaded: false, reason: 'skipped (voiceNote exists)'}
+  }
+
+  const payload = await downloadAudioPayload(voiceNoteUrl)
+  const asset = await client.assets.upload('file', payload.buffer, {
+    filename: payload.filename,
+    contentType: payload.contentType,
+  })
+
+  await client
+    .patch(recipeId)
+    .set({
+      voiceNote: {
+        _type: 'file',
+        asset: {
+          _type: 'reference',
+          _ref: asset._id,
+        },
+      },
+    })
+    .commit()
+
+  return {uploaded: true, reason: 'uploaded'}
+}
+
 function cleanPatch(values) {
   const next = {}
   for (const [key, value] of Object.entries(values)) {
@@ -497,6 +673,7 @@ function cleanPatch(values) {
 async function syncWebsiteRecipeRow(websiteRow, recipeByTitle) {
   const normalized = normalizeTitle(websiteRow.title)
   const recipeRow = recipeByTitle.get(normalized)
+  const voiceNoteUrl = pickFirstNonEmpty(recipeRow?.voiceNoteUrl, websiteRow?.voiceNoteUrl) || undefined
 
   const slug = slugify(websiteRow.title)
   if (!slug) {
@@ -535,7 +712,7 @@ async function syncWebsiteRecipeRow(websiteRow, recipeByTitle) {
     docUrl: pickFirstNonEmpty(recipeRow?.docUrl) || undefined,
     contentText: pickFirstNonEmpty(recipeRow?.contentText) || undefined,
     pdfPath: DEFAULT_PDF_PATH,
-    voiceNoteUrl: recipeRow.voiceNoteUrl || undefined,
+    voiceNoteUrl,
     sourceUrl: websiteRow.videoUrl || undefined,
     extras: websiteRow.type || undefined,
   })
@@ -553,6 +730,11 @@ async function syncWebsiteRecipeRow(websiteRow, recipeByTitle) {
     } catch {
       // Keep sync resilient when image uploads fail.
     }
+  }
+  try {
+    await uploadVoiceNoteFile(recipeId, voiceNoteUrl, existingRecipe)
+  } catch {
+    // Keep sync resilient when voice note uploads fail.
   }
 
   const docImported = Boolean(pickFirstNonEmpty(recipeRow?.contentText))

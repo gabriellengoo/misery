@@ -79,10 +79,6 @@ export default {
 
   router: {
     middleware: ["preorderRedirect"],
-    scrollBehavior() {
-      // Always start each page at the top.
-      return { x: 0, y: 0 };
-    },
   },
 
   serverMiddleware: [

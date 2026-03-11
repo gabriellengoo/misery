@@ -9,7 +9,7 @@
           :src="loadingMascotUrl"
           alt=""
           aria-hidden="true"
-          class="recipe-card-loading-mascot"
+          :class="['recipe-card-loading-mascot', `recipe-card-loading-mascot--level-${spoonLevel}`]"
         />
         <span class="recipe-card-loading-text">
           Loading
@@ -284,6 +284,11 @@ export default {
   height: 20px;
   object-fit: contain;
   animation: recipe-loading-mascot-jitter 0.3s ease-in-out infinite;
+}
+
+.recipe-card-loading-mascot--level-5 {
+  width: 34px;
+  height: 34px;
 }
 
 @keyframes recipe-loading-dot {

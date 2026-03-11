@@ -92,6 +92,10 @@ export default {
         document.body.classList.toggle('menu-open', isOpen)
       }
     },
+    $route() {
+      this.sidebarOpen = false
+      this.showAccess = false
+    },
   },
   beforeDestroy() {
     if (process.client) {
@@ -276,7 +280,7 @@ body.dark-mode {
   padding: 2vw;
   z-index: 50;
   transition: left 0.3s ease;
-  background-color: #ffffff;
+  background-color: #161018;
   height: 100vh;
   overflow: scroll;
   /* background-size: inherit;

@@ -1,7 +1,8 @@
 <template>
   <main class="recipes-page" :style="themeVars">
-    <header class="spoon-hero" :class="spoonHeroClass">
-      <h1 class="spoon-hero__title" :class="{ 'spoon-hero__title--plain': !hasFilter }">{{ spoonHeroTitle }}</h1>
+    <header class="spoon-hero" :class="hasFilter ? spoonHeroClass : 'spoon-hero--plain'">
+      <h1 v-if="!hasFilter" class="spoon-hero__title spoon-hero__title--plain">all recipes</h1>
+      <h1 v-else class="spoon-hero__title">{{ spoonHeroTitle }}</h1>
     </header>
 
     <section class="recipes-shell">
@@ -67,7 +68,7 @@
           :data-mascot-level="String(item.level)"
           :alt="''"
           class="mascot-float"
-          :class="`mascot-float--${index}`"
+          :class="[`mascot-float--${index}`, `mascot-float--level-${item.level}`]"
           @error="onMascotImageError"
         />
       </div>
@@ -87,7 +88,7 @@
           :data-mascot-level="String(spoonFilter)"
           alt=""
           aria-hidden="true"
-          class="mascot-corner"
+          :class="['mascot-corner', `mascot-corner--level-${spoonFilter}`]"
           @error="onMascotImageError"
         />
       </div>
@@ -102,6 +103,11 @@ import { resolveSpoonColor } from '@/utils/spoonColors'
 import { allSpoonMascotEntries, resolveSpoonMascot, spoonMascotFallbacks } from '@/utils/spoonMascots'
 
 const bodyClass = 'cookbook-body-bg'
+
+function parseSpoonFilterValue(rawValue) {
+  const parsed = Number.parseInt(Array.isArray(rawValue) ? rawValue[0] : rawValue, 10)
+  return Number.isInteger(parsed) && parsed >= 0 && parsed <= 5 ? parsed : null
+}
 
 function clampChannel(value) {
   return Math.max(0, Math.min(255, Math.round(value)))
@@ -171,9 +177,7 @@ export default {
   },
   watchQuery: ['spoons'],
   async asyncData({ query }) {
-    const rawSpoons = Array.isArray(query.spoons) ? query.spoons[0] : query.spoons
-    const parsed = Number.parseInt(rawSpoons, 10)
-    const spoonFilter = Number.isInteger(parsed) && parsed >= 0 && parsed <= 5 ? parsed : null
+    const spoonFilter = parseSpoonFilterValue(query.spoons)
 
     const filteredQuery = `*[_type=="recipe" && websiteListed == true && spoonLevel == $spoons] | order(title asc) {
       title,
@@ -201,15 +205,18 @@ export default {
     }
   },
   computed: {
+    routeSpoonFilter() {
+      return parseSpoonFilterValue(this.$route?.query?.spoons)
+    },
     hasFilter() {
-      return Number.isInteger(this.spoonFilter)
+      return Number.isInteger(this.routeSpoonFilter)
     },
     selectedSpoonValue() {
-      return this.hasFilter ? String(this.spoonFilter) : ''
+      return this.hasFilter ? String(this.routeSpoonFilter) : ''
     },
     spoonIcons() {
-      if (!Number.isInteger(this.spoonFilter)) return []
-      const count = Math.max(0, Math.min(5, Number(this.spoonFilter) || 0))
+      if (!Number.isInteger(this.routeSpoonFilter)) return []
+      const count = Math.max(0, Math.min(5, Number(this.routeSpoonFilter) || 0))
       return Array.from({ length: count }, (_, index) => index + 1)
     },
     safeRecipes() {
@@ -219,34 +226,50 @@ export default {
       return !this.hasFilter
     },
     cornerMascot() {
-      return this.hasFilter ? resolveSpoonMascot(this.spoonFilter) : ''
+      return this.hasFilter ? resolveSpoonMascot(this.routeSpoonFilter) : ''
     },
     floatingMascots() {
       return allSpoonMascotEntries
     },
     spoonHeroTitle() {
-      const level = Number(this.spoonFilter)
-      if (!Number.isInteger(level)) return 'miserymeals'
+      const level = Number(this.routeSpoonFilter)
       return SPOON_HERO_TITLES[level] || 'miserymeals'
     },
     spoonHeroClass() {
-      const level = Number(this.spoonFilter)
+      const level = Number(this.routeSpoonFilter)
       if (!Number.isInteger(level)) return 'spoon-hero--0'
       return `spoon-hero--${Math.max(0, Math.min(5, level))}`
     },
     spoonGuide() {
       if (!this.hasFilter) return null
-      return SPOON_GUIDE_CONTENT[this.spoonFilter] || null
+      return SPOON_GUIDE_CONTENT[this.routeSpoonFilter] || null
     },
     nextSpoonLevel() {
       if (!this.hasFilter) return null
-      const level = Number(this.spoonFilter)
+      const level = Number(this.routeSpoonFilter)
       if (!Number.isInteger(level)) return null
       if (level === 5) return 4
       return Math.min(5, level + 1)
     },
     themeVars() {
-      const base = resolveSpoonColor(this.spoonFilter)
+      if (!this.hasFilter) {
+        return {
+          '--recipes-shell-bg': '#ffffff',
+          '--recipes-shell-border': 'rgba(159, 43, 98, 0.16)',
+          '--recipes-shell-shadow': 'rgba(159, 43, 98, 0.12)',
+          '--recipes-card-bg': '#ffffff',
+          '--recipes-card-border': 'rgba(159, 43, 98, 0.14)',
+          '--recipes-card-shadow': 'rgba(159, 43, 98, 0.12)',
+          '--recipes-btn-bg': '#ffffff',
+          '--recipes-btn-border': 'rgba(159, 43, 98, 0.3)',
+          '--recipes-btn-text': '#9f2b62',
+          '--recipes-btn-primary-bg': '#9f2b62',
+          '--recipes-btn-primary-text': '#ffffff',
+          '--spoon-hero-color': '#9f2b62',
+        }
+      }
+
+      const base = resolveSpoonColor(this.routeSpoonFilter)
       const shellBg = shiftRgb(base, 18)
       const shellBorder = shiftRgb(base, -26)
       const shellShadow = shiftRgb(base, -48)
@@ -276,11 +299,18 @@ export default {
         this.applyBodyBackground()
       },
     },
+    routeSpoonFilter() {
+      this.applyBodyBackground()
+      if (process.client && typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+      }
+    },
   },
   mounted() {
     if (!process.client || typeof document === 'undefined') return
     document.body.classList.add(bodyClass)
     this.applyBodyBackground()
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
   },
   beforeDestroy() {
     if (!process.client || typeof document === 'undefined') return
@@ -290,7 +320,7 @@ export default {
   methods: {
     applyBodyBackground() {
       if (!process.client || typeof document === 'undefined') return
-      document.body.style.background = resolveSpoonColor(this.spoonFilter)
+      document.body.style.background = this.hasFilter ? resolveSpoonColor(this.routeSpoonFilter) : '#ffffff'
     },
     goToCookbook() {
       this.$router.push('/miserymeals')
@@ -504,7 +534,7 @@ export default {
 }
 
 .recipes-filter-text {
-  color: #6f3d59;
+  color: var(--recipes-btn-text, #222222);
   font-family: "Inter", sans-serif;
   font-size: 0.84rem;
   font-weight: 600;
@@ -547,8 +577,8 @@ export default {
   top: 50%;
   width: 8px;
   height: 8px;
-  border-right: 2px solid rgba(195, 55, 112, 0.8);
-  border-bottom: 2px solid rgba(195, 55, 112, 0.8);
+  border-right: 2px solid var(--recipes-btn-text, #222222);
+  border-bottom: 2px solid var(--recipes-btn-text, #222222);
   transform: translateY(-60%) rotate(45deg);
   pointer-events: none;
 }
@@ -604,15 +634,22 @@ export default {
 .recipes-empty {
   margin: 24px 0 10px;
   text-align: center;
-  color: #8d5b73;
+  color: var(--recipes-btn-text, #222222);
   font-family: "Inter", sans-serif;
 }
 
 .mascot-corner {
   width: 100%;
+  height: auto;
+  object-fit: contain;
   pointer-events: none;
   opacity: 0.94;
   display: block;
+}
+
+.mascot-corner--level-5 {
+  width: 165%;
+  margin-left: -32.5%;
 }
 
 .mascot-corner-wrap {
@@ -643,8 +680,14 @@ export default {
 .mascot-float {
   position: absolute;
   width: clamp(74px, 9vw, 126px);
+  height: auto;
+  object-fit: contain;
   opacity: 0.9;
   filter: drop-shadow(0 10px 18px rgba(86, 40, 63, 0.16));
+}
+
+.mascot-float--level-5 {
+  width: clamp(118px, 14vw, 210px);
 }
 
 .mascot-float--0 { left: 10px; top: 12%; animation: mascot-float-a 7.1s ease-in-out infinite; }
@@ -685,24 +728,62 @@ export default {
 }
 
 @media (max-width: 640px) {
+  .recipes-page {
+    padding: 18px 12px 28px;
+  }
+
+  .recipes-shell {
+    width: min(100%, 520px);
+    padding: 16px 14px 18px;
+    border-radius: 24px;
+  }
+
   .recipes-topbar {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
   }
 
   .recipes-filter-controls {
     width: 100%;
-    justify-content: flex-start;
+    justify-content: center;
+  }
+
+  .recipes-actions {
+    justify-content: center;
   }
 
   .spoon-guide {
     width: 100%;
+    text-align: center;
   }
 
   .spoon-guide--floating {
-    right: calc(100% - 14px);
-    top: -10px;
-    width: min(68vw, 290px);
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: calc(100% + 10px);
+    transform: translateX(-50%);
+    width: min(82vw, 320px);
+  }
+
+  .mascot-corner-wrap {
+    right: 50%;
+    transform: translateX(50%);
+    width: min(28vw, 132px);
+  }
+
+  .mascot-corner--level-5 {
+    width: 132%;
+    margin-left: -16%;
+  }
+
+  .mascot-float {
+    width: clamp(42px, 11vw, 64px);
+  }
+
+  .mascot-float--level-5 {
+    width: clamp(58px, 15vw, 88px);
   }
 }
 </style>

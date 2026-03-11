@@ -9,10 +9,10 @@ function toDriveFallbackUrl(fileId) {
 export const spoonMascotFileIds = {
   0: '1FTwAx222saa5WSY-_qR6Wv4BDeOnLzAb',
   1: '1jQ0scOsAqxjPvGwjF7-igz92HFPipMEG',
-  2: '15HRPSDqGqStCbYY-mvDdxT0Y2nQlPVA2',
+  2: '1wvfksrKs_MmCZl48GMnw9tavPujjK8BW',
   3: '1LxtFGKqTR3nLwmS_rFtiJX9Xq9sOGYTD',
   4: '11LQSG9AyZpPprYpdo5FBU85j7yymJfJk',
-  5: '1PoKY_HHq6tM2hC-M3_Ffuq94_XDwOopP',
+  5: '1sIgA1p0zF9Yv5Fve0GsBW5iUIHtm_fHf',
 }
 
 export const spoonMascots = Object.fromEntries(

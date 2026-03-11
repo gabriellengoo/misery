@@ -27,6 +27,23 @@
         >
           <path d="M16 4.588l2.833 8.719H28l-7.416 5.387 2.832 8.719L16 22.023l-7.417 5.389 2.833-8.719L4 13.307h9.167L16 4.588z" />
         </svg>
+        <svg
+          v-for="(line, index) in pinkStarLines"
+          :key="`cookbook-line-pink-${index}`"
+          class="cookbook-squiggle"
+          :style="line.style"
+          viewBox="0 0 120 120"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            :d="line.path"
+            fill="none"
+            :stroke="line.stroke"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            :stroke-width="line.strokeWidth"
+          />
+        </svg>
       </div>
       <div class="cookbook-stars cookbook-stars--white" aria-hidden="true">
         <svg
@@ -39,6 +56,53 @@
           :fill="star.fill"
         >
           <path d="M16 4.588l2.833 8.719H28l-7.416 5.387 2.832 8.719L16 22.023l-7.417 5.389 2.833-8.719L4 13.307h9.167L16 4.588z" />
+        </svg>
+        <svg
+          v-for="(line, index) in whiteStarLines"
+          :key="`cookbook-line-white-${index}`"
+          class="cookbook-squiggle"
+          :style="line.style"
+          viewBox="0 0 120 120"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            :d="line.path"
+            fill="none"
+            :stroke="line.stroke"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            :stroke-width="line.strokeWidth"
+          />
+        </svg>
+      </div>
+      <div class="cookbook-stars cookbook-stars--green" aria-hidden="true">
+        <svg
+          v-for="(star, index) in greenStars"
+          :key="`cookbook-star-green-${index}`"
+          class="cookbook-star"
+          :style="star.style"
+          viewBox="0 0 32 32"
+          xmlns="http://www.w3.org/2000/svg"
+          :fill="star.fill"
+        >
+          <path d="M16 4.588l2.833 8.719H28l-7.416 5.387 2.832 8.719L16 22.023l-7.417 5.389 2.833-8.719L4 13.307h9.167L16 4.588z" />
+        </svg>
+        <svg
+          v-for="(line, index) in greenStarLines"
+          :key="`cookbook-line-green-${index}`"
+          class="cookbook-squiggle"
+          :style="line.style"
+          viewBox="0 0 120 120"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            :d="line.path"
+            fill="none"
+            :stroke="line.stroke"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            :stroke-width="line.strokeWidth"
+          />
         </svg>
       </div>
       <div class="page-overlay" aria-hidden="true"></div>
@@ -59,12 +123,26 @@
       <!-- FLOATING IMAGES (fade out when started) -->
       <div class="floating-img img-glow cookbook-float" :class="{ 'is-hidden': started }">
         <img src="/images/whsp.png" alt="whsp centerpiece" />
-        <img src="/images/areu.png" alt="areu badge" class="cookbook-float-badge" />
       </div>
 
       <div class="floating-img img-glow cookbook-float2" :class="{ 'is-hidden': started }">
         <img src="/images/whsp.png" alt="whsp centerpiece " />
       </div>
+
+      <div v-if="!started" class="cookbook-mascot-wrap" aria-hidden="true">
+        <img
+          v-for="(mascot, index) in landingMascots"
+          :key="`cookbook-mascot-${mascot.level}`"
+          :src="mascot.url"
+          alt=""
+          class="cookbook-mascot"
+          :class="[`cookbook-mascot--${index}`, `cookbook-mascot--level-${mascot.level}`]"
+        />
+      </div>
+
+      <p v-if="!started" class="cookbook-cta-copy">
+        Start our flowchart to find just the right recipe or resource for where you're at.
+      </p>
 
       <!-- CTA -->
       <div class="cookbook-cta-wrap" :class="{ 'is-hidden': started }">
@@ -72,32 +150,13 @@
           class="start-here-btn"
           type="button"
           @click="startFlow"
-          @mouseenter="handleStartHereHover"
-          @mouseleave="handleStartHereLeave"
-          @focus="handleStartHereHover"
-          @blur="handleStartHereLeave"
         >
-          <span class="start-here-icon" aria-hidden="true">
-            <dotlottie-wc
-              ref="startHereLottieRef"
-              class="start-here-lottie"
-              src="https://lottie.host/66784cb4-fb22-483a-9e4f-91e96e168095/7gqRExSoS7.lottie"
-            ></dotlottie-wc>
-          </span>
-
-          <span
-            class="start-here-text"
-            @mouseenter="handleStartHereHover"
-            @mouseleave="handleStartHereLeave"
-            @focus="handleStartHereHover"
-            @blur="handleStartHereLeave"
-          >
-            START HERE
+          <span class="start-here-arrow" aria-hidden="true">
+            <span class="start-here-text">
+              start here!
+            </span>
           </span>
         </button>
-        <nuxt-link class="skip-qa-btn" to="/recipes">
-          Skip questionnaire
-        </nuxt-link>
       </div>
 
       <!-- QUESTIONNAIRE -->
@@ -172,7 +231,7 @@
                     :src="resolveSpoonMascot(currentNode.meta.mascotLevel)"
                     alt=""
                     aria-hidden="true"
-                    class="qa-result-mascot"
+                    :class="['qa-result-mascot', `qa-result-mascot--level-${currentNode.meta.mascotLevel}`]"
                   />
 
                   <div class="qa-result-meta">
@@ -211,7 +270,7 @@
               :src="cornerResultMascot"
               alt=""
               aria-hidden="true"
-              class="qa-corner-mascot"
+              :class="['qa-corner-mascot', `qa-corner-mascot--level-${currentResultLevel}`]"
             />
             <button
               v-if="isCornerResultMode && cornerCardMinimized"
@@ -222,7 +281,12 @@
               reopen
             </button>
 
-            <div class="qa-nav" :class="{ 'qa-nav--corner': isCornerResultMode }" :style="isCornerResultMode ? cornerResultThemeVars : null">
+            <div
+              v-if="!isCornerResultMode"
+              class="qa-nav"
+              :class="{ 'qa-nav--corner': isCornerResultMode }"
+              :style="isCornerResultMode ? cornerResultThemeVars : null"
+            >
               <button type="button" class="qa-link" @click="goBack" :disabled="history.length === 0">
                 Back
               </button>
@@ -233,74 +297,6 @@
           </div>
         </section>
       </Transition>
-    </section>
-
-    <!-- ZINE TEXT (after existing content) -->
-    <section v-if="!started" class="cookbook-zine" aria-label="Spoon Theory zine text">
-      <div class="zine-inner">
-        <p>
-          Spoon Theory is especially important for people with chronic pain, fatigue, neurodivergence, limited mobility and invisible illnesses as it helps visualise and explain that:
-        </p>
-
-        <ul>
-          <li>energy is a finite, daily resource.</li>
-          <li>while some people may wake up with a replenished set of spoons for the day, disabled people often don’t.</li>
-          <li>unlike others, we can’t just “push through” without huge consequences — and we shouldn’t have to.</li>
-          <li>we need ways to communicate our capacity to others, and plan our days with more mindfulness and care.</li>
-        </ul>
-
-        <h3>HOW DOES IT WORK?</h3>
-        <p class="zine-note">(can be different for everyone)</p>
-
-        <ul>
-          <li>imagine that you start the day with a limited number of “spoons” — say, 10.</li>
-          <li>each of the day’s activities requires spoons to complete e.g:</li>
-        </ul>
-
-        <ul class="zine-examples">
-          <li>getting out of bed = 2 spoons</li>
-          <li>showering = 2 spoons</li>
-          <li>cooking = 4 spoons</li>
-          <li>going to work = 5 spoons</li>
-          <li>socializing = 3 spoons</li>
-        </ul>
-
-        <p>
-          often, especially under capitalism, we do not have enough spoons to get through the tasks of the day, and so we need to juggle and prioritise tasks, and stretch ourselves.
-        </p>
-
-        <p>
-          once we’re out of spoons, we’re completely out of energy, and we may not be able to do more without burning out or needing extended recovery.
-        </p>
-
-        <p>
-          sometimes we can feel pressured to use all of our spoons up or go into minus spoons, to complete all of our obligations and “function” as others appear to in society. But for a disabled person, having less than one spoon left can mean getting to a place of meltdown and extreme pain from which it is difficult to replenish spoons again.
-        </p>
-
-        <h3>WHERE DOES IT COME FROM?</h3>
-
-        <p>
-          Spoon Theory has become a much-cherished shorthand for a big, beautiful universe of crip survival and creativity. It’s an iconic touchstone within disability justice, the Mad movement and other lineages that refuse medicalised individualism in favour of peer support and collective meaning-making.
-        </p>
-
-        <p>
-          As a survivor framework, it translates lived experience into a shared language that exposes how exhaustion, pain, and cognitive difference are shaped and intensified by capitalism, sanism, racism, and ableism rather than by the bodymind alone. Spoons are not simply “used up” by bodies; they are depleted through constant negotiation with environments that refuse access, rest, or accommodation. Access is relational and survival strategies themselves can be acts of resistance.
-        </p>
-
-        <p>
-          Spoon Theory works like an everyday extension of the social model of disability. It challenges the idea that our worth is tied to productivity and makes visible how disability is produced in the space between bodies, minds, and the worlds they move through.
-        </p>
-
-        <p class="zine-signoff">Spoonies 4eva &lt;3</p>
-
-        <h3>OH, COME SPOONIE ARE YOU?</h3>
-
-        <p>
-          use this flowchart to help navigate this book &amp; find just the right recipe or resource for where you’re at &lt;3
-        </p>
-
-        <p class="zine-open">open here!</p>
-      </div>
     </section>
 
   </main>
@@ -326,6 +322,9 @@ const SPOON_SPREAD_PAGES = {
 
 let pdfScriptPromise = null;
 let spreadPdfPromise = null;
+const spreadPagePromiseCache = new Map();
+const spreadRenderPromiseCache = new Map();
+const spreadRenderCache = new Map();
 
 function clampChannel(value) {
   return Math.max(0, Math.min(255, Math.round(value)));
@@ -347,6 +346,32 @@ function rgbaFromRgb(color, alpha) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
+function uniqueSpreadPageNumbers() {
+  return Array.from(
+    new Set(
+      Object.values(SPOON_SPREAD_PAGES)
+        .flat()
+        .filter((pageNumber) => Number.isInteger(pageNumber) && pageNumber > 0)
+    )
+  );
+}
+
+function getSpreadCssWidth(canvas) {
+  if (canvas?.parentElement?.clientWidth) {
+    return Math.max(300, Math.floor(canvas.parentElement.clientWidth));
+  }
+
+  if (typeof window !== "undefined") {
+    return Math.max(300, Math.floor(window.innerWidth / 2));
+  }
+
+  return 300;
+}
+
+function getSpreadRenderCacheKey(pageNumber, cssWidth) {
+  return `${pageNumber}:${Math.round(cssWidth)}`;
+}
+
 function handleWindowResize() {
   if (isCornerResultMode.value) {
     renderResultSpread();
@@ -355,7 +380,6 @@ function handleWindowResize() {
 
 onMounted(() => {
   document.body.classList.add(bodyClass);
-  nextTick(() => ensureStartHereLottieReady());
   window.addEventListener("resize", handleWindowResize);
 });
 onBeforeUnmount(() => {
@@ -366,15 +390,13 @@ onBeforeUnmount(() => {
 const started = ref(false);
 const currentNodeId = ref("q1");
 const history = ref([]);
-const startHereLottieRef = ref(null);
 const spreadLeftCanvas = ref(null);
 const spreadRightCanvas = ref(null);
 const spreadTargetHeight = ref(null);
 const cornerCardMinimized = ref(false);
-let startHereInitAttempts = 0;
 
 const hotPink = "#ff4fb8";
-const starColors = [hotPink, "#ffffff"];
+const mintGreen = "#8bcf8a";
 const starPresets = [
   { size: 150, top: "4%", left: "8%", rotate: "12deg", opacity: 0.88 },
   { size: 118, top: "16%", left: "70%", rotate: "-9deg", opacity: 0.75 },
@@ -382,13 +404,33 @@ const starPresets = [
   { size: 80, top: "42%", left: "78%", rotate: "-16deg", opacity: 0.72 },
   { size: 126, top: "68%", left: "34%", rotate: "4deg", opacity: 0.77 },
 ];
+const greenStarPresets = [
+  { size: 96, top: "10%", left: "26%", rotate: "-8deg", opacity: 0.74 },
+  { size: 88, top: "22%", left: "84%", rotate: "18deg", opacity: 0.68 },
+  { size: 112, top: "30%", left: "6%", rotate: "-24deg", opacity: 0.72 },
+  { size: 92, top: "62%", left: "82%", rotate: "10deg", opacity: 0.7 },
+  { size: 108, top: "78%", left: "22%", rotate: "-12deg", opacity: 0.75 },
+  { size: 84, top: "84%", left: "68%", rotate: "22deg", opacity: 0.66 },
+];
+const pinkLinePresets = [
+  { size: 108, top: "8%", left: "18%", rotate: "8deg", opacity: 0.68, path: "M12 70 C28 26, 62 22, 74 48 S104 92, 92 58", strokeWidth: 8 },
+  { size: 94, top: "58%", left: "22%", rotate: "-18deg", opacity: 0.62, path: "M18 44 C42 8, 78 12, 88 42 S70 98, 42 74", strokeWidth: 7 },
+];
+const whiteLinePresets = [
+  { size: 96, top: "18%", left: "58%", rotate: "-10deg", opacity: 0.54, path: "M16 64 C38 28, 72 26, 84 54 S102 100, 76 76", strokeWidth: 7 },
+  { size: 88, top: "70%", left: "46%", rotate: "14deg", opacity: 0.48, path: "M18 58 C28 26, 56 18, 72 40 S102 82, 86 54", strokeWidth: 6 },
+];
+const greenLinePresets = [
+  { size: 102, top: "14%", left: "38%", rotate: "16deg", opacity: 0.66, path: "M20 68 C36 24, 68 20, 80 46 S102 92, 88 60", strokeWidth: 8 },
+  { size: 92, top: "64%", left: "70%", rotate: "-12deg", opacity: 0.58, path: "M16 48 C34 12, 72 14, 82 44 S74 100, 34 76", strokeWidth: 7 },
+];
 
 const deterministicFills = [hotPink, hotPink, "#ffffff", "#ffffff", "#ffffff"];
 
-function buildStars() {
-  return starPresets.map((star, index) => ({
+function buildStars(presets, fills, fallbackFill) {
+  return presets.map((star, index) => ({
     ...star,
-    fill: deterministicFills[index] ?? "#ffffff",
+    fill: fills[index] ?? fallbackFill,
     style: {
       width: `${star.size}px`,
       height: `${star.size}px`,
@@ -400,9 +442,32 @@ function buildStars() {
   }));
 }
 
-const stars = buildStars();
+function buildStarLines(presets, stroke) {
+  return presets.map((line) => ({
+    ...line,
+    stroke,
+    style: {
+      width: `${line.size}px`,
+      height: `${line.size}px`,
+      top: line.top,
+      left: line.left,
+      opacity: line.opacity,
+      "--squiggle-rotate": line.rotate,
+    },
+  }));
+}
+
+const stars = buildStars(starPresets, deterministicFills, "#ffffff");
 const pinkStars = stars.filter((star) => star.fill === hotPink);
 const whiteStars = stars.filter((star) => star.fill !== hotPink);
+const greenStars = buildStars(greenStarPresets, Array(greenStarPresets.length).fill(mintGreen), mintGreen);
+const pinkStarLines = buildStarLines(pinkLinePresets, hotPink);
+const whiteStarLines = buildStarLines(whiteLinePresets, "#ffffff");
+const greenStarLines = buildStarLines(greenLinePresets, mintGreen);
+const landingMascots = [0, 1, 2, 3, 4, 5].map((level) => ({
+  level,
+  url: resolveSpoonMascot(level),
+}));
 const defaultSpoonScore = 3;
 const spoonScore = ref(defaultSpoonScore);
 const recipesLink = computed(() => ({ path: "/recipes", query: { spoons: spoonScore.value } }));
@@ -441,50 +506,6 @@ const cornerResultThemeVars = computed(() => {
     "--qa-result-note": shiftRgb(base, -86),
   };
 });
-
-const getStartHereDotLottie = () => startHereLottieRef.value?.dotLottie;
-
-function resetStartHereLottie() {
-  const dotLottie = getStartHereDotLottie();
-  if (!dotLottie) return false;
-
-  const totalFrames = dotLottie.totalFrames ?? dotLottie.getDuration?.(true);
-  if (!totalFrames) return false;
-
-  dotLottie.setLoop?.(false);
-  dotLottie.goToAndStop
-    ? dotLottie.goToAndStop(totalFrames - 1, true)
-    : dotLottie.setFrame?.(totalFrames - 1);
-
-  return true;
-}
-
-
-function ensureStartHereLottieReady() {
-  if (resetStartHereLottie()) {
-    startHereInitAttempts = 0;
-    return;
-  }
-
-  if (startHereInitAttempts < 10) {
-    startHereInitAttempts += 1;
-    setTimeout(ensureStartHereLottieReady, 120);
-  }
-}
-
-function handleStartHereHover() {
-  const dotLottie = getStartHereDotLottie();
-  if (!dotLottie) return;
-
-  dotLottie.setLoop?.(false);
-  dotLottie.setDirection?.(-1); // backwards
-  dotLottie.play();
-}
-
-
-function handleStartHereLeave() {
-  resetStartHereLottie();
-}
 
 function loadPdfJsScript() {
   if (typeof window === "undefined") return Promise.resolve(null);
@@ -538,19 +559,99 @@ async function loadSpreadPdf(pdfjsLib) {
   return spreadPdfPromise;
 }
 
+async function loadSpreadPage(pdf, pageNumber) {
+  if (spreadPagePromiseCache.has(pageNumber)) {
+    return spreadPagePromiseCache.get(pageNumber);
+  }
+
+  const promise = pdf.getPage(pageNumber).catch((error) => {
+    spreadPagePromiseCache.delete(pageNumber);
+    throw error;
+  });
+  spreadPagePromiseCache.set(pageNumber, promise);
+  return promise;
+}
+
+async function renderPageToCache(pdf, pageNumber, cssWidth) {
+  const cacheKey = getSpreadRenderCacheKey(pageNumber, cssWidth);
+  if (spreadRenderCache.has(cacheKey)) {
+    return spreadRenderCache.get(cacheKey);
+  }
+  if (spreadRenderPromiseCache.has(cacheKey)) {
+    return spreadRenderPromiseCache.get(cacheKey);
+  }
+
+  const promise = (async () => {
+    const page = await loadSpreadPage(pdf, pageNumber);
+    const baseViewport = page.getViewport({ scale: 1 });
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    const scale = Math.max(0.45, (cssWidth * pixelRatio) / baseViewport.width);
+    const viewport = page.getViewport({ scale });
+    const renderCanvas = document.createElement("canvas");
+    renderCanvas.width = Math.floor(viewport.width);
+    renderCanvas.height = Math.floor(viewport.height);
+    const context = renderCanvas.getContext("2d", { alpha: false });
+    await page.render({ canvasContext: context, viewport }).promise;
+
+    const cached = {
+      canvas: renderCanvas,
+      height: viewport.height / pixelRatio,
+      width: viewport.width / pixelRatio,
+    };
+    spreadRenderCache.set(cacheKey, cached);
+    spreadRenderPromiseCache.delete(cacheKey);
+    return cached;
+  })().catch((error) => {
+    spreadRenderPromiseCache.delete(cacheKey);
+    throw error;
+  });
+
+  spreadRenderPromiseCache.set(cacheKey, promise);
+  return promise;
+}
+
+async function primeSpreadRenders() {
+  if (!process.client) return;
+
+  try {
+    const pdfjsLib = await loadPdfJsScript();
+    if (!pdfjsLib?.GlobalWorkerOptions) return;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_JS_WORKER;
+
+    const pdf = await loadSpreadPdf(pdfjsLib);
+    const cssWidth = getSpreadCssWidth();
+    const pageNumbers = uniqueSpreadPageNumbers();
+
+    await Promise.all(
+      pageNumbers.map(async (pageNumber) => {
+        await loadSpreadPage(pdf, pageNumber);
+        await renderPageToCache(pdf, pageNumber, cssWidth);
+      })
+    );
+  } catch {
+    // Fall back to on-demand rendering if preloading fails.
+  }
+}
+
 async function renderSpreadPage(pdf, pageNumber, canvas) {
   if (!canvas) return 0;
-  const page = await pdf.getPage(pageNumber);
-  const baseViewport = page.getViewport({ scale: 1 });
-  const cssWidth = Math.max(300, canvas.parentElement?.clientWidth || 0);
-  const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-  const scale = Math.max(0.45, (cssWidth * pixelRatio) / baseViewport.width);
-  const viewport = page.getViewport({ scale });
+  const cssWidth = getSpreadCssWidth(canvas);
+  const cached = spreadRenderCache.get(getSpreadRenderCacheKey(pageNumber, cssWidth));
+
+  if (cached?.canvas) {
+    const context = canvas.getContext("2d", { alpha: false });
+    canvas.width = cached.canvas.width;
+    canvas.height = cached.canvas.height;
+    context.drawImage(cached.canvas, 0, 0);
+    return cached.height;
+  }
+
+  const rendered = await renderPageToCache(pdf, pageNumber, cssWidth);
   const context = canvas.getContext("2d", { alpha: false });
-  canvas.width = Math.floor(viewport.width);
-  canvas.height = Math.floor(viewport.height);
-  await page.render({ canvasContext: context, viewport }).promise;
-  return viewport.height / pixelRatio;
+  canvas.width = rendered.canvas.width;
+  canvas.height = rendered.canvas.height;
+  context.drawImage(rendered.canvas, 0, 0);
+  return rendered.height;
 }
 
 async function renderResultSpread() {
@@ -803,6 +904,7 @@ function startFlow() {
   currentNodeId.value = "q1";
   history.value = [];
   spoonScore.value = defaultSpoonScore;
+  primeSpreadRenders();
 }
 
 function clampSpoons(value) {
@@ -878,6 +980,10 @@ watch([isCornerResultMode, spreadPages], ([enabled]) => {
   }
   cornerCardMinimized.value = false;
   renderResultSpread();
+});
+
+onMounted(() => {
+  primeSpreadRenders();
 });
 </script>
 
@@ -965,6 +1071,11 @@ watch([isCornerResultMode, spreadPages], ([enabled]) => {
   mix-blend-mode: plus-lighter;
 }
 
+.cookbook-stars--green {
+  mix-blend-mode: color-burn;
+  opacity: 0.85;
+}
+
 .cookbook-star {
   position: absolute;
   display: block;
@@ -973,6 +1084,17 @@ watch([isCornerResultMode, spreadPages], ([enabled]) => {
   transform-origin: center;
   filter: drop-shadow(0 12px 18px rgba(255, 255, 255, 0.4));
   animation: cookbook-star-drift 14s ease-in-out infinite alternate;
+}
+
+.cookbook-squiggle {
+  position: absolute;
+  display: block;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  transform-origin: center;
+  filter: drop-shadow(0 6px 10px rgba(255, 255, 255, 0.12));
+  animation: cookbook-squiggle-drift 12s ease-in-out infinite alternate;
 }
 
 @keyframes cookbook-star-drift {
@@ -984,12 +1106,21 @@ watch([isCornerResultMode, spreadPages], ([enabled]) => {
   }
 }
 
+@keyframes cookbook-squiggle-drift {
+  0% {
+    transform: rotate(var(--squiggle-rotate, 0deg)) translate(0, 0) scale(1);
+  }
+  100% {
+    transform: rotate(var(--squiggle-rotate, 0deg)) translate(10px, -8px) scale(1.03);
+  }
+}
+
 /* existing floats */
 .cookbook-float {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: clamp(260px, 42vw, 580px);
+  width: clamp(220px, 34vw, 460px);
   transform: translate(-50%, -56%);
   animation: floatLeft2 20s ease-in-out infinite;
   z-index: 2;
@@ -999,7 +1130,7 @@ watch([isCornerResultMode, spreadPages], ([enabled]) => {
   position: absolute;
   top: 50%;
   left: 49%;
-  width: max(260px, min(42vw, 580px));
+  width: clamp(220px, 34vw, 460px);
   transform: translate(-50%, -56%);
   animation: floatLeft2 20s ease-in-out infinite;
   z-index: 1;
@@ -1017,16 +1148,6 @@ watch([isCornerResultMode, spreadPages], ([enabled]) => {
   height: auto;
   filter: drop-shadow(0 20px 35px rgba(230, 230, 230, 0.65));
 }
-.cookbook-float-badge {
-  position: absolute;
-  bottom: clamp(8px, 1.2vw, 28px);
-  right: clamp(8px, 1.2vw, 28px);
-  width: max(80px, min(13vw, 140px)) !important;
-  pointer-events: none;
-  z-index: 3;
-  filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.6));
-}
-
 .cookbook-spoon {
   position: absolute;
   left: 15%;
@@ -1036,6 +1157,7 @@ watch([isCornerResultMode, spreadPages], ([enabled]) => {
   max-width: 460px;
   z-index: 2;
   pointer-events: none;
+  mix-blend-mode: color-burn;
   animation: cookbook-spoon-bounce 5s ease-in-out infinite;
 }
 
@@ -1048,6 +1170,7 @@ watch([isCornerResultMode, spreadPages], ([enabled]) => {
     max-width: 460px;
     z-index: 2;
     pointer-events: none;
+    mix-blend-mode: color-burn;
     animation: cookbook-spoon2-bounce 5.3s ease-in-out infinite;
 }
 
@@ -1108,65 +1231,116 @@ watch([isCornerResultMode, spreadPages], ([enabled]) => {
   transition: opacity 350ms ease, transform 350ms ease;
 }
 
+.cookbook-mascot-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.cookbook-mascot {
+  position: absolute;
+  width: clamp(72px, 9vw, 132px);
+  height: auto;
+  object-fit: contain;
+  mix-blend-mode: color-burn;
+  opacity: 0.9;
+  filter: drop-shadow(0 10px 18px rgba(86, 40, 63, 0.16));
+}
+
+.cookbook-mascot--level-5 {
+  width: clamp(116px, 13vw, 190px);
+}
+
+.cookbook-mascot--0 { left: 24%; top: 16%; animation: cookbook-mascot-float-a 7.1s ease-in-out infinite; }
+.cookbook-mascot--1 { right: 22%; top: 18%; animation: cookbook-mascot-float-b 8.3s ease-in-out infinite; }
+.cookbook-mascot--2 { left: 16%; top: 38%; animation: cookbook-mascot-float-c 6.6s ease-in-out infinite; }
+.cookbook-mascot--3 { right: 17%; top: 40%; animation: cookbook-mascot-float-d 9.2s ease-in-out infinite; }
+.cookbook-mascot--4 { left: 24%; bottom: 18%; animation: cookbook-mascot-float-e 7.8s ease-in-out infinite; }
+.cookbook-mascot--5 { right: 22%; bottom: 17%; animation: cookbook-mascot-float-f 8.9s ease-in-out infinite; }
+
 /* CTA */
 .cookbook-cta-wrap {
   position: absolute;
   left: 50%;
-  top: calc(50% + clamp(170px, 22vh, 260px));
+  top: calc(50% + clamp(132px, 17vh, 214px));
   transform: translateX(-50%);
   z-index: 5;
   transition: opacity 300ms ease, transform 300ms ease;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  width: min(560px, calc(100vw - 48px));
+  max-width: 100%;
+}
+
+.cookbook-cta-copy {
+  position: absolute;
+  left: calc(50% + clamp(90px, 10vw, 160px));
+  top: calc(50% + clamp(34px, 6vh, 72px));
+  transform: translateX(-50%);
+  z-index: 4;
+  margin: 0;
+  max-width: min(480px, 92vw);
+  font-family: "Inter", sans-serif;
+  font-size: clamp(0.95rem, 1.35vw, 1.15rem);
+  line-height: 1.35;
+  text-align: center;
+  color: #c3386e;
+  text-wrap: balance;
 }
 
 .start-here-btn {
-     display: inline-flex;
-    align-items: flex-end;
-    /* gap: 14px; */
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-    padding: 10px 14px;
-}
-
-.start-here-icon {
-width: 20vw;
-    /* height: clamp(60px, 8vw, 110px); */
-    display: inline-flex;
-    align-items: flex-end;
-    justify-content: center;
-    transition: transform 200ms ease;
-    transform: scaleY(-1);
-}
-
-.start-here-icon dotlottie-wc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  height: 100%;
-  pointer-events: none;
+  max-width: 100%;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
 }
 
-.start-here-btn:hover .start-here-icon,
-.start-here-btn:focus-visible .start-here-icon {
-  transform: scaleY(-1) scale(1.12);
+.start-here-arrow {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: clamp(290px, 38vw, 520px);
+  min-height: clamp(74px, 9vw, 108px);
+  padding: clamp(14px, 2vw, 22px) clamp(92px, 11vw, 132px) clamp(14px, 2vw, 22px) clamp(28px, 3vw, 40px);
+  background: #ffffff;
+  clip-path: polygon(0 18%, 72% 18%, 72% 0, 100% 50%, 72% 100%, 72% 82%, 0 82%);
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.2);
+  animation: start-here-arrow-sway 1.8s ease-in-out infinite;
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.start-here-btn:hover .start-here-arrow,
+.start-here-btn:focus-visible .start-here-arrow {
+  transform: translateX(8px);
+  box-shadow: 0 24px 42px rgba(0, 0, 0, 0.24);
+  background: #245c38;
 }
 
 .start-here-text {
- font-family: "Cherry Bomb One", "Pinyon Script", cursive;
-    /* letter-spacing: 0.14em; */
-    /* text-transform: uppercase; */
-    font-size: 4vw;
-    color: #ffffff;
-    /* text-shadow: 0 2px 0 rgba(0, 0, 0, 0.12); */
-    transition: color 180ms ease, text-shadow 180ms ease;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(1.45rem, 2.4vw, 2.05rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  color: #2f63d8;
+  white-space: nowrap;
+  text-align: center;
+  width: 72%;
+  transition: color 180ms ease;
 }
 
 .start-here-btn:hover .start-here-text,
 .start-here-btn:focus-visible .start-here-text {
-  color: var(--deep-pink);
-  text-shadow: 0 2px 6px rgba(159, 43, 98, 0.45);
+  color: #ffffff;
 }
 
 .start-here-btn:focus-visible {
@@ -1175,34 +1349,44 @@ width: 20vw;
   border-radius: 14px;
 }
 
-.start-here-lottie {
-  transform: scale(-1, -1);
-    transform-origin: center;
+@keyframes start-here-arrow-sway {
+  0%, 100% {
+    transform: translateX(-10px);
+  }
+  50% {
+    transform: translateX(10px);
+  }
 }
 
-.skip-qa-btn {
-  font-family: "Cherry Bomb One", "Inter", sans-serif;
-  font-size: clamp(0.9rem, 1.5vw, 1.08rem);
-  font-weight: 400;
-  line-height: 1.1;
-  color: #ff4fb8;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  border: 0;
-  background: transparent;
-  display: inline-block;
-  padding: 0;
-  border-radius: 0;
-  box-shadow: none;
-  transition: color 160ms ease, opacity 160ms ease;
+@keyframes cookbook-mascot-float-a {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-12px) rotate(1deg); }
 }
 
-.skip-qa-btn:hover {
-  color: #ff4fb8;
-  opacity: 0.95;
+@keyframes cookbook-mascot-float-b {
+  0%, 100% { transform: translateY(0) rotate(1deg); }
+  50% { transform: translateY(-10px) rotate(-1deg); }
 }
 
+@keyframes cookbook-mascot-float-c {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-8px) translateX(6px); }
+}
 
+@keyframes cookbook-mascot-float-d {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-14px) scale(1.03); }
+}
+
+@keyframes cookbook-mascot-float-e {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-9px) rotate(2deg); }
+}
+
+@keyframes cookbook-mascot-float-f {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-11px) translateX(-5px); }
+}
 
 /* Questionnaire container */
 .cookbook-qa {
@@ -1265,6 +1449,10 @@ width: 20vw;
   z-index: 18;
   pointer-events: none;
   animation: mascot-corner-float 6.7s ease-in-out infinite;
+}
+
+.qa-corner-mascot--level-5 {
+  width: clamp(196px, 22vw, 320px);
 }
 
 .qa-box-hide {
@@ -1430,6 +1618,10 @@ width: 20vw;
   display: block;
   margin: 12px auto 4px;
   filter: drop-shadow(0 8px 14px rgba(70, 26, 49, 0.2));
+}
+
+.qa-result-mascot--level-5 {
+  width: clamp(136px, 19vw, 224px);
 }
 
 .qa-result-note {
@@ -1600,10 +1792,13 @@ width: 20vw;
   color: var(--deep-pink-soft);
   /* text-transform: uppercase; */
   /* letter-spacing: 0.12em; */
-  font-size: 2vw;
+  font-size: clamp(0.92rem, 1.35vw, 1.08rem);
   cursor: pointer;
-  padding: 8px 10px;
-  font-family: "Cherry Bomb One", "Pinyon Script", cursive;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .qa-link--pill {
@@ -1642,90 +1837,204 @@ width: 20vw;
   transform: translateY(10px);
 }
 
-/* ZINE / MAG TEXT BLOCK */
-.cookbook-zine {
-  position: relative;
-  z-index: 4;                 /* above background, below qa overlay (z-index 10) */
-  width: min(980px, 92vw);
-  margin: clamp(48px, 12vw, 96px) auto 90px;
-  padding: 18px 14px;
-  pointer-events: auto;
+@media (max-width: 1280px) {
+  .cookbook-cta-copy {
+    left: calc(50% + clamp(64px, 8vw, 110px));
+    top: calc(50% + clamp(28px, 5vh, 58px));
+  }
+
+  .cookbook-cta-wrap {
+    top: calc(50% + clamp(120px, 15vh, 188px));
+    width: min(480px, calc(100vw - 56px));
+  }
+
+  .cookbook-mascot--0 { left: 18%; top: 15%; }
+  .cookbook-mascot--1 { right: 17%; top: 17%; }
+  .cookbook-mascot--2 { left: 11%; top: 37%; }
+  .cookbook-mascot--3 { right: 12%; top: 39%; }
+  .cookbook-mascot--4 { left: 20%; bottom: 18%; }
+  .cookbook-mascot--5 { right: 18%; bottom: 16%; }
+
+  .start-here-arrow {
+    width: clamp(260px, 34vw, 420px);
+    min-height: clamp(68px, 8vw, 92px);
+    padding-right: clamp(78px, 10vw, 112px);
+  }
+
+  .start-here-text {
+    font-size: clamp(1.2rem, 1.95vw, 1.65rem);
+  }
 }
 
-.zine-inner {
-  column-count: 2;
-  column-gap: clamp(18px, 4vw, 48px);
-  column-rule: 1px solid rgba(255, 255, 255, 0.08);
-
-  font-family: "Inter", "Roboto", system-ui, -apple-system, Segoe UI, sans-serif;
-  font-size: 13px;
-  line-height: 1.5;
-  letter-spacing: 0.01em;
-
-  color: rgb(0 0 0 / 55%); /* light grey */
-  mix-blend-mode: screen;            /* try: screen / overlay / plus-lighter */
-  /* text-shadow: 0 1px 0 rgba(0, 0, 0, 0.22); */
-}
-
-.zine-inner p,
-.zine-inner ul,
-.zine-inner h3 {
-  break-inside: avoid;
-  margin: 0 0 12px 0;
-}
-
-.zine-inner h3 {
-  font-family: "Google Sans", "Inter", system-ui, sans-serif;
-  font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  color: rgba(255, 255, 255, 0.6);
-  margin-top: 10px;
-  text-transform: uppercase;
-}
-
-.zine-inner ul {
-  padding-left: 18px;
-}
-
-.zine-inner li {
-  margin: 0 0 8px 0;
-}
-
-.zine-note {
-  opacity: 0.7;
-  font-style: italic;
-  margin-top: -6px;
-}
-
-.zine-examples {
-  list-style: "–  ";
-  padding-left: 18px;
-}
-
-.zine-signoff {
-  font-family: "Libre Caslon Text", serif;
-  font-style: italic;
-  opacity: 0.8;
-}
-
-.zine-open {
-  font-family: "Cherry Bomb One", cursive;
-  font-size: 16px;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-/* responsive: collapse to 1 column on small screens */
 @media (max-width: 720px) {
-  .zine-inner {
-    column-count: 1;
+  .cookbook-spoon2 {
+    display: none;
+  }
+
+  .cookbook-hero {
+    padding: 20px 14px 28px;
+  }
+
+  .qa-shell {
+    width: min(100%, 420px);
+    margin: 0 auto;
+  }
+
+  .qa-card-wrap,
+  .qa-card-wrap--corner {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .qa-shell--corner {
+    align-content: end;
+    justify-items: center;
+    padding: 12px 10px 18px;
+  }
+
+  .qa-card-wrap--corner {
+    position: fixed;
+    left: 50%;
+    right: auto;
+    bottom: 88px;
+    transform: translateX(-50%);
+    width: min(86vw, 320px);
+    animation: none;
+    z-index: 19;
+  }
+
+  .qa-card-wrap--corner .qa-box {
+    padding: 14px 12px;
+    border-radius: 20px;
+  }
+
+  .qa-card-wrap--corner .qa-text {
+    font-size: clamp(0.82rem, 3.5vw, 0.98rem);
+    line-height: 1.28;
+  }
+
+  .qa-card-wrap--corner .qa-result-note {
+    font-size: 0.72rem;
+    gap: 6px;
+  }
+
+  .qa-card-wrap--corner .qa-options {
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .qa-card-wrap--corner .qa-pill {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+
+  .qa-card-wrap--corner .qa-box-hide {
+    font-size: 0.72rem;
+    margin-bottom: 6px;
+  }
+
+  .qa-card-wrap--corner .qa-result-mascot {
+    width: clamp(56px, 12vw, 78px);
+    margin: 8px auto 2px;
+  }
+
+  .qa-card-wrap--corner .qa-result-mascot--level-5 {
+    width: clamp(78px, 18vw, 108px);
+  }
+
+  .qa-corner-mascot {
+    right: 50%;
+    bottom: 10px;
+    transform: translateX(50%);
+    width: clamp(56px, 14vw, 84px);
+    z-index: 18;
+  }
+
+  .qa-corner-mascot--level-5 {
+    width: clamp(86px, 20vw, 120px);
+  }
+
+  .qa-box-reopen--corner {
+    right: 50%;
+    bottom: 56px;
+    transform: translateX(50%);
+    padding: 6px 10px;
+    font-size: 0.74rem;
+  }
+
+  .qa-nav {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .result-spread-bg {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .result-spread-bg__page {
+    width: 100%;
+    height: auto;
+  }
+
+  .result-spread-bg__canvas {
+    width: 100%;
+    height: auto;
+  }
+
+  .cookbook-cta-copy {
+    left: 50%;
+    top: calc(50% + clamp(158px, 19vh, 208px));
+    transform: translateX(-50%);
+    width: min(420px, 92vw);
+    max-width: min(420px, 92vw);
+    font-size: clamp(0.88rem, 3.8vw, 1rem);
+    line-height: 1.42;
+  }
+
+  .cookbook-cta-wrap {
+    width: min(92vw, 360px);
+    top: calc(50% + clamp(88px, 11vh, 132px));
+  }
+
+  .cookbook-mascot {
+    width: clamp(34px, 9vw, 52px);
+    opacity: 0.78;
+  }
+
+  .cookbook-mascot--level-5 {
+    width: clamp(74px, 18vw, 108px);
+  }
+
+  .cookbook-mascot--0 { left: 10%; top: 12%; }
+  .cookbook-mascot--1 { right: 10%; top: 13%; }
+  .cookbook-mascot--2 { left: 4%; top: 31%; }
+  .cookbook-mascot--3 { right: 4%; top: 33%; }
+  .cookbook-mascot--4 { left: 11%; bottom: 16%; }
+  .cookbook-mascot--5 { right: 10%; bottom: 17%; }
+
+  .start-here-arrow {
+    width: min(100%, 340px);
+    min-height: 62px;
+    padding: 12px 72px 12px 24px;
+    animation-duration: 1.5s;
+  }
+
+  .start-here-text {
+    font-size: clamp(1.05rem, 4.7vw, 1.4rem);
   }
 }
 
 
 /* reduced motion */
 @media (prefers-reduced-motion: reduce) {
+  .cookbook-mascot {
+    animation: none;
+  }
+  .start-here-arrow {
+    animation: none;
+  }
   .qa-enter-active, .qa-leave-active {
     transition: opacity 0.01ms linear;
   }
