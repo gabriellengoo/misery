@@ -96,6 +96,26 @@
 <script>
 import SiteHeaderhome from "@/components/SiteHeaderhome.vue";
 
+const COOKIE_NAME = "miseryparty_gate";
+
+function parseCookies(cookieHeader = "") {
+  return cookieHeader
+    .split(";")
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .reduce((cookies, part) => {
+      const separatorIndex = part.indexOf("=");
+      if (separatorIndex === -1) {
+        return cookies;
+      }
+
+      const key = part.slice(0, separatorIndex).trim();
+      const value = part.slice(separatorIndex + 1).trim();
+      cookies[key] = decodeURIComponent(value);
+      return cookies;
+    }, {});
+}
+
 export default {
   components: { SiteHeaderhome },
   data() {
@@ -123,6 +143,11 @@ export default {
     this.events = homepage.featuredEvents;
   },
   mounted() {
+    if (this.shouldRedirectToComingSoon()) {
+      window.location.replace("/comingsoon");
+      return;
+    }
+
     this.intervalId = setInterval(this.nextImage, 3000);
 
     // --- Fade in carousel on scroll ---
@@ -193,6 +218,18 @@ window.addEventListener("scroll", () => {
     },
   },
   methods: {
+    shouldRedirectToComingSoon() {
+      if (typeof window === "undefined") {
+        return false;
+      }
+
+      if (window.location.hostname !== "miseryparty.org") {
+        return false;
+      }
+
+      const cookies = parseCookies(document.cookie || "");
+      return !cookies[COOKIE_NAME];
+    },
     nextImage() {
       this.currentIndex = (this.currentIndex + 1) % this.images.length;
     },
