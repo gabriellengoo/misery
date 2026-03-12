@@ -16,22 +16,13 @@
     </div>
 
     <div class="preorder-shell">
-      <h1 class="hero-title coming-soon-title">miseryparty.org coming soon</h1>
+      <h1 class="hero-title coming-soon-title">miseryparty.org coming soon </3 </h1>
       <div class="coming-soon-image">
-        <div class="coming-soon-spread" aria-label="Cover preview">
-          <div class="coming-soon-page">
-            <canvas ref="coverFrontCanvas" class="coming-soon-canvas"></canvas>
-          </div>
-          <div class="coming-soon-page">
-            <canvas ref="coverBackCanvas" class="coming-soon-canvas"></canvas>
-          </div>
-          <div v-if="coverPreviewError" class="coming-soon-preview-message">
-            PDF preview unavailable
-          </div>
-          <div v-else-if="!coverHasRendered" class="coming-soon-preview-message">
-            loading cover...
-          </div>
-        </div>
+        <img
+          class="coming-soon-cover"
+          src="/images/cover.jpg"
+          alt="Misery Meals cover"
+        />
       </div>
       <header class="preorder-hero">
         <!-- <p class="hero-eyebrow">order our cookbook!</p> -->
@@ -75,7 +66,7 @@
 
       <section class="contact-card password-card">
         <p class="card-label">site access</p>
-        <h2>enter password</h2>
+        <!-- <h2>enter password</h2> -->
         <p class="portable-text">
           admin only
         </p>
@@ -92,7 +83,7 @@
             :disabled="isSubmitting"
           />
           <button class="subscribe-btn password-submit" type="submit" :disabled="isSubmitting">
-            {{ isSubmitting ? 'unlocking...' : 'enter site' }}
+            {{ isSubmitting ? 'unlocking...' : 'go' }}
           </button>
         </form>
         <p v-if="passwordMessage" class="password-message" :class="{ 'is-error': passwordError }">
@@ -105,12 +96,6 @@
 
 <script>
 const SHOPWIRED_PREORDER_URL = 'https://cookbook.miseryparty.org';
-const COVER_PDF_PATH = '/images/cover.pdf';
-const PDF_JS_SCRIPT = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-const PDF_JS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-let pdfScriptPromise = null;
-const pdfDocumentCache = new Map();
 
 function normalizeExternalUrl(url) {
   if (!url || typeof url !== 'string') {
@@ -129,61 +114,12 @@ function normalizeExternalUrl(url) {
   return `https://${trimmed.replace(/^\/+/, '')}`;
 }
 
-function loadPdfJsScript() {
-  if (typeof window === 'undefined') return Promise.resolve(null);
-  if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
-  if (pdfScriptPromise) return pdfScriptPromise;
-
-  pdfScriptPromise = new Promise((resolve, reject) => {
-    const existing = document.querySelector('script[data-pdfjs="true"]');
-    if (existing) {
-      existing.addEventListener('load', () => resolve(window.pdfjsLib), { once: true });
-      existing.addEventListener('error', () => reject(new Error('Failed to load PDF.js')), { once: true });
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = PDF_JS_SCRIPT;
-    script.async = true;
-    script.dataset.pdfjs = 'true';
-    script.onload = () => resolve(window.pdfjsLib);
-    script.onerror = () => reject(new Error('Failed to load PDF.js'));
-    document.head.appendChild(script);
-  });
-
-  return pdfScriptPromise;
-}
-
-function loadPdfDocument(pdfjsLib, path) {
-  if (pdfDocumentCache.has(path)) {
-    return pdfDocumentCache.get(path);
-  }
-
-  const promise = pdfjsLib
-    .getDocument({
-      url: path,
-      rangeChunkSize: 65536,
-      disableAutoFetch: true,
-      disableStream: false,
-    })
-    .promise
-    .catch((error) => {
-      pdfDocumentCache.delete(path);
-      throw error;
-    });
-
-  pdfDocumentCache.set(path, promise);
-  return promise;
-}
-
 export default {
   layout: 'preorder',
   data() {
     return {
       preorderLink: SHOPWIRED_PREORDER_URL,
       hasLink: true,
-      coverHasRendered: false,
-      coverPreviewError: false,
       floatingImages: [
         {
           className: 'img-right',
@@ -263,7 +199,6 @@ export default {
     if (process.client) {
       document.body.classList.add(this.bodyClass);
     }
-    this.renderCoverSpread();
   },
   beforeDestroy() {
     if (process.client) {
@@ -304,47 +239,6 @@ export default {
       } finally {
         this.isSubmitting = false;
       }
-    },
-    async renderCoverSpread() {
-      if (this.coverHasRendered) return;
-
-      try {
-        const pdfjsLib = await loadPdfJsScript();
-        if (!pdfjsLib?.GlobalWorkerOptions) {
-          throw new Error('PDF.js did not initialize correctly');
-        }
-
-        pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_JS_WORKER;
-
-        const pdf = await loadPdfDocument(pdfjsLib, COVER_PDF_PATH);
-        const firstCanvas = this.$refs.coverBackCanvas;
-        const lastCanvas = this.$refs.coverFrontCanvas;
-
-        if (!firstCanvas || !lastCanvas) return;
-
-        await Promise.all([
-          this.renderPdfPageToCanvas(pdf, 1, firstCanvas),
-          this.renderPdfPageToCanvas(pdf, pdf.numPages, lastCanvas),
-        ]);
-
-        this.coverHasRendered = true;
-      } catch {
-        this.coverPreviewError = true;
-      }
-    },
-    async renderPdfPageToCanvas(pdf, pageNumber, canvas) {
-      const page = await pdf.getPage(pageNumber);
-      const baseViewport = page.getViewport({ scale: 1 });
-      const pageWidth = Math.max(140, canvas.parentElement?.clientWidth || 220);
-      const scale = Math.max(0.2, Math.min(1.2, pageWidth / baseViewport.width));
-      const viewport = page.getViewport({ scale });
-      const context = canvas.getContext('2d', { alpha: false });
-
-      canvas.width = Math.floor(viewport.width);
-      canvas.height = Math.floor(viewport.height);
-      canvas.style.aspectRatio = `${baseViewport.width} / ${baseViewport.height}`;
-
-      await page.render({ canvasContext: context, viewport }).promise;
     },
   },
 };
@@ -403,6 +297,7 @@ export default {
 }
 
 .coming-soon-title {
+    letter-spacing: normal;
   text-align: center;
 }
 
@@ -414,40 +309,16 @@ export default {
   /* background: rgba(8, 10, 18, 0.5); */
   /* border: 1px solid rgba(255, 255, 255, 0.18); */
   /* box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28); */
+  display: flex;
+  justify-content: center;
 }
 
-.coming-soon-spread {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  /* gap: 0.75rem; */
-}
-
-.coming-soon-page {
-  /* border-radius: 18px; */
-  overflow: hidden;
-  /* background: rgba(255, 255, 255, 0.92); */
-  min-height: 12rem;
-}
-
-.coming-soon-canvas {
+.coming-soon-cover {
   display: block;
   width: 100%;
+  max-width: 28rem;
   height: auto;
-}
-
-.coming-soon-preview-message {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 18px;
-  /* background: rgba(8, 10, 18, 0.68); */
-  /* color: rgba(255, 255, 255, 0.92); */
-  text-transform: lowercase;
-  letter-spacing: 0.08em;
-  font-size: 0.85rem;
+  object-fit: contain;
 }
 
 .hero-description {
@@ -646,11 +517,6 @@ export default {
     flex-direction: column;
     align-items: stretch;
   }
-
-  .coming-soon-spread {
-    gap: 0.5rem;
-  }
-
 }
 
 .coming-soon-text {
