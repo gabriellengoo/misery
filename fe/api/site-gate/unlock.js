@@ -46,7 +46,6 @@ module.exports = (req, res) => {
     "Path=/",
     `Max-Age=${COOKIE_MAX_AGE}`,
     "SameSite=Lax",
-    "HttpOnly",
   ];
 
   if (process.env.NODE_ENV === "production") {

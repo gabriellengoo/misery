@@ -297,7 +297,7 @@ export default {
 
         this.password = '';
         this.passwordMessage = 'access granted. opening site...';
-        this.$router.push('/');
+        window.location.assign('/');
       } catch (error) {
         this.passwordError = true;
         this.passwordMessage = error.message || 'Incorrect password.';
