@@ -78,10 +78,11 @@ export default {
   ],
 
   router: {
-    middleware: ["preorderRedirect"],
+    middleware: ["preorderRedirect", "comingsoonRedirect"],
   },
 
   serverMiddleware: [
+    "~/server-middleware/site-gate.js",
     "~/server-middleware/cookbook-pdf.js",
   ],
 
