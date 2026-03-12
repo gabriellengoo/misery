@@ -77,7 +77,7 @@
         <p class="card-label">site access</p>
         <h2>enter password</h2>
         <p class="portable-text">
-          use the shared password below to enter the full site while miseryparty.org is in holding mode.
+          admin only
         </p>
         <form class="password-form" @submit.prevent="unlockSite">
           <label class="sr-only" for="site-gate-password">site password</label>
