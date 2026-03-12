@@ -17,15 +17,16 @@
 
     <div class="preorder-shell">
       <h1 class="hero-title coming-soon-title">miseryparty.org coming soon </3 </h1>
-      <div class="coming-soon-image">
+     
+      <header class="preorder-hero">
+         <div class="coming-soon-image">
         <img
           class="coming-soon-cover"
           src="/images/cover.jpg"
           alt="Misery Meals cover"
         />
       </div>
-      <header class="preorder-hero">
-        <!-- <p class="hero-eyebrow">order our cookbook!</p> -->
+      <div> <!-- <p class="hero-eyebrow">order our cookbook!</p> -->
         <h1 class="hero-title">order our cookbook!</h1>
         <p class="hero-description">
       misery meals is a choose-your-own-adventure collection of recipes, art and resources by mad and disabled, queer and trans, global majority people world-over, to be used always, but especially when we’re feeling miserable. This is an intuitive guide for when we need to eat but aren’t sure exactly when or what or fucking how.
@@ -45,7 +46,8 @@
           <p class="coming-soon-text">
            ordering is currently only available uk-wide. sign up to our newsletter to hear when we go international!
           </p>
-        </div>
+        </div></div>
+       
       </header>
 
       <section class="contact-card newsletter-card">
@@ -63,6 +65,14 @@
           subscribe
         </a>
       </section>
+
+       <div class="coming-soon-image">
+        <img
+          class="coming-soon-cover2"
+          src="/images/park.png"
+          alt="Misery Meals cover"
+        />
+      </div>
 
       <section class="contact-card password-card">
         <p class="card-label">site access</p>
@@ -277,6 +287,7 @@ export default {
 }
 
 .preorder-hero {
+      display: flex;
   padding: 1.25rem 0;
   text-transform: lowercase;
 }
@@ -321,6 +332,14 @@ export default {
   object-fit: contain;
 }
 
+.coming-soon-cover2 {
+  display: block;
+  width: 100%;
+  max-width: 68rem;
+  height: auto;
+  object-fit: contain;
+}
+
 .hero-description {
   margin: 1.5rem 0 1rem;
   font-size: clamp(1rem, 2vw, 1.2rem);
@@ -334,11 +353,14 @@ export default {
   flex-direction: column;
   gap: 1rem;
   margin-top: 2rem;
+      align-items: center;
+          align-items: flex-start;
 }
 
 .preorder-btn {
   display: inline-flex;
   align-items: center;
+      width: max-content;
   justify-content: center;
   padding: 1.2rem 3rem;
   border-radius: 999px;
@@ -496,6 +518,10 @@ export default {
 }
 
 @media (max-width: 768px) {
+  .password-input{
+    flex: none;
+  }
+
   .preorder-page {
     padding: 4rem 4vw 5rem;
   }
@@ -517,15 +543,39 @@ export default {
     flex-direction: column;
     align-items: stretch;
   }
+  .preorder-hero {
+    display: unset;
+    text-transform: lowercase;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+}
+
+.hero-title{
+  text-align: center;
+}
+
+.hero-description {
+  text-align: center;
+}
+
+.hero-actions{
+  align-items: center;
+}
+
+.subscribe-btn{
+      margin-top: 0;
+          width: max-content;
+}
 }
 
 .coming-soon-text {
   display: inline-block;
   padding: 0.85rem 1rem;
   border-radius: 16px;
-  background: rgba(8, 10, 18, 0.72);
+  background: rgba(8, 10, 18, 0.5);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
-  font-size: 0.85rem;
+  font-size: 0.65rem;
   letter-spacing: 0.2em;
   color: rgba(255, 255, 255, 0.92);
   line-height: 1.6;
