@@ -3,6 +3,16 @@ const crypto = require("crypto");
 const API_PATH = "/api/site-gate/unlock";
 const COOKIE_NAME = "miseryparty_gate";
 const COOKIE_MAX_AGE = 60 * 60 * 12;
+const PUBLIC_PATH_PREFIXES = [
+  "/_nuxt/",
+  "/assets/",
+  "/images/",
+];
+const PUBLIC_PATHS = new Set([
+  "/favicon.ico",
+  "/robots.txt",
+  "/sitemap.xml",
+]);
 
 function parseCookies(cookieHeader = "") {
   return cookieHeader
@@ -37,6 +47,54 @@ function createGateToken(password) {
     .digest("hex");
 }
 
+function getPathname(req) {
+  try {
+    return new URL(req.url, "http://site-gate.local").pathname;
+  } catch (error) {
+    return "/";
+  }
+}
+
+function getHostname(req) {
+  const forwardedHost = req.headers["x-forwarded-host"];
+  const host = forwardedHost || req.headers.host || "";
+  return String(host).split(",")[0].trim().split(":")[0].toLowerCase();
+}
+
+function isPublicPath(pathname) {
+  return (
+    PUBLIC_PATHS.has(pathname) ||
+    PUBLIC_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix))
+  );
+}
+
+function isComingSoonRoute(pathname) {
+  return (
+    pathname === "/comingsoon" ||
+    pathname === "/comingsoon/" ||
+    pathname.startsWith("/comingsoon/")
+  );
+}
+
+function isPreorderRoute(pathname) {
+  return (
+    pathname === "/preorder" ||
+    pathname === "/preorder/" ||
+    pathname.startsWith("/preorder/")
+  );
+}
+
+function hasGateAccess(req, password) {
+  const cookies = parseCookies(req.headers.cookie || "");
+  return cookies[COOKIE_NAME] === createGateToken(password);
+}
+
+function redirect(res, location) {
+  res.statusCode = 302;
+  res.setHeader("Location", location);
+  res.end();
+}
+
 function readRequestBody(req) {
   return new Promise((resolve, reject) => {
     let body = "";
@@ -54,57 +112,95 @@ function readRequestBody(req) {
 }
 
 module.exports = async function siteGateMiddleware(req, res, next) {
-  if (!req.url || !req.url.startsWith(API_PATH)) {
+  if (!req.url) {
     next();
     return;
   }
 
-  if (req.method !== "POST") {
-    res.statusCode = 405;
-    res.setHeader("Allow", "POST");
-    res.end("Method not allowed.");
+  const pathname = getPathname(req);
+
+  if (pathname === API_PATH) {
+    if (req.method !== "POST") {
+      res.statusCode = 405;
+      res.setHeader("Allow", "POST");
+      res.end("Method not allowed.");
+      return;
+    }
+
+    const configuredPassword = getGatePassword();
+    if (!configuredPassword) {
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ ok: false, message: "Site gate password is not configured." }));
+      return;
+    }
+
+    try {
+      const rawBody = await readRequestBody(req);
+      const payload = JSON.parse(rawBody || "{}");
+      const submittedPassword = String(payload.password || "");
+
+      if (submittedPassword !== configuredPassword) {
+        res.statusCode = 401;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({ ok: false, message: "Incorrect password." }));
+        return;
+      }
+
+      const token = createGateToken(configuredPassword);
+      const cookieParts = [
+        `${COOKIE_NAME}=${encodeURIComponent(token)}`,
+        "Path=/",
+        `Max-Age=${COOKIE_MAX_AGE}`,
+        "SameSite=Lax",
+      ];
+
+      if (process.env.NODE_ENV === "production") {
+        cookieParts.push("Secure");
+      }
+
+      res.statusCode = 200;
+      res.setHeader("Set-Cookie", cookieParts.join("; "));
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ ok: true }));
+    } catch (error) {
+      res.statusCode = 400;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ ok: false, message: "Invalid request payload." }));
+    }
     return;
   }
 
   const configuredPassword = getGatePassword();
-  if (!configuredPassword) {
-    res.statusCode = 500;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ ok: false, message: "Site gate password is not configured." }));
+  if (!configuredPassword || isPublicPath(pathname) || pathname.startsWith("/api/")) {
+    next();
     return;
   }
 
-  try {
-    const rawBody = await readRequestBody(req);
-    const payload = JSON.parse(rawBody || "{}");
-    const submittedPassword = String(payload.password || "");
+  const hostname = getHostname(req);
+  const isPreorderHost = hostname === "preorder.miseryparty.org";
 
-    if (submittedPassword !== configuredPassword) {
-      res.statusCode = 401;
-      res.setHeader("Content-Type", "application/json");
-      res.end(JSON.stringify({ ok: false, message: "Incorrect password." }));
+  if (isPreorderHost) {
+    if (!isPreorderRoute(pathname)) {
+      redirect(res, "/preorder");
       return;
     }
 
-    const token = createGateToken(configuredPassword);
-    const cookieParts = [
-      `${COOKIE_NAME}=${encodeURIComponent(token)}`,
-      "Path=/",
-      `Max-Age=${COOKIE_MAX_AGE}`,
-      "SameSite=Lax",
-    ];
-
-    if (process.env.NODE_ENV === "production") {
-      cookieParts.push("Secure");
-    }
-
-    res.statusCode = 200;
-    res.setHeader("Set-Cookie", cookieParts.join("; "));
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ ok: true }));
-  } catch (error) {
-    res.statusCode = 400;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ ok: false, message: "Invalid request payload." }));
+    next();
+    return;
   }
+
+  const isUnlocked = hasGateAccess(req, configuredPassword);
+
+  if (!isUnlocked && !isComingSoonRoute(pathname)) {
+    redirect(res, "/comingsoon");
+    return;
+  }
+
+  if (isUnlocked && isComingSoonRoute(pathname)) {
+    redirect(res, "/");
+    return;
+  }
+
+  next();
 };
