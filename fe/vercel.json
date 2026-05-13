@@ -4,6 +4,10 @@
       "src": "/(_nuxt/.*|_next/.*|assets/.*|images/.*|favicon.ico|robots.txt|sitemap.xml)",
       "dest": "/$1"
     },
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
 
     {
       "src": "^/$",
@@ -12,10 +16,23 @@
       "dest": "https://preorder.miseryparty.org/preorder"
     },
     {
+      "src": "^/(?!preorder(?:/|$)).*",
+      "has": [{ "type": "host", "value": "preorder.miseryparty.org" }],
+      "status": 302,
+      "dest": "https://preorder.miseryparty.org/preorder"
+    },
+    {
       "src": "/(.*)",
       "has": [{ "type": "host", "value": "www.miseryparty.org" }],
       "status": 308,
       "dest": "https://miseryparty.org/$1"
+    },
+    {
+      "src": "^/(?!comingsoon(?:/|$)).*",
+      "has": [{ "type": "host", "value": "miseryparty.org" }],
+      "missing": [{ "type": "cookie", "key": "miseryparty_gate" }],
+      "status": 302,
+      "dest": "https://miseryparty.org/comingsoon"
     }
   ]
 }
