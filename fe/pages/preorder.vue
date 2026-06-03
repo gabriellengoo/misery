@@ -60,7 +60,7 @@
 </template>
 
 <script>
-const SHOPWIRED_PREORDER_URL = 'https://cookbook.miseryparty.org';
+const SHOPWIRED_PREORDER_URL = 'https://ko-fi.com/miseryparty';
 
 function normalizeExternalUrl(url) {
   if (!url || typeof url !== 'string') {
